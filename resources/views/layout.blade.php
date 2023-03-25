@@ -157,10 +157,9 @@
 						<!-- BASKET ICON -->
 						<li><a href="#">{{ session::get('userName') }}</a>
 							<ul>
-								<li><a href="{{ url('logout') }}">Logout</a></li>
-								<li><a href="#">My Purchases</a></li>
+								<li><a href="#">Account</a></li>
                                 <li><a href="#">My Purchases</a></li>
-                                <li><a href="#">My Purchases</a></li>
+                                <li><a href="{{ url('logout') }}">Logout</a></li>
 							</ul>
 						</li>
                         <?php
@@ -178,7 +177,7 @@
 						<li class="basket-ico ico-30">
 							<a href="{{ url('cart') }}">
 								<span class="ico-holder"><span class="flaticon-shopping-bag"></span><em
-										class="roundpoint">{{ count((array) session('cart')) }}</em></span>
+										class="roundpoint cart-count">{{ count((array) session('cart')) }}</em></span>
 							</a>
 						</li>
 
@@ -486,8 +485,97 @@
 
 
 	<script defer src="{{ asset('frontend/js/changer.js') }}"></script>
+	<script>
+		//Cart Update-Remove
+		function cartUpdate(event) {
+			event.preventDefault();
+			let urlUpdateCart = $('.update-cart-url').data('url');
+			let id = $(this).data('id');
+			let quantity = $(this).parents('tr').find('input.quantity').val();
+			let product_subtotal = $(this).parents('tr').find('h5.product_subtotal');
+			let cart_total = $('.cart-total');
+			$.ajax({
+				type: "GET",
+				url: urlUpdateCart,
+				data: {_token: '{{ csrf_token() }}', id: id, quantity: quantity},
+				dataType: "json",
+				success: function (response) {
+					product_subtotal.text(response.subTotal);
+					cart_total.text(response.total);
+					$("#alert-message").html(response.msg);
+					$('#alert-message').fadeIn();
+					setTimeout(function() {
+					$('#alert-message').fadeOut();
+					}, 2000);
+				},
+				error: function (response) {
+				}
+			})
+		}
 
+		function cartRemove(event) {
+			event.preventDefault();
+			let urlRemoveCart = $('.remove-cart-url').data('url');
+			let parent_row = $(this).parents('tr');
+			let id = $(this).data('id');
+			let cart_total = $('.cart-total');
+			let cart_count = $('.cart-count');
 
+			$.ajax({
+				type: "GET",
+				url: urlRemoveCart,
+				data: {_token: '{{ csrf_token() }}', id: id},
+				dataType: "json",
+				success: function (response) {
+					parent_row.remove();
+					cart_total.text(response.total);
+					cart_count.text(response.cart_count);
+					$("#alert-message").html(response.msg);
+					$('#alert-message').fadeIn();
+					setTimeout(function() {
+					$('#alert-message').fadeOut();
+					}, 2000);
+				},
+				error: function (data) {
+
+				}
+			})
+		}
+
+		$(function () {
+			$(document).on("click", ".update-cart", cartUpdate);
+			$(document).on("click", ".remove-cart", cartRemove);
+		});
+
+	</script>
+
+	<script>
+		//Add to cart
+		$(".add-cart").click(function(event) {
+			event.preventDefault();
+
+			var ele = $(this);
+			let cart_count = $('.cart-count');
+			let size = $('input[name="size"]:checked').val();
+			let quantity = $('input[name="quantity"]').val()
+
+			$.ajax({
+                url: '{{ url('add-to-cart') }}' + '/' + ele.attr("data-id"),
+                method: "GET",
+                data: {_token: '{{ csrf_token() }}', size: size, quantity: quantity},
+                dataType: "json",
+                success: function (response) {
+					cart_count.text(response.cart_count);
+					$("#alert-message").html(response.msg);
+					$('#alert-message').fadeIn();
+					setTimeout(function() {
+					$('#alert-message').fadeOut();
+					}, 2000);
+                }
+            });
+		});
+
+	</script>
 </body>
 
 </html>

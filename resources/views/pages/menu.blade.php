@@ -5,8 +5,7 @@
 		============================================= -->	
 		<div id="page" class="page">
 
-
-
+			<div id="alert-message" class="alert alert-success"><h6 class="h6-sm"></h6></div>
 
 			<!-- PAGE HERO
 			============================================= -->	
@@ -128,7 +127,7 @@
 											<div class="item-rating">
 												<div class="stars-rating stars-lg">
 													<?php
-														$stars = $pz -> PizzaTotalRating ; 
+														$stars = $pz -> ProductTotalRating ; 
 														$fullStars = floor($stars); 
 														$halfStar = ($stars - $fullStars >= 0.5); 
 														$starsHtml = "";
@@ -150,13 +149,8 @@
 												</div>		
 											</div>
 
-											<!-- Like Icon -->
-											<div class="like-ico ico-25">
-												<a href="#"><span class="flaticon-heart"></span></a>
-											</div>
-
 											<!-- Title -->
-											<h6 class="h6-sm" style="font-size:120%">{{$pz -> PizzaName}}</a></h6>
+											<h6 class="h6-sm" style="font-size:120%">{{$pz -> ProductName}}</a></h6>
 											<h6 style="font-size:80%; margin:0">Just from:</h6>
 
 											<!-- Price -->
@@ -166,7 +160,7 @@
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="{{ url('pizza/'.$pz->PizzaID) }}" id="add-to-cart-btn" data-product-id="1"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="{{ url('pizza/'.$pz->ProductID) }}" id="add-to-cart-btn" data-product-id="1"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 											</div>
 
 										</div>
@@ -181,23 +175,21 @@
 						<!-- TAB-2 CONTENT -->
 						<div id="tab-2" class="tab-content">
 							<div class="row">
+                                @foreach($side as $sd)
 								<!-- MENU ITEM #1 -->
 								<div class="col-sm-6 col-lg-3">
 									<div class="menu-6-item bg-white">
-
+										
 										<!-- IMAGE -->
 										<div class="menu-6-img rel">
 											<div class="hover-overlay">
 
 												<!-- Image -->
-												<img class="img-fluid" src="images/menu/burger-11.jpg" alt="menu-image" />
-
-												<!-- Item Code -->
-												<span class="item-code bg-tra-dark">Code: 0850</span>	
+												<img class="img-fluid" src="{{$sd -> ImageURL}}" alt="menu-image" />
 
 												<!-- Zoom Icon -->
 												<div class="menu-img-zoom ico-25">
-													<a href="images/menu/burger-11.jpg" class="image-link">
+													<a href="{{$sd -> ImageURL}}" class="image-link">
 														<span class="flaticon-zoom"></span>
 													</a>
 												</div> 
@@ -208,42 +200,24 @@
 										<!-- TEXT -->
 										<div class="menu-6-txt rel">
 
-											<!-- Rating -->	
-											<div class="item-rating">
-												<div class="stars-rating stars-lg">
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star-half-alt"></i>
-												</div>		
-											</div>
-
-											<!-- Like Icon -->
-											<div class="like-ico ico-25">
-												<a href="#"><span class="flaticon-heart"></span></a>
-											</div>
-
 											<!-- Title -->
-											<h5 class="h5-sm">Crispy Chicken2</h5>
-
-											<!-- Description -->	
-											<p class="grey-color">Chicken breast, chilli sauce, tomatoes, pickles, coleslaw</p>
+											<h6 class="h6-sm" style="font-size:120%">{{$sd -> ProductName}}</a></h6>
 
 											<!-- Price -->
 											<div class="menu-6-price bg-coffee">
-												<h5 class="h5-xs yellow-color">$8.50</h5>
+												<h5 class="h5-xs yellow-color">${{$sd -> PriceM}}</h5>
 											</div>
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="product-single.html"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="" data-id="{{ $sd->ProductID }}" class="add-cart"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 											</div>
 
 										</div>
 
 									</div>
 								</div>	<!-- END MENU ITEM #1 -->
+                                @endforeach
 							</div>  <!-- End row -->	
 						</div>	<!-- END TAB-2 CONTENT -->
 
@@ -251,23 +225,21 @@
 						<!-- TAB-3 CONTENT -->
 						<div id="tab-3" class="tab-content">
 							<div class="row">
+                                @foreach($salad as $sl)
 								<!-- MENU ITEM #1 -->
 								<div class="col-sm-6 col-lg-3">
 									<div class="menu-6-item bg-white">
-
+										
 										<!-- IMAGE -->
 										<div class="menu-6-img rel">
 											<div class="hover-overlay">
 
 												<!-- Image -->
-												<img class="img-fluid" src="images/menu/burger-11.jpg" alt="menu-image" />
-
-												<!-- Item Code -->
-												<span class="item-code bg-tra-dark">Code: 0850</span>	
+												<img class="img-fluid" src="{{$sl -> ImageURL}}" alt="menu-image" />
 
 												<!-- Zoom Icon -->
 												<div class="menu-img-zoom ico-25">
-													<a href="images/menu/burger-11.jpg" class="image-link">
+													<a href="{{$sl -> ImageURL}}" class="image-link">
 														<span class="flaticon-zoom"></span>
 													</a>
 												</div> 
@@ -278,42 +250,24 @@
 										<!-- TEXT -->
 										<div class="menu-6-txt rel">
 
-											<!-- Rating -->	
-											<div class="item-rating">
-												<div class="stars-rating stars-lg">
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star-half-alt"></i>
-												</div>		
-											</div>
-
-											<!-- Like Icon -->
-											<div class="like-ico ico-25">
-												<a href="#"><span class="flaticon-heart"></span></a>
-											</div>
-
 											<!-- Title -->
-											<h5 class="h5-sm">Crispy Chicken3</h5>
-
-											<!-- Description -->	
-											<p class="grey-color">Chicken breast, chilli sauce, tomatoes, pickles, coleslaw</p>
+											<h6 class="h6-sm" style="font-size:120%">{{$sl -> ProductName}}</a></h6>
 
 											<!-- Price -->
 											<div class="menu-6-price bg-coffee">
-												<h5 class="h5-xs yellow-color">$8.50</h5>
+												<h5 class="h5-xs yellow-color">${{$sl -> PriceM}}</h5>
 											</div>
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="product-single.html"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="" data-id="{{ $sl->ProductID }}" class="add-cart"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 											</div>
 
 										</div>
 
 									</div>
 								</div>	<!-- END MENU ITEM #1 -->
+                                @endforeach
 							</div>  <!-- End row -->	
 						</div>	<!-- END TAB-3 CONTENT -->
 
@@ -321,23 +275,21 @@
 						<!-- TAB-4 CONTENT -->
 						<div id="tab-4" class="tab-content">
 							<div class="row">
+                                @foreach($dessert as $ds)
 								<!-- MENU ITEM #1 -->
 								<div class="col-sm-6 col-lg-3">
 									<div class="menu-6-item bg-white">
-
+										
 										<!-- IMAGE -->
 										<div class="menu-6-img rel">
 											<div class="hover-overlay">
 
 												<!-- Image -->
-												<img class="img-fluid" src="images/menu/burger-11.jpg" alt="menu-image" />
-
-												<!-- Item Code -->
-												<span class="item-code bg-tra-dark">Code: 0850</span>	
+												<img class="img-fluid" src="{{$ds -> ImageURL}}" alt="menu-image" />
 
 												<!-- Zoom Icon -->
 												<div class="menu-img-zoom ico-25">
-													<a href="images/menu/burger-11.jpg" class="image-link">
+													<a href="{{$ds -> ImageURL}}" class="image-link">
 														<span class="flaticon-zoom"></span>
 													</a>
 												</div> 
@@ -348,65 +300,45 @@
 										<!-- TEXT -->
 										<div class="menu-6-txt rel">
 
-											<!-- Rating -->	
-											<div class="item-rating">
-												<div class="stars-rating stars-lg">
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star-half-alt"></i>
-												</div>		
-											</div>
-
-											<!-- Like Icon -->
-											<div class="like-ico ico-25">
-												<a href="#"><span class="flaticon-heart"></span></a>
-											</div>
-
 											<!-- Title -->
-											<h5 class="h5-sm">Crispy Chicken4</h5>
-
-											<!-- Description -->	
-											<p class="grey-color">Chicken breast, chilli sauce, tomatoes, pickles, coleslaw</p>
+											<h6 class="h6-sm" style="font-size:120%">{{$ds -> ProductName}}</a></h6>
 
 											<!-- Price -->
 											<div class="menu-6-price bg-coffee">
-												<h5 class="h5-xs yellow-color">$8.50</h5>
+												<h5 class="h5-xs yellow-color">${{$ds -> PriceM}}</h5>
 											</div>
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="product-single.html"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="" data-id="{{ $ds->ProductID }}" class="add-cart"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 											</div>
 
 										</div>
 
 									</div>
 								</div>	<!-- END MENU ITEM #1 -->
+                                @endforeach
 							</div>  <!-- End row -->	
 						</div>	<!-- END TAB-4 CONTENT -->
 
 						<!-- TAB-5 CONTENT -->
 						<div id="tab-5" class="tab-content">
 							<div class="row">
+                                @foreach($drink as $dk)
 								<!-- MENU ITEM #1 -->
 								<div class="col-sm-6 col-lg-3">
 									<div class="menu-6-item bg-white">
-
+										
 										<!-- IMAGE -->
 										<div class="menu-6-img rel">
 											<div class="hover-overlay">
 
 												<!-- Image -->
-												<img class="img-fluid" src="images/menu/burger-11.jpg" alt="menu-image" />
-
-												<!-- Item Code -->
-												<span class="item-code bg-tra-dark">Code: 0850</span>	
+												<img class="img-fluid" src="{{$dk -> ImageURL}}" alt="menu-image" />
 
 												<!-- Zoom Icon -->
 												<div class="menu-img-zoom ico-25">
-													<a href="images/menu/burger-11.jpg" class="image-link">
+													<a href="{{$dk -> ImageURL}}" class="image-link">
 														<span class="flaticon-zoom"></span>
 													</a>
 												</div> 
@@ -417,42 +349,24 @@
 										<!-- TEXT -->
 										<div class="menu-6-txt rel">
 
-											<!-- Rating -->	
-											<div class="item-rating">
-												<div class="stars-rating stars-lg">
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star"></i>
-													<i class="fas fa-star-half-alt"></i>
-												</div>		
-											</div>
-
-											<!-- Like Icon -->
-											<div class="like-ico ico-25">
-												<a href="#"><span class="flaticon-heart"></span></a>
-											</div>
-
 											<!-- Title -->
-											<h5 class="h5-sm">Crispy Chicken5</h5>
-
-											<!-- Description -->	
-											<p class="grey-color">Chicken breast, chilli sauce, tomatoes, pickles, coleslaw</p>
+											<h6 class="h6-sm" style="font-size:120%">{{$dk -> ProductName}}</a></h6>
 
 											<!-- Price -->
 											<div class="menu-6-price bg-coffee">
-												<h5 class="h5-xs yellow-color">$8.50</h5>
+												<h5 class="h5-xs yellow-color">${{$dk -> PriceM}}</h5>
 											</div>
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="product-single.html"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="" data-id="{{ $dk->ProductID }}" class="add-cart"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 											</div>
 
 										</div>
 
 									</div>
 								</div>	<!-- END MENU ITEM #1 -->
+                                @endforeach
 							</div>  <!-- End row -->	
 						</div>	<!-- END TAB-5 CONTENT -->
 

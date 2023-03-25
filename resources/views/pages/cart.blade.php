@@ -6,8 +6,7 @@
 		============================================= -->	
 		<div id="page" class="page">
 
-
-
+			<div id="alert-message" class="alert alert-success"><h6 class="h6-sm"></h6></div>
 
 			<!-- PAGE HERO
 			============================================= -->	
@@ -59,19 +58,29 @@
 									<thead>
 									    <tr>
 									      	<th scope="col">Product</th>
-									      	<th scope="col">Price</th>
-									      	<th scope="col">Quantity</th>
-									      	<th scope="col">Total</th>
-									      	<th scope="col">Delete</th>
+									      	<th scope="col" style="text-align:center">Price</th>                                            
+									      	<th scope="col" style="text-align:center">Quantity</th>
+									      	<th scope="col" style="text-align:center">Total</th>
+                                            <th scope="col" style="text-align:center">Update</th>
+									      	<th scope="col" style="text-align:center">Delete</th>
 									    </tr>
-									 </thead>
+									</thead>
 
+                                    <?php
+                                        $total = 0;
+                                    ?>
 									<tbody>
                                         @if(session('cart'))
                                         @foreach(session('cart') as $id => $details)
+                                        <?php 
+                                        $total += $details['Price'] * $details['Quantity'];
+                                        ?>
 
 										<!-- CART ITEM #1 -->
 									    <tr>
+                                            <?php
+                                                if(isset($details['Size'])) {
+                                            ?>
 									      	<td data-label="Product" class="product-name">
 
 									      		<!-- Preview -->
@@ -79,20 +88,41 @@
 
 												<!-- Description -->
 												<div class="cart-product-desc">
-										      		<h5 class="h5-sm">{{ $details['PizzaName'] }}</h5>
-										      		<p class="p-sm">Size:</p>
+										      		<h5 class="h5-sm">{{ $details['ProductName'] }}</h5>
+										      		<p class="p-sm">Size: {{ $details['Size'] }}</p>
 										      	</div>
 
 									      	</td>
+                                            <?php
+                                                } else {
+                                            ?>
+                                            <td data-label="Product" class="product-name">
 
-									      	<td data-label="Price" class="product-price"><h5 class="h5-md"></h5></td>
-									      	<td data-label="Quantity" class="product-qty">
-									      		<input class="qty" type="number" min="1" max="20" value="1">
+									      		<!-- Preview -->
+												<div class="cart-product-img"><img src="{{ $details['ImageURL'] }}" alt="cart-preview"></div>
+
+												<!-- Description -->
+												<div class="cart-product-desc">
+										      		<h5 class="h5-sm">{{ $details['ProductName'] }}</h5>
+										      	</div>
+
 									      	</td>
-									      	<td data-label="Total" class="product-price-total"><h5 class="h5-md"></h5></td>
-									      	<td data-label="Delete" class="td-trash"><i class="far fa-trash-alt"></i></td>
-
+                                            <?php
+                                                }
+                                            ?>
+									      	<td style="text-align:center" data-label="Price" class="product-price"><h5 class="h5-md">${{ $details['Price'] }}</h5></td>
+									      	<td style="text-align:center" data-label="Quantity" class="product-qty">
+									      		<input class="qty quantity" type="number" min="1" max="20" value="{{ $details['Quantity'] }}" style="margin-bottom:13%">
+									      	</td>
+									      	<td style="text-align:center" data-label="Total" class="product-price-total"><h5 class="h5-md product_subtotal">${{ $details['Price'] * $details['Quantity'] }}</h5></td>
+                                            <td style="text-align:center" data-label="Update" class="td-trash update-cart-url" data-url="{{ route('updateCart') }}">
+                                                <a class="btn update-cart" href="" data-id="{{ $id }}"><i class="fa fa-sync-alt"></i></a>
+                                            </td>
+									      	<td style="text-align:center" data-label="Delete" class="td-trash remove-cart-url" data-url="{{ route('removeCart') }}">
+                                                <button class="btn remove-cart" data-id="{{ $id }}"><i class="far fa-trash-alt"></i></button>
+                                            </td>
 									    </tr>
+                                        
                                         @endforeach
                                         @endif
 									    
@@ -129,7 +159,7 @@
 
 								<!-- Button -->
 								<div class="col-md-4 col-lg-5 text-right">
-									<a onClick="window.location.reload()" class="btn btn-md btn-salmon tra-salmon-hover">Update Cart</a>
+									<a href="{{ route('menu') }}" class="btn btn-md btn-salmon tra-salmon-hover">Continue Shopping</a>
 								</div>
 
 							</div>
@@ -149,18 +179,18 @@
 									    <tr>
 									      	<td>Subtotal</td>
 									      	<td> </td>
-									      	<td class="text-right">$35.95</td>
+									      	<td class="text-right cart-total">${{ $total }}</td>
 									    </tr>
 									    <tr class="last-tr">
 									      	<td>Total</td>
 									      	<td> </td>
-									      	<td class="text-right">$35.95</td>
+									      	<td class="text-right">${{ $total }}</td>
 									    </tr>
 									  </tbody>
 								</table>
 
 								<!-- Button -->
-								<a href="#" class="btn btn-md btn-salmon tra-salmon-hover">Proceed To Checkout</a>
+								<a href="{{ route('checkout') }}" class="btn btn-md btn-salmon tra-salmon-hover">Proceed To Checkout</a>
 
 							</div>
 						</div>	<!-- END CHECKOUT -->

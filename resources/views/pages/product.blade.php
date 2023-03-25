@@ -6,7 +6,7 @@
 		============================================= -->
 	<div id="page" class="page">
 
-
+		<div id="alert-message" class="alert alert-success"><h6 class="h6-sm"></h6></div>
 
         @foreach($pizza as $pz)
 		<!-- PAGE HERO
@@ -25,8 +25,8 @@
 										<div class="breadcrumb-nav">
 											<nav aria-label="breadcrumb">
 												<ol class="breadcrumb">
-													<li class="breadcrumb-item"><a href="demo-1.html">Home</a></li>
-													<li class="breadcrumb-item"><a href="menu-2.html">Menu</a></li>
+													<li class="breadcrumb-item"><a href="{{ url('/home') }}">Home</a></li>
+													<li class="breadcrumb-item"><a href="{{ url('/menu') }}">Menu</a></li>
 													<li class="breadcrumb-item active" aria-current="page">Pizza
 													</li>
 												</ol>
@@ -37,7 +37,7 @@
 							</div>
 
 							<!-- Title -->
-							<h2 class="h2-xl">{{ $pz -> PizzaName }}</h2>
+							<h2 class="h2-xl">{{ $pz -> ProductName }}</h2>
 
 						</div>
 					</div>
@@ -45,9 +45,6 @@
 				</div> <!-- End row -->
 			</div> <!-- End container -->
 		</div> <!-- END PAGE HERO -->
-
-
-
 
 		<!-- SINGLE PRODUCT
 			============================================= -->
@@ -63,7 +60,7 @@
                             </div>
                             <div class="stars-rating pt-30">
                                     <?php
-                                        $stars = $pz -> PizzaTotalRating ; 
+                                        $stars = $pz -> ProductTotalRating ; 
                                         $fullStars = floor($stars); 
                                         $halfStar = ($stars - $fullStars >= 0.5); 
                                         $starsHtml = "";
@@ -80,10 +77,11 @@
                                         $starsHtml .= '<i class="far fa-star" style="font-size: 125%"></i>';
                                         }
 
-                                        echo '<h6 class="rating" style="font-size: 120%; font-weight: bold; float: right;">Rating: <span style="position: relative; top:-2px">' . $starsHtml . ' ('. $stars .')</span></h6>';
+                                        echo '<h6 class="rating" style="font-size: 120%; font-weight: bold; float: right">Total Rating: <span style="position: relative; top:-2px">' . $starsHtml . ' ('. $stars .')</span></h6>';
                                     ?>
-                                    <h6 style="font-size: 120%; font-weight: bold; float:left">Sold: {{ $pz -> PizzaSoldCount }} units</h6>
-                                    
+									
+                                    <h6 style="font-size: 120%; font-weight: bold; float:left">Total Sold: {{ $pz -> ProductSoldCount }} units</h6>
+									
 								</div>
 						</div>
 					</div> <!-- END PRODUCT IMAGE -->
@@ -97,7 +95,7 @@
 							<div class="project-title">
 
 								<!-- Title -->
-								<h2 class="h2-lg" style="color:#f6ba1a">{{ $pz -> PizzaName }}</h2>
+								<h2 class="h2-lg" style="color:#f6ba1a">{{ $pz -> ProductName }}</h2>
 
 							</div>
 
@@ -107,15 +105,14 @@
 								<!-- Text -->
 								<p class="p-md grey-color">{{ $pz -> Description }}
 								</p>
-
                                 <h6 class="font-weight-bold text-darker" style="font-size:150%">Choose Size</h6>
-                                    <ul  style="zoom:1.25">
+                                    <ul style="zoom:1.25">
                                         <li class="border-bottom border-grey-lighter py-1">
                                             <div
                                                 class="custom-control custom-radio org-custom-radio">
                                                 <input type="radio"
                                                     class="custom-control-input" name="size"
-                                                    id="rdo-size-0" /><label
+                                                    id="rdo-size-0" value="S" /><label
                                                     class="custom-control-label w-100" 
                                                     for="rdo-size-0">
                                                     <div
@@ -134,7 +131,7 @@
                                                 class="custom-control custom-radio org-custom-radio">
                                                 <input type="radio"
                                                     class="custom-control-input" name="size"
-                                                    id="rdo-size-1" checked="" /><label
+                                                    id="rdo-size-1" value="M" checked="" /><label
                                                     class="custom-control-label w-100"
                                                     for="rdo-size-1">
                                                     <div
@@ -153,7 +150,7 @@
                                                 class="custom-control custom-radio org-custom-radio">
                                                 <input type="radio"
                                                     class="custom-control-input" name="size"
-                                                    id="rdo-size-2" /><label
+                                                    id="rdo-size-2" value="L" /><label
                                                     class="custom-control-label w-100"
                                                     for="rdo-size-2">
                                                     <div
@@ -168,30 +165,13 @@
                                                 </label></div>
                                         </li>
                                     </ul>
-								{{-- <!-- Product Data -->
-								<div class="product-info">
-									<p class="form-check-label">Crust:&nbsp;
-										<input type="radio" name="crust" value="thin"> Thin&nbsp;
-										<input type="radio" name="crust" value="thick" checked> Thick&nbsp;
-										<input type="radio" name="crust" value="stuffed"> Stuffed&nbsp;
-									</p>
 
-									<p>Size:&nbsp;
-										<input type="radio" name="size" value="{{ $pz -> PriceS }}" data-price="S" checked> 7 inch&nbsp;
-										<input type="radio" name="size" value="{{ $pz -> PriceM }}" data-price="M"> 9 inch&nbsp;
-										<input type="radio" name="size" value="{{ $pz -> PriceL }}" data-price="L"> 12 inch&nbsp;
-									</p>
-
-									<p>Extra Cheese ($1): &nbsp;<input type="checkbox" name="xcheese" value="yes"></p>
-								</div> --}}
-
-								<input class="qty" id="quantity" type="number" min="1" max="20" value="1">
+								<input class="qty" id="quantity" name="quantity" type="number" min="1" max="20" value="1">
 
 								<!-- Add To Cart -->
 								<div class="add-to-cart-btn bg-yellow ico-20 text-center">
-									<a href="{{ url('add-to-cart/'.$pz->PizzaID) }}" type="submit"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+									<a href="" data-id="{{ $pz->ProductID }}" class="add-cart"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 								</div>
-
 								<!-- List -->
 								<ul class="txt-list">
 									<li class="list-item">

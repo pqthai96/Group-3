@@ -245,7 +245,7 @@
 							<div class="pbox-2-txt brown-color">
 
 								<h4 class="h4-lg txt-300" style="color:whitesmoke">Crispy Pizza</h4>
-								<h4 class="h4-xl" style="color:whitesmoke">Burger Is Back!</h4>
+								<h4 class="h4-xl" style="color:whitesmoke">Pizza Is Back!</h4>
 								<a href="{{ url('menu') }}" class="btn btn-red tra-red-hover">See More</a>
 
 							</div>
@@ -293,7 +293,7 @@
 											<div class="item-rating">
 												<div class="stars-rating stars-lg">
 													<?php
-														$stars = $pz -> PizzaTotalRating ; 
+														$stars = $pz -> ProductTotalRating ; 
 														$fullStars = floor($stars); 
 														$halfStar = ($stars - $fullStars >= 0.5); 
 														$starsHtml = "";
@@ -315,13 +315,8 @@
 												</div>		
 											</div>
 
-											<!-- Like Icon -->
-											<div class="like-ico ico-25">
-												<a href="#"><span class="flaticon-heart"></span></a>
-											</div>
-
 											<!-- Title -->
-											<h6 class="h6-sm" style="font-size:120%">{{$pz -> PizzaName}}</h6>
+											<h6 class="h6-sm" style="font-size:120%">{{$pz -> ProductName}}</h6>
 											<h6 style="font-size:80%; margin:0">Just from:</h6>
 
 											<!-- Price -->
@@ -331,7 +326,7 @@
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="{{ url('pizza/'.$pz->PizzaID) }}"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="{{ url('pizza/'.$pz->ProductID) }}"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
 											</div>
 
 										</div>

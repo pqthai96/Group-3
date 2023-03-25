@@ -558,36 +558,3 @@ function showRegisterForm() {
     document.getElementById("loginButton").classList.remove("active");
 }
 
-//Price orderby Size/xCheese/Quantity
-var pSize = document.getElementsByName("size");
-var price = document.getElementById("price");
-var xcheese = document.getElementsByName("xcheese")[0];
-var quantity = document.getElementById("quantity");
-
-for (var i = 0; i < pSize.length; i++) {
-    pSize[i].addEventListener("click", function () {
-        updatePrice();
-    });
-}
-
-xcheese.addEventListener("click", function () {
-    updatePrice();
-});
-
-quantity.addEventListener("input", function () {
-    updatePrice();
-});
-function updatePrice() {
-    var selectedSize = 0;
-    for (var i = 0; i < pSize.length; i++) {
-        if (pSize[i].checked) {
-            selectedSize = parseFloat(pSize[i].value);
-            break;
-        }
-    }
-    if (xcheese.checked) {
-        selectedSize += 1;
-    }
-    var total = selectedSize * quantity.value;
-  price.innerHTML = "$" + total.toFixed(2);
-}
