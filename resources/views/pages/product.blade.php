@@ -1,5 +1,5 @@
 @extends('layout')
-@section('title', 'Testo - Our Menu')
+@section('title', 'Testo - Product')
 @section('content')
     
     <!-- PAGE CONTENT

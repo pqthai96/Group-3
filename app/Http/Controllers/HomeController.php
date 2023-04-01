@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -62,26 +64,29 @@ class HomeController extends Controller
         return view('pages.product')->with(['pizza' => $pizza, 'rating' => $rating, 'count' => $count]);
     }
 
+
     public function login(Request $rqst)
     {
         $email = $rqst->input('email');
         $password = $rqst->input('password');
 
         $user = User::where('Email', $email)->first();
-
+        
         if ($user && $password === $user->Password) {
             $userID = $user->UserID;
             Session::put('userID', $userID);
             Session::put('userName', $user->Username);
+            Session::put('Email', $user->Email);
             Session::put('Name', $user->Name);
             Session::put('Phone', $user->Phone);
+            Session::put('Gender', $user->Gender);
             Session::put('Address', $user->Address);
-            
-            return redirect()->intended('menu');
+            return redirect()->intended(url()->previous())->with('success', 'Login Successfully!');;
         } else {
-            return redirect('home')->withErrors(['error' => 'Wrong Email or Password']);
+            return redirect::to(url()->previous())->withErrors(['error' => 'Wrong Email or Password']);
         }
     }
+    
     public function register(Request $rqst)
     {
         $data = array();
@@ -97,11 +102,13 @@ class HomeController extends Controller
 
         Session::put('userID', $userID);
         Session::put('userName', $rqst->newUsername); //luu bien ten user truy xuat = {{ session::get('userName') }}
+        Session::put('Email', $rqst->newEmail);
         Session::put('Name', $rqst->newFullname);
         Session::put('Phone', $rqst->newPhone);
+        Session::put('Gender', $rqst->gender);
         Session::put('Address', $rqst->newAddress);
         
-        return redirect('home');
+        return redirect::to('home');
     }
     public function logout()
     {
@@ -112,7 +119,7 @@ class HomeController extends Controller
         Session::forget('Phone');
         Session::forget('Address');
         
-        return redirect('home');
+        return redirect::to('home');
     }
 
     public function cart()
@@ -240,7 +247,7 @@ class HomeController extends Controller
             $subTotal = '$' . $carts[$rqst->id]['Quantity'] * $carts[$rqst->id]['Price'];
             $total = '$' . $this->getCartTotal();
 
-            return response()->json(['msg' => 'Cart updated successfully', 'total' => $total, 'subTotal' => $subTotal]);
+            return response()->json(['msg' => 'Cart updated successfully! Please re-apply your voucher code if you have!', 'total' => $total, 'subTotal' => $subTotal]);
         }
     }
     public function removeCart(Request $rqst) {
@@ -269,6 +276,67 @@ class HomeController extends Controller
         return number_format($total, 2);
     }
 
+    public function getDiscount(Request $rqst) {
+        $voucher = $rqst->voucher;
+        $total = $this->getCartTotal();
+        
+        if(session::get('cart') == null) {
+            $discountAmount = 0;
+            $totalPayment = $total;
+            return response()->json(['msg' => 'Please add item first!', 'totalPayment' => $totalPayment, 'discountAmount' => $discountAmount]);
+        } else {
+
+            $discount = DB::table('Discount')->where('DiscountID', $voucher)->first();
+            if ($discount == null) {
+                $discountAmount = 0;
+                $totalPayment = $total;
+                return response()->json(['msg' => 'The voucher you just entered is incorrect, please try again!', 'totalPayment' => $totalPayment, 'discountAmount' => $discountAmount]);
+            } else {
+                $startDate = $discount->StartDate;
+                $endDate = $discount->EndDate;
+                $minimumAmount = $discount->MinimumAmount;
+                $maximumAmount = $discount->MaximumAmount;
+                $currentDate = Carbon::now();
+
+                if ($total < $minimumAmount) {
+                    $discountAmount = 0;
+                    $totalPayment = $total;
+                    return response()->json(['msg' => 'Your order has not reached the minimum value to use the voucher!', 'totalPayment' => $totalPayment, 'discountAmount' => $discountAmount]);
+                } else {
+                    if ($currentDate->between($startDate, $endDate)) {
+                        $discountValue = $discount->DiscountValue;
+                        if (strpos($discountValue, '%') !== false) {
+                            $discountAmount = round($total * substr($discountValue, 0, strpos($discountValue, '%')) / 100, 2);
+
+                            if ($discountAmount > $maximumAmount) {
+                                $discountAmount = $maximumAmount;
+                                $totalPayment = round($total - $discountAmount, 2);
+                            } else {
+                                $totalPayment = round($total - $discountAmount, 2);
+                            }
+                        } else {
+                            $discountAmount = $discountValue;
+                            $totalPayment = round($total - $discountAmount, 2);
+                        }
+                        return response()->json(['msg' => 'Apply Voucher Succesfully!', 'totalPayment' => $totalPayment, 'discountAmount' => $discountAmount]);
+                    } else {
+                        $discountAmount = 0;
+                        $totalPayment = $total;
+                        return response()->json(['msg' => 'Currently, the voucher has not been applied during this time!', 'totalPayment' => $totalPayment, 'discountAmount' => $discountAmount]);
+                    }
+                }
+            }
+        }
+    }
+
+    public function checkoutAccept() {
+        $userLogin = session::get('userID');
+        $userCart = session::get('cart');
+        $viewUrlCheckout = url('checkout');
+        return response()->json(['userLogin' => $userLogin, 'userCart' => $userCart, 'viewUrlCheckout' => $viewUrlCheckout]);
+      
+    }
+
     public function checkout() {
         return view('pages.checkout');
     }
@@ -281,7 +349,7 @@ class HomeController extends Controller
         $date = Carbon::now();
         
         $order_data = array();
-        if ($options=="default") {
+        if ($options=="default") {  
             $order_data['OrderID'] = $order_id;
             $order_data['OrderDate'] = $date;
             $order_data['UserID'] = session::get('userID');
@@ -289,8 +357,9 @@ class HomeController extends Controller
             $order_data['CustomerPhone'] = session::get('Phone');
             $order_data['CustomerAddress'] = session::get('Address');
             $order_data['Note'] = $rqst->input('notes');
-            $order_data['SubTotal'] = $rqst->input('total');
+            $order_data['DiscountAmount'] = $rqst->input('discountAmount');
             $order_data['PaymentMethod'] = $rqst->input('payment');
+            $order_data['OrderStatus'] = "Processing";
         } else {
             $order_data['OrderID'] = $order_id;
             $order_data['OrderDate'] = $date;
@@ -299,8 +368,9 @@ class HomeController extends Controller
             $order_data['CustomerPhone'] = $rqst->input('phone');
             $order_data['CustomerAddress'] = $rqst->input('address');
             $order_data['Note'] = $rqst->input('notes');
-            $order_data['SubTotal'] = $rqst->input('total');
+            $order_data['DiscountAmount'] = $rqst->input('discountAmount');
             $order_data['PaymentMethod'] = $rqst->input('payment');
+            $order_data['OrderStatus'] = "Processing";
         }
         DB::table('Orders')->insert($order_data);
         
@@ -315,13 +385,28 @@ class HomeController extends Controller
             $order_details_data['ProductID'] = $productID;
             $order_details_data['Size'] = $item['Size'];
             $order_details_data['Quantity'] = $item['Quantity'];
-            $order_details_data['Price'] = $item['Price']*$item['Quantity'];
             DB::table('OrderDetails')->insert($order_details_data);
         }
 
         Session::forget('cart');
-        return redirect('home');
-        // dd($order_data);
-        // dd($order_details_data);
+        return view('pages.orderplace');
+    }
+
+    public function account() {
+        return view('pages.account');
+    }
+
+    public function order() {
+        $user = session::get('userID');
+        $userOrder = DB::table('Orders')->where('UserID', $user)->orderByDesc('OrderDate')->get();
+
+        $userOrderDetails = DB::table('OrderDetails')
+            ->join('Product','Product.ProductID','=','OrderDetails.ProductID')
+            ->join('ProductDetails','Product.ProductID','=','ProductDetails.ProductID')
+            ->select('OrderDetails.*','Product.*','ProductDetails.*')
+            ->get();
+
+
+        return view('pages.order')->with(['userOrder' => $userOrder, 'userOrderDetails' => $userOrderDetails]);
     }
 }

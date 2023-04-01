@@ -1,5 +1,5 @@
 @extends('layout')
-@section('title', 'Testo - Your Cart')
+@section('title', 'Testo - Checkout')
 @section('content')
 
 <!-- PAGE CONTENT
@@ -62,9 +62,8 @@
                         </div>
                     </div>
 
-                    <form id="order-form" name="contactform" class="contact-form" method="POST" action="{{ route('orderPlace')}}">
+                    <form id="order-form" name="contactform" class="contact-form" method="POST" action="{{ route('orderPlace') }}">
                         @csrf
-                        @method('POST')
                     <div>
                         <ul>
                             <li class="py-1">
@@ -169,10 +168,10 @@
 								<table id="myTable">
 									<thead>
 									    <tr>
-									      	<th scope="col">Product</th>
-									      	<th scope="col" style="text-align:center">Price</th>                                            
-									      	<th scope="col" style="text-align:center">Quantity</th>
-									      	<th scope="col" style="text-align:center">Total</th>
+									      	<th scope="col"><h6 class="h6-sm">Product</h6></th>
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Price</h6></th>                                            
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Quantity</h6></th>
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Total</h6></th>
 									    </tr>
 									</thead>
 
@@ -257,41 +256,49 @@
 								<h5 class="h5-lg">Payment Details</h5>
 
 								<!-- Table -->
-								<table>
+								
+                                <table>
 									<tbody>
 									    <tr>
 									      	<td>Subtotal</td>
 									      	<td></td>
 									      	<td class="text-right cart-total">${{ $total }}</td>
-                                            <input type="hidden" name="total" value="{{ $total }}">
 									    </tr>
-                                        <tr>
+										<tr>
 									      	<td>Voucher Discount</td>
-									      	<td></td>
-									      	<td class="text-right cart-discount">$</td>
+									      	<td> </td>
+									      	<td class="text-right discount-amount"></td>
+                                            <input type="hidden" name="discountAmount" id="discountAmount" value="">
 									    </tr>
 									    <tr class="last-tr">
 									      	<td>Total Payment</td>
 									      	<td> </td>
-									      	<td class="text-right">${{ $total }}</td>
+									      	<td class="text-right total-payment">${{ $total }}</td>
 									    </tr>
 									  </tbody>
 								</table>
 
 								<!-- Button -->
-								<a href="{{ route('orderPlace') }}" class="btn btn-md btn-salmon tra-salmon-hover" 
-                                onclick="event.preventDefault(); document.getElementById('order-form').submit();">
-                                Place Order
-                                </a>
-
+								<a href="{{ route('orderPlace') }}" class="btn btn-md btn-salmon tra-salmon-hover" onclick="event.preventDefault(); document.getElementById('order-form').submit();">
+                                Place Order</a>
 							</div>
 						</div>	<!-- END CHECKOUT -->
-
-
 					</div>	  <!-- END CART CHECKOUT -->
-
                     </form>	
 				</div>	   <!-- End container --> 
 			</section>	<!-- END CART PAGE -->
         </div>
 @endsection
+
+        
+
+@section('scripts')
+    <script type="text/javascript">
+        var discountAmount = localStorage.getItem('discountAmount');
+		var totalPayment = localStorage.getItem('totalPayment');
+		$(".discount-amount").html('$' + discountAmount);
+		$(".total-payment").html('$' + totalPayment);
+        $('#discountAmount').val(discountAmount);
+        $('#totalPayment').val(totalPayment);
+    </script>
+@stop

@@ -7041,8 +7041,8 @@ nav a#pull {
 }
 
 label {
-    font-weight: bold; /* làm đậm */
-    color: #e1202d;
+    font-weight: bold;
+    /* color: #e1202d; */
 }
 
 .form-row {
@@ -7052,18 +7052,38 @@ label {
 }
 
 #alert-message {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        text-align: center;
-        padding: 20px;
-        border-radius: 5px;
-        font-size: 20px;
-        border-style: none;
-        font-weight: bold;
-    }
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 20px;
+    border-style: none;
+    font-weight: bold;
+}
+
+/* account pages */
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+}
+.card .card-header {
+    font-weight: 500;
+    display:flex;
+    justify-content: center;
+}
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+

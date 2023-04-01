@@ -6,8 +6,6 @@
 	<div id="page" class="page">
 
 
-
-
 		<!-- HERO-1
 			============================================= -->
 		<section id="hero-1" class="hero-section division">

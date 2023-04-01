@@ -57,12 +57,12 @@
 								<table id="myTable">
 									<thead>
 									    <tr>
-									      	<th scope="col">Product</th>
-									      	<th scope="col" style="text-align:center">Price</th>                                            
-									      	<th scope="col" style="text-align:center">Quantity</th>
-									      	<th scope="col" style="text-align:center">Total</th>
-                                            <th scope="col" style="text-align:center">Update</th>
-									      	<th scope="col" style="text-align:center">Delete</th>
+									      	<th scope="col"><h6 class="h6-sm">Product</h6></th>
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Price</h6></th>                                            
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Quantity</h6></th>
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Total</h6></th>
+                                            <th scope="col" style="text-align:center"><h6 class="h6-sm">Update</h6></th>
+									      	<th scope="col" style="text-align:center"><h6 class="h6-sm">Delete</h6></th>
 									    </tr>
 									</thead>
 
@@ -147,9 +147,10 @@
 									<form class="discount-form">
 												
 										<div class="input-group">
-											<input type="text" class="form-control" placeholder="Coupon Code" id="discount-code">								
-											<span class="input-group-btn">
-												<button type="submit" class="btn btn-salmon tra-salmon-hover">Apply Coupon</button>
+											<input type="text" class="form-control" placeholder="Voucher Code" name="voucher-code" id="discount-code">
+											<input type="hidden" name="total" value="{{ $total }}">		
+											<span class="input-group-btn get-discount-url" data-url="{{ route('getDiscount') }}">
+												<button type="submit" class="btn btn-salmon tra-salmon-hover get-discount">Apply Voucher</button>
 											</span>										
 										</div>
 													
@@ -178,19 +179,24 @@
 									<tbody>
 									    <tr>
 									      	<td>Subtotal</td>
-									      	<td> </td>
+									      	<td></td>
 									      	<td class="text-right cart-total">${{ $total }}</td>
 									    </tr>
+										<tr>
+									      	<td>Voucher Discount</td>
+									      	<td></td>
+									      	<td class="text-right discount-amount" id="discount-amount">$0</td>
+									    </tr>
 									    <tr class="last-tr">
-									      	<td>Total</td>
-									      	<td> </td>
-									      	<td class="text-right">${{ $total }}</td>
+									      	<td>Total Payment</td>
+									      	<td></td>
+									      	<td class="text-right cart-total total-payment" id="total-payment">${{ $total }}</td>
 									    </tr>
 									  </tbody>
 								</table>
 
 								<!-- Button -->
-								<a href="{{ route('checkout') }}" class="btn btn-md btn-salmon tra-salmon-hover">Proceed To Checkout</a>
+								<a href="" class="btn btn-md btn-salmon tra-salmon-hover checkout-accept" data-url="{{ route('checkoutAccept') }}">Proceed To Checkout</a>
 
 							</div>
 						</div>	<!-- END CHECKOUT -->
@@ -203,3 +209,144 @@
 			</section>	<!-- END CART PAGE -->
         </div>
 @endsection
+
+
+@section('scripts')
+    <script>
+		//Cart Update-Remove
+		function cartUpdate(event) {
+			event.preventDefault();
+			let urlUpdateCart = $('.update-cart-url').data('url');
+			let id = $(this).data('id');
+			let quantity = $(this).parents('tr').find('input.quantity').val();
+			let product_subtotal = $(this).parents('tr').find('h5.product_subtotal');
+			let cart_total = $('.cart-total');
+			$.ajax({
+				type: "GET",
+				url: urlUpdateCart,
+				data: {_token: '{{ csrf_token() }}', id: id, quantity: quantity},
+				dataType: "json",
+				success: function (response) {
+					product_subtotal.text(response.subTotal);
+					cart_total.text(response.total);
+					$("#alert-message").html(response.msg);
+					$('#alert-message').fadeIn();
+					setTimeout(function() {
+					$('#alert-message').fadeOut();
+					}, 2000);
+					$(".discount-amount").html('$' + 0);
+				},
+				error: function (response) {
+				}
+			})
+		}
+
+		function cartRemove(event) {
+			event.preventDefault();
+			let urlRemoveCart = $('.remove-cart-url').data('url');
+			let parent_row = $(this).parents('tr');
+			let id = $(this).data('id');
+			let cart_total = $('.cart-total');
+			let cart_count = $('.cart-count');
+
+			$.ajax({
+				type: "GET",
+				url: urlRemoveCart,
+				data: {_token: '{{ csrf_token() }}', id: id},
+				dataType: "json",
+				success: function (response) {
+					parent_row.remove();
+					cart_total.text(response.total);
+					cart_count.text(response.cart_count);
+					$("#alert-message").html(response.msg);
+					$('#alert-message').fadeIn();
+					setTimeout(function() {
+					$('#alert-message').fadeOut();
+					}, 2000);
+					$(".discount-amount").html('$' + 0);
+				},
+				error: function (data) {
+
+				}
+			})
+		}
+
+		$(function () {
+			$(document).on("click", ".update-cart", cartUpdate);
+			$(document).on("click", ".remove-cart", cartRemove);
+		});
+
+		//getDiscount
+		$(".get-discount").click(function(event) {
+			event.preventDefault();
+
+			var ele = $(this);
+			let urlGetDiscount = $('.get-discount-url').data('url');
+
+			let voucher = $('input[name="voucher-code"]').val();
+
+			$.ajax({
+				url: urlGetDiscount,
+				method: "GET",
+				data: {_token: '{{ csrf_token() }}', voucher: voucher},
+				dataType: "json",
+				success: function (response) {
+					$("#alert-message").html(response.msg);
+					$('#alert-message').fadeIn();
+					setTimeout(function() {
+					$('#alert-message').fadeOut();
+					}, 2000);
+					//luubien
+					$(".discount-amount").html('$' + response.discountAmount);
+					$(".total-payment").html('$' + response.totalPayment);
+				}
+			});
+		});
+
+		//reload page when user back
+		window.addEventListener('pageshow', function(event) {
+			var historyTraversal = event.persisted || 
+									(typeof window.performance != 'undefined' && 
+									window.performance.navigation.type === 2);
+			if (historyTraversal) {
+				window.location.reload();
+			}
+		});
+
+		$(".checkout-accept").click(function(event) {
+			event.preventDefault();
+			let urlCheckout = $('.checkout-accept').data('url');
+
+			$.ajax({
+				url: urlCheckout,
+				type: "GET",
+				data: {_token: '{{ csrf_token() }}'},
+				dataType: "json",
+				success: function(response) {
+					if (response.userLogin !== null) {
+						if(response.userCart !== null) {
+							var discountAmount = (document.getElementById("discount-amount").innerHTML).replace('$','');
+							var totalPayment = (document.getElementById("total-payment").innerHTML).replace('$','');
+							localStorage.setItem("discountAmount", discountAmount);
+							localStorage.setItem("totalPayment", totalPayment);
+							window.location.href = response.viewUrlCheckout;
+						} else {
+							$("#alert-message").html("Please add product to cart first!");
+							$('#alert-message').fadeIn();
+							setTimeout(function() {
+							$('#alert-message').fadeOut();
+						}, 2000);
+						}
+					} else {
+						document.getElementById("loginModal").style.display = "block";
+						$("#alert-message").html("Please login first!");
+						$('#alert-message').fadeIn();
+						setTimeout(function() {
+						$('#alert-message').fadeOut();
+						}, 2000);
+					}
+				}
+			});
+		});
+	</script>
+@stop
