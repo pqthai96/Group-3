@@ -48,4 +48,12 @@ class AdminController extends Controller
     public function all_pizza() {
         return view('admin_pages.all_pizza');
     }
+
+    public function all_admin() {
+        return view('admin_pages.all_admin');
+    }
+
+    public function add_admin() {
+        return view('admin_pages.add_admin');
+    }
 }

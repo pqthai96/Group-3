@@ -67,3 +67,7 @@ Route::get('/log-out', [AdminController::class, 'logout'])->name('logout');
 Route::get('/add-pizza', [AdminController::class, 'add_pizza'])->name('add_pizza');
 
 Route::get('/all-pizza', [AdminController::class, 'all_pizza'])->name('all_pizza');
+
+Route::get('/all-admin', [AdminController::class, 'all_admin'])->name('all_admin');
+
+Route::get('/add-admin', [AdminController::class, 'add_admin'])->name('add_admin');

@@ -58,14 +58,7 @@
               </span>
               <input type="text" class="form-control">
             </div>
-          </li>
-          <li class="nav-item">
-            <form class="search-form" action="#">
-              <i class="icon-search"></i>
-              <input type="search" class="form-control" placeholder="Search Here" title="Search here">
-            </form>
-          </li>
-          
+          </li>          
           <li class="nav-item dropdown d-none d-lg-block user-dropdown">
             <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <img class="img-xs rounded-circle" src="{{ asset('backend/images/usericon.png') }}" alt="Profile image"> </a>
@@ -139,8 +132,8 @@
             </a>
             <div class="collapse" id="ad-auth">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Admin Acount</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Admin Account</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_admin') }}">View Admin Acount</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('add_admin') }}">Add Admin Account</a></li>
               </ul>
             </div>
           </li>

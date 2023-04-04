@@ -100,7 +100,6 @@
                                         @csrf
                                         <button class="btn" type="submit" style="float:right;background-color:#f5b200">Submit</button>
                                         <textarea class="form-control" style="width:70%;height:10%" name="review" id="review" placeholder="Your feedback"></textarea>
-                                        
                                         <div class="item-rating">
                                             <div class="stars-rating stars-lg">
                                                 <i class="fas fa-star" data-star="1"></i>
