@@ -3,7 +3,7 @@
 @section('content')
         <div class="content-wrapper">
           <div class="row">
-            <div class="col-lg-12 grid-margin stretch-car">
+            <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                   <div class="card-body">
                     <div class="col-md-3" style="float: right">
@@ -11,30 +11,38 @@
                     <input type="search" class="form-control" placeholder="Search Here" title="Search here">
                     </form>
                   </div>
-                  <h4 class="card-title">Administrator Management</h4>
+                  <h4 class="card-title">User Account Management</h4>
                   <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>AdminName</th>
-                                <th class="text-center">Password</th>
-                                <th class="text-center">Permission</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>FullName</th>
+                                <th>Gender</th>
+                                <th>Address</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
-                        @foreach($admin as $ad)
+                        @foreach($user as $us)
                         <tbody>
                             <tr>
-                                <td>{{ $ad->AdminName }}</td>
-                                <td class="text-center">{{ $ad->AdminPassword }}</td>
+                                <td>{{ $us->Username }}</td>
+                                <td>{{ $us->Email }}</td>
+                                <td>{{ $us->Phone }}</td>
+                                <td>{{ $us->Name }}</td>
+                                <td>{{ $us->Gender }}</td>
+                                <td>{{ $us->Address }}</td>
                                 <?php
-                                if($ad->Role == 0) {
+                                if($us->UserStatus == "active") {
                                 ?>
-                                <td class="text-center"><label class="badge badge-success">Administrator</label></td>
+                                <td class="text-center"><label class="badge badge-success">Active</label></td>
                                 <?php
                                 } else {
                                 ?>
-                                <td class="text-center"><label class="badge badge-warning">Webmaster</label></td>
+                                <td class="text-center"><label class="badge badge-warning">Banned</label></td>
                                 <?php
                                 }
                                 ?>
@@ -47,7 +55,7 @@
                         @endforeach
                     </table>
                     <br>
-                    <span style="float:right">{{ $admin->links() }}</span>
+                    <span style="float:right">{{ $user->links() }}</span>
                   </div>
                 </div>
               </div>

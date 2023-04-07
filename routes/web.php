@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 //=> http://localhost:8080/pizza_shop/public/
 
 Route::get('/', [HomeController::class, 'home']);
-
 Route::get('/home', [HomeController::class, 'home'])->name('home');
 
 Route::get('/menu', [HomeController::class, 'menu'])->name('menu');
@@ -27,47 +26,45 @@ Route::get('/menu', [HomeController::class, 'menu'])->name('menu');
 Route::get('/pizza/{id}', [HomeController::class, 'product'])->name('product');
 
 Route::post('/login', [HomeController::class, 'login'])->name('login');
-
 Route::post('/register', [HomeController::class, 'register'])->name('register');
-
 Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 
 Route::get('/cart', [HomeController::class, 'cart'])->name('cart');
-
 Route::any('/add-to-cart/{id}', [HomeController::class, 'addToCart'])->name('addToCart');
-
 Route::get('/update-cart', [HomeController::class, 'updateCart'])->name('updateCart');
-
 Route::get('/remove-cart', [HomeController::class, 'removeCart'])->name('removeCart');
-
 Route::get('/get-discount', [HomeController::class, 'getDiscount'])->name('getDiscount');
-
 Route::get('/checkout-accept', [HomeController::class, 'checkoutAccept'])->name('checkoutAccept');
-
 Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
-
 Route::post('/orderplace', [HomeController::class, 'orderPlace'])->name('orderPlace');
 
 Route::get('/account', [HomeController::class, 'account'])->name('account');
-
 Route::get('/order', [HomeController::class, 'order'])->name('order');
+Route::post('/review/{product_id}', [HomeController::class, 'review'])->name('review');
+
 
 
 //Backend
 //=> http://localhost:8080/pizza_shop/public/admin
 
 Route::get('/index', [AdminController::class, 'index'])->name('index');
-
 Route::get('/dashboard', [AdminController::class, 'show_dashboard'])->name('show_dashboard');
-
 Route::post('/admin-dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-
 Route::get('/log-out', [AdminController::class, 'logout'])->name('logout');
 
-Route::get('/add-pizza', [AdminController::class, 'add_pizza'])->name('add_pizza');
+Route::get('/all-admin', [AdminController::class, 'all_admin'])->name('all_admin');
+Route::get('/add-admin', [AdminController::class, 'add_admin'])->name('add_admin');
+Route::post('/save-admin', [AdminController::class, 'save_admin'])->name('save_admin');
+
+Route::get('/all-user', [AdminController::class, 'all_user'])->name('all_user');
 
 Route::get('/all-pizza', [AdminController::class, 'all_pizza'])->name('all_pizza');
+Route::get('/add-pizza', [AdminController::class, 'add_pizza'])->name('add_pizza');
+Route::post('/save-pizza', [AdminController::class, 'save_pizza'])->name('save_pizza');
+Route::get('/edit-pizza/{pizza_id}', [AdminController::class, 'edit_pizza'])->name('edit_pizza');
+Route::post('/update-pizza/{pizza_id}', [AdminController::class, 'update_pizza'])->name('update_pizza');
+Route::get('/remove-pizza/{pizza_id}', [AdminController::class, 'remove_pizza'])->name('remove_pizza');
 
-Route::get('/all-admin', [AdminController::class, 'all_admin'])->name('all_admin');
-
-Route::get('/add-admin', [AdminController::class, 'add_admin'])->name('add_admin');
+Route::get('/all-supplement', [AdminController::class, 'all_supplement'])->name('all_supplement');
+Route::get('/add-supplement', [AdminController::class, 'add_supplement'])->name('add_supplement');
+Route::post('/save-supplement', [AdminController::class, 'save_supplement'])->name('save_supplement');

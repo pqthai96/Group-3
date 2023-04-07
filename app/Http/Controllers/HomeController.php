@@ -398,7 +398,7 @@ class HomeController extends Controller
 
     public function order() {
         $user = session::get('userID');
-        $userOrder = DB::table('Orders')->where('UserID', $user)->orderByDesc('OrderDate')->get();
+        $userOrder = DB::table('Orders')->where('UserID', $user)->orderByDesc('OrderDate')->paginate(5);
 
         $userOrderDetails = DB::table('OrderDetails')
             ->join('Product','Product.ProductID','=','OrderDetails.ProductID')
@@ -408,5 +408,9 @@ class HomeController extends Controller
 
 
         return view('pages.order')->with(['userOrder' => $userOrder, 'userOrderDetails' => $userOrderDetails]);
+    }
+
+    public function review(Request $rqst, $product_id) {
+        dd($rqst->all());
     }
 }

@@ -38,20 +38,30 @@
                 @csrf
                 <div class="form-group">
                   <input type="text" class="form-control form-control-lg" id="exampleInputEmail1" name="admin_name" placeholder="Username">
+                  @error('admin_name')
+                        <span class="alert text-danger">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                      @enderror
                 </div>
                 <div class="form-group">
                   <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" name="admin_password" placeholder="Password">
+                  @error('admin_password')
+                    <span class="alert text-danger">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+                <div class="mt-3">
+                  <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" href="">SIGN IN</buttom>
                 </div>
                 <?php
                 $msg = Session::get('msg');
                 if($msg) {
-                  echo '<span style="color:red">' . $msg . '</span>';
+                  echo '<span class="alert text-danger"><strong>' . $msg . '</strong></span>';
                   Session::put('msg', null);
                 }
                 ?>
-                <div class="mt-3">
-                  <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" href="">SIGN IN</buttom>
-                </div>
                 <div class="my-2 d-flex justify-content-between align-items-center">
                   <div class="form-check">
                     <label class="form-check-label text-muted">

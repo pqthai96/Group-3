@@ -52,9 +52,9 @@
                 </div>
                 <h6 class="h6-sm">Customer: {{ $uo->CustomerName }} | {{ $uo->CustomerPhone }}</h6>
                 <h6 class="h6-sm">Delivery Address: {{ $uo->CustomerAddress }}</h6>
-                <h5 class="h5-sm" style="text-align:center">Your Order</h5>
-                <hr>
-					<table>
+                <h6 class="h6-sm">Order Status: {{ $uo->OrderStatus }}</h6>
+                <button class="btn order-toggle" style="background-color: #f5b200" data-order="{{ $uo->OrderID }}">See More Your Order</button>
+					<table id="order-{{ $uo->OrderID }}" style="display:none">
                         <thead>
                             <tr>
                                 <th scope="col"><h6 class="h6-sm">Product</h6></th>
@@ -96,19 +96,21 @@
                                     </div>
                                 </td>
                                 <td data-label="Your Rating" class="product-review">
-                                    <form method="POST" action="/review/{{ $pd->ProductID }}">
+                                    <form method="POST" action="{{ url('review/' . $pd->ProductID) }}">
                                         @csrf
                                         <button class="btn" type="submit" style="float:right;background-color:#f5b200">Submit</button>
-                                        <textarea class="form-control" style="width:70%;height:10%" name="review" id="review" placeholder="Your feedback"></textarea>
-                                        <div class="item-rating">
+                                        <textarea class="form-control" style="width:70%;height:10%" name="review" id="review" placeholder="Your Review"></textarea>
+                                        <div class="item-rating" id="item-rating-{{ $pd->OrderDetailsID }}">
                                             <div class="stars-rating stars-lg">
-                                                <i class="fas fa-star" data-star="1"></i>
-                                                <i class="fas fa-star" data-star="2"></i>
-                                                <i class="fas fa-star" data-star="3"></i>
-                                                <i class="fas fa-star" data-star="4"></i>
-                                                <i class="fas fa-star" data-star="5"></i>
+                                                <i class="far fa-star" data-star="1"></i>
+                                                <i class="far fa-star" data-star="2"></i>
+                                                <i class="far fa-star" data-star="3"></i>
+                                                <i class="far fa-star" data-star="4"></i>
+                                                <i class="far fa-star" data-star="5"></i>
                                             </div>
+                                            <input type="hidden" id="rating-value" name="rating">
                                         </div>
+                                        
                                     </form>
                                 </td>
                                 <?php
@@ -175,5 +177,39 @@
             </div>
         </div>
         @endforeach
+        <span style="float:right;margin-bottom:1rem">{{ $userOrder->links() }}</span>
 	</div>
 @endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+
+    $('.stars-rating i').hover(function() {        
+        $(this).removeClass('far').addClass('fas');
+        $(this).prevAll().removeClass('far').addClass('fas');
+        $(this).nextAll().removeClass('fas').addClass('far');
+    });
+
+    $('.stars-rating i').click(function() {
+        var star = $(this).attr('data-star');
+        var rating = $(this).closest('.item-rating');
+        rating.find('.stars-rating i').removeClass('fas').addClass('far');
+        $(this).prevAll().removeClass('far').addClass('fas');
+        $(this).removeClass('far').addClass('fas');
+        $(this).nextAll().removeClass('fas').addClass('far');
+        rating.find('#rating-value').val(star);
+    });
+});
+
+//toogle order
+$(document).ready(function() {
+  $('.order-toggle').click(function() {
+    var order = $(this).data('order');
+    $('#order-' + order).toggle();
+  });
+});
+
+
+</script>
+@stop

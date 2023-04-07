@@ -7,9 +7,21 @@
         <div class="content-wrapper">
           <div class="row">
             <div class="col-lg-12 grid-margin stretch-card">
-              <div class="card">
-              <p style="margin:3%">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
-              <div>
+              <div class="card p-4">
+              <p><strong>Testo Pizza Management System</strong> is designed to manage data from the Testo Inc.'s public website, including user's account, products, promotion, blog, customer's orders and customer's contact, as well as Testo Inc.'s admin accounts. </p>
+              <p>
+                  Here is an overview about <strong>Testo Pizza Management System</strong>
+              <ul type="disc">
+                  <li><strong>CONTACT US: </strong> allow admins to make changes about Testo Pizza's pizza/supplement from the public website </li>
+                  <li><strong>ADMIN (for webmaster only): </strong> allow the webmaster to create and manage admin accounts upon Testo Pizza's requests</li>
+                  <li><strong>USER:</strong> allow the admins to manage user accounts from Testo Pizza</li>
+                  <li><strong>PRODUCT: </strong> allow admins to create and make changes about Testo Pizza's pizza/supplement from the public website </li>
+                  <li><strong>ORDER:</strong> allow admins to keep track of customer orders from the public website </li>
+                  <li><strong>PROMOTION:</strong> allow admins to create and make changes about Testo Pizza's promotion from the public website </li>
+                  <li><strong>BLOG:</strong> allow admins to create and make changes about Testo Pizza's blog from the public website </li>
+              </ul>
+            </p>
+              </div>
             </div>
           </div>
         </div>

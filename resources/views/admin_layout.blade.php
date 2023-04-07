@@ -24,7 +24,7 @@
   <link rel="shortcut icon" href="{{ asset('backend/images/favicon.png') }}" />
 </head>
 <body>
-  <div class="container-scroller">
+  <div class="container-scroller" style="zoom: 110%">
     
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
@@ -35,10 +35,10 @@
           </button>
         </div>
         <div>
-          <a class="navbar-brand brand-logo" href="index.html">
+          <a class="navbar-brand brand-logo" href="{{ route('show_dashboard') }}">
             <img src="{{ asset('backend/images/logo-02.png') }}" alt="logo" />
           </a>
-          <a class="navbar-brand brand-logo-mini" href="index.html">
+          <a class="navbar-brand brand-logo-mini" href="{{ route('show_dashboard') }}">
             <img src="{{ asset('backend/images/logo-02.png') }}" alt="logo" />
           </a>
         </div>
@@ -46,8 +46,8 @@
       <div class="navbar-menu-wrapper d-flex align-items-top"> 
         <ul class="navbar-nav">
           <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-            <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">{{ Session::get('admin_name') }}</span></h1>
-            <h3 class="welcome-sub-text">Your performance summary this week </h3>
+            <h1 class="welcome-text">Welcome back, <span class="text-black fw-bold">{{ Session::get('admin_name') }}</span>!</h1>
+            <h3 class="welcome-sub-text">It's good to see you again.</h3>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
@@ -64,8 +64,7 @@
               <img class="img-xs rounded-circle" src="{{ asset('backend/images/usericon.png') }}" alt="Profile image"> </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <div class="dropdown-header text-center">
-                <p class="mb-1 mt-3 font-weight-semibold">{{ Session::get('admin_name') }}</p>
-                <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+                <p class="mb-1 mt-3 font-weight-semibold" style="font-size:1rem">{{ Session::get('admin_name') }}</p>
               </div>
               <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>Change Password</a>
               <a class="dropdown-item" href="{{ route('logout') }}"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
@@ -80,31 +79,12 @@
     
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
-      <!-- partial:partials/_settings-panel.html -->
-      <div class="theme-setting-wrapper">
-        <div id="settings-trigger"><i class="ti-settings"></i></div>
-        <div id="theme-settings" class="settings-panel">
-          <i class="settings-close ti-close"></i>
-          <p class="settings-heading">SIDEBAR SKINS</p>
-          <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border me-3"></div>Light</div>
-          <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border me-3"></div>Dark</div>
-          <p class="settings-heading mt-2">HEADER SKINS</p>
-          <div class="color-tiles mx-0 px-4">
-            <div class="tiles success"></div>
-            <div class="tiles warning"></div>
-            <div class="tiles danger"></div>
-            <div class="tiles info"></div>
-            <div class="tiles dark"></div>
-            <div class="tiles default"></div>
-          </div>
-        </div>
-      </div>
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="{{ route('show_dashboard') }}">
               <i class="mdi mdi-grid-large menu-icon"></i>
               <span class="menu-title">Dashboard</span>
             </a>
@@ -124,10 +104,13 @@
             </div>
           </li>
           <li class="nav-item nav-category">pages</li>
+          <?php
+          if(Session::get('role') == 1){
+          ?>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ad-auth" aria-expanded="false" aria-controls="ad-auth">
               <i class="menu-icon mdi mdi-account-star"></i>
-              <span class="menu-title">Admin Manage</span>
+              <span class="menu-title">Admin</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ad-auth">
@@ -140,15 +123,33 @@
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
               <i class="menu-icon mdi mdi-account-circle-outline"></i>
-              <span class="menu-title">User Manage</span>
+              <span class="menu-title">User</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="auth">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_user') }}">User Management</a></li>
               </ul>
             </div>
           </li>
+          <?php
+          } else {
+          ?>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+              <i class="menu-icon mdi mdi-account-circle-outline"></i>
+              <span class="menu-title">User</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="auth">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_user') }}">User Management</a></li>
+              </ul>
+            </div>
+          </li>
+          <?php
+          }
+          ?>
           <li class="nav-item nav-category">Product</li>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#pizza" aria-expanded="false" aria-controls="pizza">
@@ -166,52 +167,13 @@
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#side" aria-expanded="false" aria-controls="side">
               <i class="menu-icon mdi mdi-sausage"></i>
-              <span class="menu-title">Sides</span>
+              <span class="menu-title">Supplement</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="side">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Sides</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Sides</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#salad" aria-expanded="false" aria-controls="salad">
-              <i class="menu-icon mdi mdi-bowl"></i>
-              <span class="menu-title">Salads</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="salad">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Salads</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Salads</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#dessert" aria-expanded="false" aria-controls="dessert">
-              <i class="menu-icon mdi mdi-cupcake"></i>
-              <span class="menu-title">Desserts</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="dessert">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Desserts</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Desserts</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#drink" aria-expanded="false" aria-controls="drink">
-              <i class="menu-icon mdi mdi-bottle-wine"></i>
-              <span class="menu-title">Drinks</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="drink">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Drinks</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Drinks</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_supplement') }}">View Supplement</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('add_supplement') }}">Add Supplement</a></li>
               </ul>
             </div>
           </li>
@@ -298,7 +260,6 @@
   <script src="{{ asset('backend/js/jquery.cookie.js') }}" type="text/javascript"></script>
   <script src="{{ asset('backend/js/dashboard.js') }}"></script>
   <script src="{{ asset('backend/js/Chart.roundedBarCharts.js') }}"></script>
-  <!-- End custom js for this page-->
 </body>
 
 </html>

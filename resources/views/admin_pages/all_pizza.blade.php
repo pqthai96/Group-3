@@ -11,12 +11,20 @@
                     <input type="search" class="form-control" placeholder="Search Here" title="Search here">
                     </form>
                   </div>
-                  <h4 class="card-title">Striped Table</h4>
-                  <p class="card-description">
-                    Add class <code>.table-striped</code>
-                  </p>
+                  <h4 class="card-title">Pizza Listing</h4>
+                  <?php
+                  $msg = Session::get('msg');
+                  if($msg) {
+                  ?>
+                  <span class="alert text-danger">
+                      <strong>{{ $msg }}</strong>
+                  </span>
+                  <?php
+                  Session::put('msg',null);
+                  }
+                  ?>
                   <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-hover">
                       <thead>
                         <tr>
                           <th>
@@ -29,43 +37,62 @@
                             Description
                           </th>
                           <th>
-                            Amount
+                            Size
                           </th>
                           <th>
-                            Deadline
+                            Price
                           </th>
                           <th>
+                            Quantity
+                          </th>
+                          <th>
+                            SoldCount
+                          </th>
+                          <th class="text-center">
                             Action
                           </th>
                         </tr>
                       </thead>
                       <tbody>
+                        @foreach($pizza as $pz)
                         <tr>
                           <td class="py-1">
-                            <img src="../../images/faces/face1.jpg" alt="image"/>
+                            <img src="{{ $pz->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
                           </td>
                           <td>
-                            Herman Beck
+                            {{ $pz->ProductName }}
+                          </td>
+                          <td style="white-space:normal; padding:0%">
+                            {{ $pz->Description }}
                           </td>
                           <td>
-                            <div class="progress">
-                              <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                            Small: <br>
+                            Medium: <br>
+                            Large:
                           </td>
                           <td>
-                            $ 77.99
+                            ${{ $pz->PriceS }} <br> 
+                            ${{ $pz->PriceM }} <br> 
+                            ${{ $pz->PriceL}}
                           </td>
-                          <td>
-                            May 15, 2015
+                          <td class="text-center">
+                            {{ $pz->QuantityS }} <br> 
+                            {{ $pz->QuantityM }} <br> 
+                            {{ $pz->QuantityL }}
                           </td>
-                          <td>
-                            {{-- <a href="" class="active" ui-toggle-class=""><i class="icon-md mdi mdi-pencil-outline"></i><i class="icon-md mdi mdi-delete-outline" ></i></a> --}}
-                            <button class="btn btn-rounded btn-success">Edit</button> |
-                            <button class="btn btn-rounded btn-danger">Remove</button>
+                          <td class="text-center">
+                            {{ $pz->ProductSoldCount }}
+                          </td>
+                          <td class="text-center">
+                            <a class="btn btn-rounded btn-success" href="{{ url('edit-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
+                        @endforeach
                       </tbody>
                     </table>
+                    <br>
+                    <span style="float:right">{{ $pizza->links() }}</span>
                   </div>
                 </div>
               </div>

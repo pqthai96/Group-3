@@ -44,7 +44,7 @@
         ?>
         <!-- Account details card-->
         <div class="card mb-4">
-            <div class="card-header"><h4 class="h4-xs">Account Details</h4></div>
+            <div class="card-header"><h4 class="h4-xs">Account Information</h4></div>
             <div class="card-body">
                 <form>
                     <!-- Form Group (username)-->
@@ -60,7 +60,7 @@
                     <!-- Form Row-->
                     <div class="mb-3">
                         <!-- Form Group (first name)-->
-                        <label class="mb-1" for="inputFirstName"><h6 class="h6-xs">Name</h6></label>
+                        <label class="mb-1" for="inputFirstName"><h6 class="h6-xs">Full Name</h6></label>
                         <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="{{ session::get('Name') }}">
                     </div>
                     <!-- Form Row        -->
