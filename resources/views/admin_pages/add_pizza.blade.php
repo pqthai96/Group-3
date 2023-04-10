@@ -94,7 +94,7 @@
                       <br>
                       @error('imageURL')
                         <span class="alert text-danger">
-                            <strong>Image URL is required.</strong>
+                            <strong>{{ $message }}</strong>
                         </span>
                       @enderror
                     </div>

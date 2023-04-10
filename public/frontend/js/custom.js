@@ -536,6 +536,7 @@ $(document).ready(function () {
         5: "This email address looks fake or invalid. Please enter a real email address",
     };
 });
+
 function showLogin() {
     document.getElementById("loginModal").style.display = "block";
 }
@@ -544,17 +545,10 @@ function closeLogin() {
     document.getElementById("loginModal").style.display = "none";
 }
 
-function showLoginForm() {
-    document.getElementById("loginForm").style.display = "block";
-    document.getElementById("registerForm").style.display = "none";
-    document.getElementById("loginButton").classList.add("active");
-    document.getElementById("registerButton").classList.remove("active");
+function showRegister() {
+    document.getElementById("registerModal").style.display = "block";
 }
 
-function showRegisterForm() {
-    document.getElementById("registerForm").style.display = "block";
-    document.getElementById("loginForm").style.display = "none";
-    document.getElementById("registerButton").classList.add("active");
-    document.getElementById("loginButton").classList.remove("active");
+function closeRegister() {
+    document.getElementById("registerModal").style.display = "none";
 }
-

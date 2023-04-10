@@ -33,9 +33,8 @@
                           <td class="text-center">{{ $sd->PriceM }}</td>
                           <td class="text-center">{{ $sd->QuantityM }}</td>
                           <td class="text-center">
-                            <button class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></button>
-                            <button class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></button>
-                            <a></a>
+                            <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -77,9 +76,8 @@
                           <td class="text-center">{{ $sl->PriceM }}</td>
                           <td class="text-center">{{ $sl->QuantityM }}</td>
                           <td class="text-center">
-                            <button class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></button>
-                            <button class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></button>
-                            <a></a>
+                            <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -121,9 +119,8 @@
                           <td class="text-center">{{ $ds->PriceM }}</td>
                           <td class="text-center">{{ $ds->QuantityM }}</td>
                           <td class="text-center">
-                            <button class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></button>
-                            <button class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></button>
-                            <a></a>
+                            <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -165,9 +162,8 @@
                           <td class="text-center">{{ $dk->PriceM }}</td>
                           <td class="text-center">{{ $dk->QuantityM }}</td>
                           <td class="text-center">
-                            <a class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></a>
-                            <a class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></a>
-                            <a></a>
+                            <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach

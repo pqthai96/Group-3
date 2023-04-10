@@ -96,22 +96,34 @@ class AdminController extends Controller
             'pizza_name' => 'required',
             'description' => 'required',
             'imageURL' => 'required',
-            'price_s' => 'required',
-            'price_m' => 'required',
-            'price_l' => 'required',
-            'quantity_s' => 'required',
-            'quantity_m' => 'required',
-            'quantity_l' => 'required'
+            'price_s' => 'required|numeric|min:0',
+            'price_m' => 'required|numeric|min:0',
+            'price_l' => 'required|numeric|min:0',
+            'quantity_s' => 'required|numeric|min:0',
+            'quantity_m' => 'required|numeric|min:0',
+            'quantity_l' => 'required|numeric|min:0'
         ],[
             'imageURL.required' => 'Image URL is required.',
             'pizza_name.required' => 'Pizza Name is required.',
             'description.required' => 'Description is required.',
             'price_s.required' => 'Price size S is required.',
+            'price_s.numeric' => 'Price size S must be a number.',
+            'price_s.min' => 'Price size S must be at least 0.',
             'price_m.required' => 'Price size M is required.',
+            'price_m.numeric' => 'Price size M must be a number.',
+            'price_m.min' => 'Price size M must be at least 0.',
             'price_l.required' => 'Price size L is required.',
+            'price_l.numeric' => 'Price size L must be a number.',
+            'price_l.min' => 'Price size L must be at least 0.',
             'quantity_s.required' => 'Quantity size S is required.',
+            'quantity_s.numeric' => 'Quantity size S must be a number.',
+            'quantity_s.min' => 'Quantity size S must be at least 0.',
             'quantity_m.required' => 'Quantity size M is required.',
-            'quantity_l.required' => 'Quantity size L is required.'
+            'quantity_m.numeric' => 'Quantity size M must be a number.',
+            'quantity_m.min' => 'Quantity size M must be at least 0.',
+            'quantity_l.required' => 'Quantity size L is required.',
+            'quantity_l.numeric' => 'Quantity size L must be a number.',
+            'quantity_l.min' => 'Quantity size L must be at least 0.'
         ]);
 
         //product
@@ -161,21 +173,33 @@ class AdminController extends Controller
         $rqst->validate([
             'pizza_name' => 'required',
             'description' => 'required',
-            'price_s' => 'required',
-            'price_m' => 'required',
-            'price_l' => 'required',
-            'quantity_s' => 'required',
-            'quantity_m' => 'required',
-            'quantity_l' => 'required'
+            'price_s' => 'required|numeric|min:0',
+            'price_m' => 'required|numeric|min:0',
+            'price_l' => 'required|numeric|min:0',
+            'quantity_s' => 'required|numeric|min:0',
+            'quantity_m' => 'required|numeric|min:0',
+            'quantity_l' => 'required|numeric|min:0'
         ],[
             'pizza_name.required' => 'Pizza Name is required.',
             'description.required' => 'Description is required.',
             'price_s.required' => 'Price size S is required.',
+            'price_s.numeric' => 'Price size S must be a number.',
+            'price_s.min' => 'Price size S must be at least 0.',
             'price_m.required' => 'Price size M is required.',
+            'price_m.numeric' => 'Price size M must be a number.',
+            'price_m.min' => 'Price size M must be at least 0.',
             'price_l.required' => 'Price size L is required.',
+            'price_l.numeric' => 'Price size L must be a number.',
+            'price_l.min' => 'Price size L must be at least 0.',
             'quantity_s.required' => 'Quantity size S is required.',
+            'quantity_s.numeric' => 'Quantity size S must be a number.',
+            'quantity_s.min' => 'Quantity size S must be at least 0.',
             'quantity_m.required' => 'Quantity size M is required.',
-            'quantity_l.required' => 'Quantity size L is required.'
+            'quantity_m.numeric' => 'Quantity size M must be a number.',
+            'quantity_m.min' => 'Quantity size M must be at least 0.',
+            'quantity_l.required' => 'Quantity size L is required.',
+            'quantity_l.numeric' => 'Quantity size L must be a number.',
+            'quantity_l.min' => 'Quantity size L must be at least 0.'
         ]);
 
         //product
@@ -218,7 +242,7 @@ class AdminController extends Controller
         DB::table('ProductDetails')->where('ProductID', $pizza_id)->delete();
         DB::table('Product')->where('ProductID', $pizza_id)->delete();
         
-        Session::put('msg', 'Deleted Pizza Successfully.');
+        Session::put('msg', 'Removed Pizza Successfully.');
         return redirect::to('all-pizza');
     }
     
@@ -253,14 +277,18 @@ class AdminController extends Controller
         //validate
         $rqst->validate([
             'product_name' => 'required',
-            'product_price' => 'required',
+            'product_price' => 'required|numeric|min:0',
             'imageURL' => 'required',
-            'product_quantity' => 'required',
+            'product_quantity' => 'required|numeric|min:0',
         ],[
             'imageURL.required' => 'Image URL is required.',
             'product_name.required' => 'Supplement Name is required.',
             'product_price.required' => 'Supplement Price is required.',
-            'product_quantity.required' => 'Supplement Quantity is required.'
+            'product_price.numeric' => 'Supplement Price must be a number.',
+            'product_price.min' => 'Supplement Price must be at least 0.',
+            'product_quantity.required' => 'Supplement Quantity is required.',
+            'product_quantity.numeric' => 'Supplement Quantity must be a number.',
+            'product_quantity.min' => 'Supplement Quantity must be at least 0.'
         ]);
 
         //product
@@ -273,10 +301,27 @@ class AdminController extends Controller
         $get_image_name = $get_image->getClientOriginalName();
         $name_image = current(explode('.',$get_image_name));
         $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
-        $get_image->move('frontend/images/pizza', $new_image);
+        if ($rqst->category == '2') {
+            $get_image->move('frontend/images/side', $new_image);
 
-        $product['ImageURL'] = 'frontend/images/pizza/' . $new_image;
-        $productID = DB::table('Product')->insertGetId($product);
+            $product['ImageURL'] = 'frontend/images/side/' . $new_image;
+            $productID = DB::table('Product')->insertGetId($product);
+        } else if ($rqst->category == '3') {
+            $get_image->move('frontend/images/salad', $new_image);
+
+            $product['ImageURL'] = 'frontend/images/salad/' . $new_image;
+            $productID = DB::table('Product')->insertGetId($product);
+        }else if ($rqst->category == '4') {
+            $get_image->move('frontend/images/dessert', $new_image);
+
+            $product['ImageURL'] = 'frontend/images/dessert/' . $new_image;
+            $productID = DB::table('Product')->insertGetId($product);
+        } else {
+            $get_image->move('frontend/images/drink', $new_image);
+
+            $product['ImageURL'] = 'frontend/images/drink/' . $new_image;
+            $productID = DB::table('Product')->insertGetId($product);
+        }
         
         //productdetails
         $productDetails = array();
@@ -287,5 +332,105 @@ class AdminController extends Controller
         
         Session::put('msg', 'Added Supplement Successfully.');
         return redirect::to('add-supplement');
+    }
+
+    public function order_processing() {
+
+        $order = DB::table('Orders')->where('OrderStatus','Processing')->orderByDesc('OrderDate')
+        ->join('User', 'Orders.UserID', '=', 'User.UserID')
+        ->select('Orders.*', 'User.*')->paginate(8);
+        
+        return view('admin_pages.order_processing')->with(['order' => $order]);
+    }
+
+    public function order_delivered() {
+
+        $order = DB::table('Orders')->where('OrderStatus','Delivered')->orderByDesc('OrderDate')
+        ->join('User', 'Orders.UserID', '=', 'User.UserID')
+        ->select('Orders.*', 'User.*')->paginate(8);
+        
+        return view('admin_pages.order_delivered')->with(['order' => $order]);
+    }
+
+    public function edit_supplement($supplement_id) {
+        $supplement = DB::table('Product')->where('Product.ProductID', $supplement_id)
+        ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+        ->select('Product.*','ProductDetails.*')
+        ->first();
+
+        return view('admin_pages.edit_supplement')->with(['supplement' => $supplement]);
+    }
+
+    public function update_supplement(Request $rqst, $supplement_id) {
+        
+        //validate
+        $rqst->validate([
+            'product_name' => 'required',
+            'product_price' => 'required|numeric|min:0',
+            'product_quantity' => 'required|numeric|min:0',
+        ],[
+            'product_name.required' => 'Supplement Name is required.',
+            'product_price.required' => 'Supplement Price is required.',
+            'product_price.numeric' => 'Supplement Price must be a number.',
+            'product_price.min' => 'Supplement Price must be at least 0.',
+            'product_quantity.required' => 'Supplement Quantity is required.',
+            'product_quantity.numeric' => 'Supplement Quantity must be a number.',
+            'product_quantity.min' => 'Supplement Quantity must be at least 0.'
+        ]);
+
+        //product
+        $product = array();
+        $product['ProductName'] = $rqst->product_name;
+        $product['CategoryID'] = $rqst->category;
+        
+        //image
+        $get_image = $rqst->file('imageURL');
+        if ($get_image) {
+            $get_image_name = $get_image->getClientOriginalName();
+            $name_image = current(explode('.', $get_image_name));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            
+            if ($rqst->category == '2') {
+                $get_image->move('frontend/images/side', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/side/' . $new_image;
+                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+            } else if ($rqst->category == '3') {
+                $get_image->move('frontend/images/salad', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/salad/' . $new_image;
+                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+            }else if ($rqst->category == '4') {
+                $get_image->move('frontend/images/dessert', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/dessert/' . $new_image;
+                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+            } else {
+                $get_image->move('frontend/images/drink', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/drink/' . $new_image;
+                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+            }
+        }
+        DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+        
+        //productdetails
+        $productDetails = array();
+        $productDetails['ProductID'] = $supplement_id;
+        $productDetails['PriceM'] = $rqst->product_price;
+        $productDetails['QuantityM'] = $rqst->product_quantity;
+        DB::table('ProductDetails')->where('ProductID', $supplement_id)->update($productDetails);
+        
+        Session::put('msg', 'Updated Supplement Successfully.');
+        return redirect::to('all-supplement');
+    }
+
+    public function remove_supplement($supplement_id) {
+        
+        DB::table('ProductDetails')->where('ProductID', $supplement_id)->delete();
+        DB::table('Product')->where('ProductID', $supplement_id)->delete();
+        
+        Session::put('msg', 'Removed Supplement Successfully.');
+        return redirect::to('all-supplement');
     }
 }

@@ -42,8 +42,6 @@ Route::get('/account', [HomeController::class, 'account'])->name('account');
 Route::get('/order', [HomeController::class, 'order'])->name('order');
 Route::post('/review/{product_id}', [HomeController::class, 'review'])->name('review');
 
-
-
 //Backend
 //=> http://localhost:8080/pizza_shop/public/admin
 
@@ -68,3 +66,9 @@ Route::get('/remove-pizza/{pizza_id}', [AdminController::class, 'remove_pizza'])
 Route::get('/all-supplement', [AdminController::class, 'all_supplement'])->name('all_supplement');
 Route::get('/add-supplement', [AdminController::class, 'add_supplement'])->name('add_supplement');
 Route::post('/save-supplement', [AdminController::class, 'save_supplement'])->name('save_supplement');
+Route::get('/edit-supplement/{supplement_id}', [AdminController::class, 'edit_supplement'])->name('edit_supplement');
+Route::post('/update-supplement/{supplement_id}', [AdminController::class, 'update_supplement'])->name('update_supplement');
+Route::get('/remove-supplement/{supplement_id}', [AdminController::class, 'remove_supplement'])->name('remove_supplement');
+
+Route::get('/order-processing', [AdminController::class, 'order_processing'])->name('order_processing');
+Route::get('/order-delivered', [AdminController::class, 'order_delivered'])->name('order_delivered');

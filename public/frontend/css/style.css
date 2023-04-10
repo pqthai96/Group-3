@@ -1518,7 +1518,6 @@ ul.txt-list {
     line-height: 1;
 }
 
-
 .stars-rating.stars-lg i {
     font-size: 0.925rem;
 }
@@ -7002,12 +7001,12 @@ nav a#pull {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    /* background-color: rgba(0, 0, 0, 0.4); */
     margin: auto;
 }
 
 .modal-content {
-    background-image: url("../images/banner-4.jpg");
+    /* background-image: url("../images/banner-4.jpg"); */
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -7019,15 +7018,20 @@ nav a#pull {
     max-width: 600px;
     border-radius: 10px;
 }
+.modal-border {
+    width: 100%;
+    border-radius: 10px;
+    border: dashed;
+}
 
 .close {
-    color: red;
+    color: #f5b200;
     float: right;
-    font-size: xx-large;
+    font-size: 3rem;
     font-weight: bold;
     position: absolute;
-    top: 5px;
-    right: 10px;
+    top: 1.3rem;
+    right: 2rem;
 }
 
 .close:hover,

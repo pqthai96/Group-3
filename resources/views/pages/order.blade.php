@@ -40,6 +40,18 @@
 
         <div class="container-xl px-4 mt-4">
         <?php
+        $msg = Session::get('msg');
+        if($msg) {
+        ?>
+        <br>
+        <div class="alert alert-danger">
+            <strong>{{ $msg }}</strong>
+        </div>
+        <?php
+        Session::put('msg',null);
+        }
+        ?>
+        <?php
             $userID =  Session::get('userID');
         ?>
         @foreach($userOrder as $uo)
@@ -53,8 +65,9 @@
                 <h6 class="h6-sm">Customer: {{ $uo->CustomerName }} | {{ $uo->CustomerPhone }}</h6>
                 <h6 class="h6-sm">Delivery Address: {{ $uo->CustomerAddress }}</h6>
                 <h6 class="h6-sm">Order Status: {{ $uo->OrderStatus }}</h6>
-                <button class="btn order-toggle" style="background-color: #f5b200" data-order="{{ $uo->OrderID }}">See More Your Order</button>
-					<table id="order-{{ $uo->OrderID }}" style="display:none">
+                <h5 class="h5-sm text-center">Your Order</h5>
+                    <hr>
+					<table>
                         <thead>
                             <tr>
                                 <th scope="col"><h6 class="h6-sm">Product</h6></th>
@@ -96,12 +109,36 @@
                                     </div>
                                 </td>
                                 <td data-label="Your Rating" class="product-review">
+                                <?php
+                                if(DB::table('Rating')->where('OrderDetailsID', $pd->OrderDetailsID)->exists()) {
+                                    $rating = DB::table('Rating')->where('OrderDetailsID', $pd->OrderDetailsID)->first();
+                                ?>
+                                <h6 class="h6-sm">{{ $rating->Review }}</h6>
+                                <div class="stars-rating">
+                                <?php
+                                    $stars = $rating->Rating ; 
+                                    $starsHtml = "";
+
+                                    for ($i = 1; $i <= $stars; $i++) {
+                                    $starsHtml .= '<i class="fas fa-star" style="font-size: 125%"></i>';
+                                    }
+
+                                    for ($j = 1; $j <= 5 - $stars ; $j++) {
+                                    $starsHtml .= '<i class="far fa-star" style="font-size: 125%"></i>';
+                                    }
+
+                                    echo '<h6 class="rating">' . $starsHtml . ' ('. $stars .')</h6>';
+                                ?>
+                                </div>
+                                <?php
+                                } else {
+                                ?>
                                     <form method="POST" action="{{ url('review/' . $pd->ProductID) }}">
                                         @csrf
                                         <button class="btn" type="submit" style="float:right;background-color:#f5b200">Submit</button>
                                         <textarea class="form-control" style="width:70%;height:10%" name="review" id="review" placeholder="Your Review"></textarea>
                                         <div class="item-rating" id="item-rating-{{ $pd->OrderDetailsID }}">
-                                            <div class="stars-rating stars-lg">
+                                            <div class="stars-rating stars-js stars-lg">
                                                 <i class="far fa-star" data-star="1"></i>
                                                 <i class="far fa-star" data-star="2"></i>
                                                 <i class="far fa-star" data-star="3"></i>
@@ -109,9 +146,12 @@
                                                 <i class="far fa-star" data-star="5"></i>
                                             </div>
                                             <input type="hidden" id="rating-value" name="rating">
+                                            <input type="hidden" name="order_details_id" value="{{ $pd->OrderDetailsID }}">
                                         </div>
-                                        
                                     </form>
+                                <?php
+                                }
+                                ?>
                                 </td>
                                 <?php
                                     }
@@ -185,31 +225,15 @@
 <script>
     $(document).ready(function() {
 
-    $('.stars-rating i').hover(function() {        
-        $(this).removeClass('far').addClass('fas');
-        $(this).prevAll().removeClass('far').addClass('fas');
-        $(this).nextAll().removeClass('fas').addClass('far');
-    });
-
-    $('.stars-rating i').click(function() {
+    $('.stars-js i').click(function() {
         var star = $(this).attr('data-star');
         var rating = $(this).closest('.item-rating');
-        rating.find('.stars-rating i').removeClass('fas').addClass('far');
+        rating.find('.stars-js i').removeClass('fas').addClass('far');
         $(this).prevAll().removeClass('far').addClass('fas');
         $(this).removeClass('far').addClass('fas');
         $(this).nextAll().removeClass('fas').addClass('far');
         rating.find('#rating-value').val(star);
     });
 });
-
-//toogle order
-$(document).ready(function() {
-  $('.order-toggle').click(function() {
-    var order = $(this).data('order');
-    $('#order-' + order).toggle();
-  });
-});
-
-
 </script>
 @stop

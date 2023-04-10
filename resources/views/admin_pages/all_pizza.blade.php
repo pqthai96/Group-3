@@ -48,6 +48,9 @@
                           <th>
                             SoldCount
                           </th>
+                          <th>
+                            Total Rating
+                          </th>
                           <th class="text-center">
                             Action
                           </th>
@@ -82,6 +85,9 @@
                           </td>
                           <td class="text-center">
                             {{ $pz->ProductSoldCount }}
+                          </td>
+                          <td class="text-center">
+                            {{ $pz->ProductTotalRating }}
                           </td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>

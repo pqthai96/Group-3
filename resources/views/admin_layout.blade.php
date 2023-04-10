@@ -186,8 +186,8 @@
             </a>
             <div class="collapse" id="order">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Processing</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Delivered</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('order_processing') }}">Processing</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('order_delivered') }}">Delivered</a></li>
               </ul>
             </div>
           </li>
@@ -260,6 +260,9 @@
   <script src="{{ asset('backend/js/jquery.cookie.js') }}" type="text/javascript"></script>
   <script src="{{ asset('backend/js/dashboard.js') }}"></script>
   <script src="{{ asset('backend/js/Chart.roundedBarCharts.js') }}"></script>
+
+  @yield('scripts')
+
 </body>
 
 </html>

@@ -67,8 +67,16 @@ class HomeController extends Controller
 
     public function login(Request $rqst)
     {
-        $email = $rqst->input('email');
-        $password = $rqst->input('password');
+        $rqst->validate([
+            'email' => 'required',
+            'password' => 'required'
+        ],[
+            'email.required' => 'Email is required.',
+            'password.required' => 'Password is required.'
+        ]);
+        
+        $email = $rqst->email;
+        $password = $rqst->password;
 
         $user = User::where('Email', $email)->first();
         
@@ -81,14 +89,35 @@ class HomeController extends Controller
             Session::put('Phone', $user->Phone);
             Session::put('Gender', $user->Gender);
             Session::put('Address', $user->Address);
-            return redirect()->intended(url()->previous())->with('success', 'Login Successfully!');;
+            return response()->json(['msg' => 'Product removed successfully']);
         } else {
-            return redirect::to(url()->previous())->withErrors(['error' => 'Wrong Email or Password']);
+            return response()->json(['errors' => 'Product removed successfully']);
         }
     }
     
     public function register(Request $rqst)
     {
+        $rqst->validate([
+            'newUsername' => 'required',
+            'newPassword' => 'required',
+            'confirmPassword' => 'required|same:newPassword',
+            'newEmail' => 'required',
+            'newPhone' => 'required',
+            'newFullname' => 'required',
+            'newAddress' => 'required',
+            'term' => 'required'
+        ],[
+            'newUsername.required' => 'Username is required.',
+            'newPassword.required' => 'Password is required.',
+            'confirmPassword.required' => 'Confirm Password is required.',
+            'confirmPassword.same' => 'Password does not match.',
+            'newEmail.required' => 'Email is required.',
+            'newPhone.required' => 'Phone Number is required.',
+            'newFullname.required' => 'Fullname is required.',
+            'newAddress.required' => 'Address is required.',
+            'term.required' => 'You need to review and agree to the terms and privacy policy of Testo Pizza.',
+        ]);
+        
         $data = array();
         $data['Username'] = $rqst->newUsername;
         $data['Password'] = $rqst->newPassword;
@@ -108,7 +137,6 @@ class HomeController extends Controller
         Session::put('Gender', $rqst->gender);
         Session::put('Address', $rqst->newAddress);
         
-        return redirect::to('home');
     }
     public function logout()
     {
@@ -411,6 +439,25 @@ class HomeController extends Controller
     }
 
     public function review(Request $rqst, $product_id) {
-        dd($rqst->all());
+
+        if ($rqst->rating == null) {
+            Session::put('msg', 'Please choose star you want to rating!');
+            return redirect::to('order');
+        } else {
+
+            $date = Carbon::now();
+
+            $rating = array();
+            $rating['UserID'] = session::get('userID');
+            $rating['ProductID'] = $product_id;
+            $rating['OrderDetailsID'] = $rqst->order_details_id;
+            $rating['Rating'] = $rqst->rating;
+            $rating['Review'] = $rqst->review;
+            $rating['RatingDate'] = $date;
+
+            DB::table('Rating')->insert($rating);
+            return redirect::to('order');
+        }
     }
+
 }
