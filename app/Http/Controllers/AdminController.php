@@ -95,7 +95,7 @@ class AdminController extends Controller
         $rqst->validate([
             'pizza_name' => 'required',
             'description' => 'required',
-            'imageURL' => 'required',
+            'imageURL' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'price_s' => 'required|numeric|min:0',
             'price_m' => 'required|numeric|min:0',
             'price_l' => 'required|numeric|min:0',
@@ -103,9 +103,11 @@ class AdminController extends Controller
             'quantity_m' => 'required|numeric|min:0',
             'quantity_l' => 'required|numeric|min:0'
         ],[
-            'imageURL.required' => 'Image URL is required.',
             'pizza_name.required' => 'Pizza Name is required.',
             'description.required' => 'Description is required.',
+            'imageURL.required' => 'Image URL is required.',
+            'imageURL.image' => 'File upload must be image',
+            'imageURL.mimes' => 'format is jpeg, png, jpg, gif or svg',
             'price_s.required' => 'Price size S is required.',
             'price_s.numeric' => 'Price size S must be a number.',
             'price_s.min' => 'Price size S must be at least 0.',
@@ -173,6 +175,7 @@ class AdminController extends Controller
         $rqst->validate([
             'pizza_name' => 'required',
             'description' => 'required',
+            'imageURL' => 'image|mimes:jpeg,png,jpg|max:2048',
             'price_s' => 'required|numeric|min:0',
             'price_m' => 'required|numeric|min:0',
             'price_l' => 'required|numeric|min:0',
@@ -182,6 +185,8 @@ class AdminController extends Controller
         ],[
             'pizza_name.required' => 'Pizza Name is required.',
             'description.required' => 'Description is required.',
+            'imageURL.image' => 'File upload must be image',
+            'imageURL.mimes' => 'format is jpeg, png, jpg, gif or svg',
             'price_s.required' => 'Price size S is required.',
             'price_s.numeric' => 'Price size S must be a number.',
             'price_s.min' => 'Price size S must be at least 0.',
@@ -278,10 +283,12 @@ class AdminController extends Controller
         $rqst->validate([
             'product_name' => 'required',
             'product_price' => 'required|numeric|min:0',
-            'imageURL' => 'required',
+            'imageURL' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'product_quantity' => 'required|numeric|min:0',
         ],[
             'imageURL.required' => 'Image URL is required.',
+            'imageURL.image' => 'File upload must be image',
+            'imageURL.mimes' => 'format is jpeg, png, jpg, gif or svg',
             'product_name.required' => 'Supplement Name is required.',
             'product_price.required' => 'Supplement Price is required.',
             'product_price.numeric' => 'Supplement Price must be a number.',
@@ -368,7 +375,10 @@ class AdminController extends Controller
             'product_name' => 'required',
             'product_price' => 'required|numeric|min:0',
             'product_quantity' => 'required|numeric|min:0',
+            'imageURL' => 'image|mimes:jpeg,png,jpg|max:2048'
         ],[
+            'imageURL.image' => 'File upload must be image',
+            'imageURL.mimes' => 'format is jpeg, png, jpg, gif or svg',
             'product_name.required' => 'Supplement Name is required.',
             'product_price.required' => 'Supplement Price is required.',
             'product_price.numeric' => 'Supplement Price must be a number.',
@@ -432,5 +442,192 @@ class AdminController extends Controller
         
         Session::put('msg', 'Removed Supplement Successfully.');
         return redirect::to('all-supplement');
+    }
+
+    public function add_blog() {
+        return view('admin_pages.add_blog');
+    }
+    public  function  save_blog(Request $rqst){
+        $rqst->validate([
+            'BlogTitle' => 'required',
+            'BlogContent' => 'required',
+            'BlogIMG' => 'required'
+        ],[
+            'BlogTitle.required' => 'Title is required.',
+            'BlogContent.required' => 'Content is required.',
+            'BlogIMG.required' => 'Image is required.'
+        ]);
+
+        $Blog = array();
+        $Blog['BlogTitle'] = $rqst->BlogTitle;
+        $Blog['BlogContent'] = $rqst->BlogContent;
+        //image
+        $get_image = $rqst->file('BlogIMG');
+        $get_image_name = $get_image->getClientOriginalName();
+        $name_image = current(explode('.',$get_image_name));
+        $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+        $get_image->move('frontend/images/blog', $new_image);
+
+        $Blog['BlogIMG'] = 'frontend/images/blog/' . $new_image;
+        DB::table('blog')->insert($Blog);
+        return redirect::to('add_blog')->with('success','Added Blog Successfully.');
+    }
+    public function edit_blog($BlogID){
+        $Blog = DB::table('blog')->where('blog.BlogID', $BlogID)->first();
+        return view('admin_pages.edit_blog')->with(['blog' => $Blog]);
+    }
+    public function update_blog(Request $rqst,$BlogID){
+        $rqst->validate([
+            'BlogTitle' => 'required',
+            'BlogContent' => 'required',
+        ],[
+            'BlogTitle.required' => 'Title is required.',
+            'BlogContent.required' => 'Content is required.',
+        ]);
+
+        $Blog = array();
+        $Blog['BlogTitle'] = $rqst->BlogTitle;
+        $Blog['BlogContent'] = $rqst->BlogContent;
+        //image
+
+        $get_image = $rqst->file('BlogIMG');
+        if ($get_image) {
+            $get_image_name = $get_image->getClientOriginalName();
+            $name_image = current(explode('.', $get_image_name));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            $get_image->move('frontend/images/blog', $new_image);
+            $Blog['BlogIMG'] = 'frontend/images/blog/' . $new_image;
+            DB::table('blog')->where('BlogID',$BlogID)->update($Blog);
+        }
+        DB::table('blog')->where('BlogID',$BlogID)->update($Blog);
+        return redirect::to('all_blog')->with('success','Update Blog Successfully.');
+    }
+    public function remove_blog($BlogID) {
+
+        DB::table('blog')->where('BlogID',$BlogID)->delete();
+        return redirect::to('all_blog')->with('success','delete Blog Successfully.');
+    }
+    public function all_blog() {
+        $blog = DB::table('blog')->get();
+        return view('admin_pages.all_blog')->with(['blog' => $blog]);
+    }
+
+    public function all_promotions(){
+        $discount = DB::table('discount')->get();
+        foreach ($discount as $item) {
+            $item->MinimumAmount = number_format($item->MinimumAmount, 0);
+            $item->MaximumAmount = number_format($item->MaximumAmount, 0);
+        }
+        return view('admin_pages.all_promotions')->with(['discount' => $discount]);
+    }
+    public function add_promotions(){
+        return view('admin_pages.add_promotions');
+    }
+    public function save_promotions(Request $request){
+        $request->validate([
+            'DiscountIMG' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'DiscountID' => 'required|max:20',
+            'DiscountValue' => 'required|regex:/^\d+(\d{1})?%?$/|min:0',
+            'DiscountName' => 'required',
+            'MinimumAmount' => 'required|numeric|min:0',
+            'MaximumAmount' => 'required|numeric|min:0',
+            'StartDate' => 'required|date|after_or_equal:today',
+            'EndDate' => 'required|date|after_or_equal:StartDate'
+        ], [
+            'DiscountIMG.required' => 'please choose image',
+                'DiscountIMG.image' => 'File upload must be image',
+                'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
+                'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
+                'DiscountID.required' => 'Please enter the discount code',
+                'DiscountID.max' => 'Discount codes cant exceed 20 characters',
+                'DiscountValue.required' => 'Please enter the discount value',
+                'DiscountName.required' => 'Please enter the discount name',
+                'MinimumAmount.required' => 'Please enter the minimum quantity applicable to the discount',
+                'MinimumAmount.numeric' => 'The minimum quantity to which the discount applies must be the number',
+                'MaximumAmount.required' => 'Please enter the maximum quantity applicable to the discount',
+                'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
+                'StartDate.required' => 'Please enter the date your discount will start',
+                'StartDate.date' => 'The discount start date must be a valid date',
+                'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
+                'EndDate.required' => 'Please enter the end date of the discount application',
+                'EndDate.date' => 'The end date of the discount must be a valid date',
+                'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
+            ]);
+
+        $discount = array();
+        $discount['DiscountID'] = $request->DiscountID;
+        $discount['DiscountValue'] = $request->DiscountValue;
+        $discount['DiscountName'] = $request->DiscountName;
+        $discount['MinimumAmount'] = $request->MinimumAmount;
+        $discount['MaximumAmount'] = $request->MaximumAmount;
+        $discount['StartDate'] = $request->StartDate;
+        $discount['EndDate'] = $request->EndDate;
+
+        $get_image = $request->file('DiscountIMG');
+        $get_image_name = $get_image->getClientOriginalName();
+        $name_image = current(explode('.',$get_image_name));
+        $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+        $get_image->move('frontend/images/promotion', $new_image);
+        $discount['DiscountIMG'] = 'frontend/images/promotion/' . $new_image;
+
+        DB::table('discount')->insert($discount);
+        return redirect::to('add_promotions')->with('success','Added Discount Successfully.');
+    }
+
+    public function edit_promotions($DiscountID){
+        $discount = DB::table('discount')->where('DiscountID',$DiscountID)->first();
+        return view('admin_pages.edit_promotions')->with(['discount' => $discount]);
+    }
+    public function update_promotions(Request $request,$DiscountID){
+        $request->validate([
+            'DiscountIMG' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'DiscountID' => 'required|max:20',
+            'DiscountValue' => 'required|regex:/^\d+(\d{1})?%?$/|min:0',
+            'DiscountName' => 'required',
+            'MinimumAmount' => 'required|numeric|min:0',
+            'MaximumAmount' => 'required|numeric|min:0',
+            'StartDate' => 'required|date|after_or_equal:today',
+            'EndDate' => 'required|date|after_or_equal:StartDate'
+        ], [
+                'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
+                'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
+                'DiscountID.required' => 'Please enter the discount code',
+                'DiscountID.max' => 'Discount codes cant exceed 20 characters',
+                'DiscountValue.required' => 'Please enter the discount value',
+                'DiscountName.required' => 'Please enter the discount name',
+                'MinimumAmount.required' => 'Please enter the minimum quantity applicable to the discount',
+                'MinimumAmount.numeric' => 'The minimum quantity to which the discount applies must be the number',
+                'MaximumAmount.required' => 'Please enter the maximum quantity applicable to the discount',
+                'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
+                'StartDate.required' => 'Please enter the date your discount will start',
+                'StartDate.date' => 'The discount start date must be a valid date',
+                'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
+                'EndDate.required' => 'Please enter the end date of the discount application',
+                'EndDate.date' => 'The end date of the discount must be a valid date',
+                'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
+            ]);
+        $discount = array();
+        $discount['DiscountID'] = $request->DiscountID;
+        $discount['DiscountValue'] = $request->DiscountValue;
+        $discount['DiscountName'] = $request->DiscountName;
+        $discount['MinimumAmount'] = $request->MinimumAmount;
+        $discount['MaximumAmount'] = $request->MaximumAmount;
+        $discount['StartDate'] = $request->StartDate;
+        $discount['EndDate'] = $request->EndDate;
+
+        $get_image = $request->file('DiscountIMG');
+        if ($get_image) {
+            $get_image_name = $get_image->getClientOriginalName();
+            $name_image = current(explode('.', $get_image_name));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            $get_image->move('frontend/images/promotion', $new_image);
+            $discount['DiscountIMG'] = 'frontend/images/promotion/' . $new_image;
+        }
+        DB::table('discount')->where('DiscountID',$DiscountID)->update($discount);
+        return redirect('all_promotions')->with('success','Updated Promotion Successfully.');
+    }
+    public function remove_promotions($DiscountID) {
+        DB::table('discount')->where('DiscountID',$DiscountID)->delete();
+        return redirect('all_promotions')->with('success','Remove Promotion Successfully.');
     }
 }

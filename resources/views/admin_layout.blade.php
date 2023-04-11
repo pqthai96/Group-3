@@ -200,8 +200,8 @@
             </a>
             <div class="collapse" id="promotion">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Promotions</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Promotions</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_promotions') }}">View Promotions</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('add_promotions') }}">Add Promotions</a></li>
               </ul>
             </div>
           </li>
@@ -213,8 +213,8 @@
             </a>
             <div class="collapse" id="blog">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">View Blogs</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Add Blogs</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_blog') }}">View Blogs</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('add_blog') }}">Add Blogs</a></li>
               </ul>
             </div>
           </li>

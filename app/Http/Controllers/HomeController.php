@@ -101,7 +101,7 @@ class HomeController extends Controller
             'newUsername' => 'required',
             'newPassword' => 'required',
             'confirmPassword' => 'required|same:newPassword',
-            'newEmail' => 'required',
+            'newEmail' => 'required|email',
             'newPhone' => 'required',
             'newFullname' => 'required',
             'newAddress' => 'required',
@@ -112,6 +112,7 @@ class HomeController extends Controller
             'confirmPassword.required' => 'Confirm Password is required.',
             'confirmPassword.same' => 'Password does not match.',
             'newEmail.required' => 'Email is required.',
+            'newEmail.email' => 'Invalid Email.',
             'newPhone.required' => 'Phone Number is required.',
             'newFullname.required' => 'Fullname is required.',
             'newAddress.required' => 'Address is required.',
@@ -458,6 +459,37 @@ class HomeController extends Controller
             DB::table('Rating')->insert($rating);
             return redirect::to('order');
         }
+    }
+
+    public function promotion(){
+        $promotion = DB::table('Discount')->select(DB::raw("DiscountID, DiscountName, DiscountIMG,DATE_FORMAT(StartDate, '%d-%m-%Y') AS StartDate, DATE_FORMAT(EndDate, '%d-%m-%Y') AS EndDate"))->get();
+        return view('pages.promotion')->with(['promotion' => $promotion]);
+    }
+    public function about(){
+        return view('pages.about');
+    }
+    public function term(){
+        return view('pages.term');
+    }
+    public function faqs(){
+        return view('pages.faqs');
+    }
+    public function gallery(){
+        return view('pages.gallery');
+    }
+    public function contact(){
+        return view('pages.contact');
+    }
+    public function location(){
+        return view('pages.location');
+    }
+    public function blog(){
+        $blog = DB::table('blog')->get();
+        return view('pages.blog')->with(['blog'=> $blog]);
+    }
+    public function singleBlog($id){
+        $blog = DB::table('blog')->where('blog.BlogID', $id)->get();
+        return view('pages.single-blog')->with(['blog'=> $blog]);
     }
 
 }

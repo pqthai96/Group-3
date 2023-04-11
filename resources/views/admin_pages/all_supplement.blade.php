@@ -3,6 +3,17 @@
 @section('content')
         <div class="content-wrapper">
           <div class="row">
+            <?php
+                  $msg = Session::get('msg');
+                  if($msg) {
+                  ?>
+                  <div class="alert alert-success">
+                      <strong>{{ $msg }}</strong>
+                  </div>
+                  <?php
+                  Session::put('msg',null);
+                  }
+                  ?>
             <div class="col-lg-6 grid-margin stretch-card">
               <div class="card">
                   <div class="card-body">
@@ -29,9 +40,9 @@
                           <td class="py-1">
                             <img src="{{ $sd->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
                           </td>
-                          <td>{{ $sd->ProductName }}</td>
-                          <td class="text-center">{{ $sd->PriceM }}</td>
-                          <td class="text-center">{{ $sd->QuantityM }}</td>
+                          <td><strong class="cutoff-text">{{ $sd->ProductName }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $sd->PriceM }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $sd->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
                             <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
@@ -72,9 +83,9 @@
                           <td class="py-1">
                             <img src="{{ $sl->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
                           </td>
-                          <td>{{ $sl->ProductName }}</td>
-                          <td class="text-center">{{ $sl->PriceM }}</td>
-                          <td class="text-center">{{ $sl->QuantityM }}</td>
+                          <td><strong class="cutoff-text">{{ $sl->ProductName }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $sl->PriceM }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $sl->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
                             <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
@@ -115,9 +126,9 @@
                           <td class="py-1">
                             <img src="{{ $ds->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
                           </td>
-                          <td>{{ $ds->ProductName }}</td>
-                          <td class="text-center">{{ $ds->PriceM }}</td>
-                          <td class="text-center">{{ $ds->QuantityM }}</td>
+                          <td><strong class="cutoff-text">{{ $ds->ProductName }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $ds->PriceM }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $ds->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
                             <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
@@ -158,9 +169,9 @@
                           <td class="py-1">
                             <img src="{{ $dk->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
                           </td>
-                          <td>{{ $dk->ProductName }}</td>
-                          <td class="text-center">{{ $dk->PriceM }}</td>
-                          <td class="text-center">{{ $dk->QuantityM }}</td>
+                          <td><strong class="cutoff-text">{{ $dk->ProductName }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $dk->PriceM }}</strong></td>
+                          <td class="text-center"><strong class="cutoff-text">{{ $dk->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
                             <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>

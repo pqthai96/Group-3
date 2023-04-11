@@ -119,14 +119,14 @@
 					<ul class="top-list" style="zoom:0.98">
 
 						<!-- PROMOTIONS -->
-						<li class="mega-menu"><a href="gift-cards.html">Promotions</a>
+						<li class="mega-menu"><a href="{{ route('promotion') }}">Promotions</a>
 						</li> <!-- END PROMOTIONS -->
 
 						<!-- DROPDOWN MENU -->
 						<li><a href="{{ url('menu') }}">Our Menu</a></li>
 
 						<!-- DROPDOWN MENU -->
-						<li><a href="blog-listing.html">Blog</a>
+						<li><a href="{{ route('blog') }}">Blog</a>
 						</li>
 
 					</ul>
@@ -135,18 +135,18 @@
 						<!-- DROPDOWN MENU -->
 						<li><a href="#">Contacts</a>
 							<ul>
-								<li><a href="locations.html">Our Locations</a></li>
-								<li><a href="contacts.html">Contact Us</a></li>
+								<li><a href="{{ route('location') }}">Our Locations</a></li>
+								<li><a href="{{ route('contact') }}">Contact Us</a></li>
 							</ul>
 						</li>
 
 						<!-- DROPDOWN MENU -->
 						<li><a href="#">Pages</a>
 							<ul>
-								<li><a href="about.html">About Us</a></li>
-								<li><a href="gallery.html">Gallery</a></li>
-								<li><a href="faqs.html">FAQs</a></li>
-								<li><a href="terms.html">Terms & Privacy</a></li>
+								<li><a href="{{ route('about') }}">About Us</a></li>
+								<li><a href="{{ route('gallery') }}">Gallery</a></li>
+								<li><a href="{{ route('faqs') }}">FAQs</a></li>
+								<li><a href="{{ route('term') }}">Terms & Privacy</a></li>
 							</ul>
 						</li>
                         <?php

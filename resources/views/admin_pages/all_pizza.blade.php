@@ -16,9 +16,9 @@
                   $msg = Session::get('msg');
                   if($msg) {
                   ?>
-                  <span class="alert text-danger">
+                  <div class="alert alert-success">
                       <strong>{{ $msg }}</strong>
-                  </span>
+                  </div>
                   <?php
                   Session::put('msg',null);
                   }
@@ -63,7 +63,7 @@
                             <img src="{{ $pz->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
                           </td>
                           <td>
-                            {{ $pz->ProductName }}
+                            <strong class="cutoff-text">{{ $pz->ProductName }}</strong>
                           </td>
                           <td style="white-space:normal; padding:0%">
                             {{ $pz->Description }}
@@ -74,20 +74,20 @@
                             Large:
                           </td>
                           <td>
-                            ${{ $pz->PriceS }} <br> 
-                            ${{ $pz->PriceM }} <br> 
-                            ${{ $pz->PriceL}}
+                            <strong class="cutoff-text">${{ $pz->PriceS }}</strong> <br> 
+                            <strong class="cutoff-text">${{ $pz->PriceM }}</strong> <br> 
+                            <strong class="cutoff-text">${{ $pz->PriceL}}</strong>
                           </td>
                           <td class="text-center">
-                            {{ $pz->QuantityS }} <br> 
-                            {{ $pz->QuantityM }} <br> 
-                            {{ $pz->QuantityL }}
+                            <strong class="cutoff-text">{{ $pz->QuantityS }}</strong> <br> 
+                            <strong class="cutoff-text">{{ $pz->QuantityM }}</strong> <br> 
+                            <strong class="cutoff-text">{{ $pz->QuantityL }}</strong>
                           </td>
                           <td class="text-center">
-                            {{ $pz->ProductSoldCount }}
+                            <strong class="cutoff-text">{{ $pz->ProductSoldCount }}</strong>
                           </td>
                           <td class="text-center">
-                            {{ $pz->ProductTotalRating }}
+                            <strong class="cutoff-text">{{ $pz->ProductTotalRating }}</strong>
                           </td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
