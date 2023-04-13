@@ -1,5 +1,4 @@
 @extends('admin_layout')
-@section('title', 'Testo - Pizza and Fast Food')
 @section('content')
 
     <!-- partial -->
@@ -78,9 +77,8 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="DiscountDate">Start Date</label>
-                                    <input type="text" class="form-control" id="StartDate" name="StartDate"
-                                        placeholder="Start Date">
+                                    <label for="DiscountDate">Start Date (start at 00:00)</label>
+                                    <input type="date" class="form-control" id="StartDate" name="StartDate">
                                     @error('StartDate')
                                         <span class="alert text-danger">
                                             <strong>{{ $message }}</strong>
@@ -88,9 +86,8 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="DiscountDate">End Date</label>
-                                    <input type="text" class="form-control" id="EndDate" name="EndDate"
-                                        placeholder="End Date">
+                                    <label for="DiscountDate">End Date (end at 23:59)</label>
+                                    <input type="date" class="form-control" id="EndDate" name="EndDate">
                                     @error('EndDate')
                                         <span class="alert text-danger">
                                             <strong>{{ $message }}</strong>

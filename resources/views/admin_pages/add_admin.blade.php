@@ -1,5 +1,4 @@
 @extends('admin_layout')
-@section('title', 'Testo - Pizza and Fast Food')
 @section('content')
 
 <!-- partial -->

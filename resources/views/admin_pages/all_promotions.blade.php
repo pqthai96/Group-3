@@ -1,5 +1,4 @@
 @extends('admin_layout')
-@section('title', 'Testo - Pizza and Fast Food')
 @section('content')
     <div class="content-wrapper">
         <div class="row">
@@ -68,8 +67,8 @@
                                                 End: <strong class="cutoff-text">{{ $dc-> EndDate}} </strong>
                                             </td>
                                             <td class="text-center">
-                                                <a class="btn btn-rounded btn-success" href="{{ url('edit_promotions/' . $dc->DiscountID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                                                <a class="btn btn-rounded btn-danger" href="{{ url('remove_promotions/' . $dc->DiscountID ) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                                                <a class="btn btn-rounded btn-success" href="{{ url('edit-promotions/' . $dc->DiscountID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                                                <a class="btn btn-rounded btn-danger" href="{{ url('remove-promotions/' . $dc->DiscountID ) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach

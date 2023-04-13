@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 session_start();
@@ -500,12 +501,12 @@ class AdminController extends Controller
             DB::table('blog')->where('BlogID',$BlogID)->update($Blog);
         }
         DB::table('blog')->where('BlogID',$BlogID)->update($Blog);
-        return redirect::to('all_blog')->with('success','Update Blog Successfully.');
+        return redirect::to('all_blog')->with('success','Updated Blog Successfully.');
     }
     public function remove_blog($BlogID) {
 
         DB::table('blog')->where('BlogID',$BlogID)->delete();
-        return redirect::to('all_blog')->with('success','delete Blog Successfully.');
+        return redirect::to('all_blog')->with('success','Removed Blog Successfully.');
     }
     public function all_blog() {
         $blog = DB::table('blog')->get();
@@ -523,7 +524,9 @@ class AdminController extends Controller
     public function add_promotions(){
         return view('admin_pages.add_promotions');
     }
-    public function save_promotions(Request $request){
+    public function save_promotions(Request $request)
+    {
+        
         $request->validate([
             'DiscountIMG' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'DiscountID' => 'required|max:20',
@@ -535,33 +538,33 @@ class AdminController extends Controller
             'EndDate' => 'required|date|after_or_equal:StartDate'
         ], [
             'DiscountIMG.required' => 'please choose image',
-                'DiscountIMG.image' => 'File upload must be image',
-                'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
-                'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
-                'DiscountID.required' => 'Please enter the discount code',
-                'DiscountID.max' => 'Discount codes cant exceed 20 characters',
-                'DiscountValue.required' => 'Please enter the discount value',
-                'DiscountName.required' => 'Please enter the discount name',
-                'MinimumAmount.required' => 'Please enter the minimum quantity applicable to the discount',
-                'MinimumAmount.numeric' => 'The minimum quantity to which the discount applies must be the number',
-                'MaximumAmount.required' => 'Please enter the maximum quantity applicable to the discount',
-                'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
-                'StartDate.required' => 'Please enter the date your discount will start',
-                'StartDate.date' => 'The discount start date must be a valid date',
-                'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
-                'EndDate.required' => 'Please enter the end date of the discount application',
-                'EndDate.date' => 'The end date of the discount must be a valid date',
-                'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
-            ]);
-
+            'DiscountIMG.image' => 'File upload must be image',
+            'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
+            'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
+            'DiscountID.required' => 'Please enter the discount code',
+            'DiscountID.max' => 'Discount codes cant exceed 20 characters',
+            'DiscountValue.required' => 'Please enter the discount value',
+            'DiscountName.required' => 'Please enter the discount name',
+            'MinimumAmount.required' => 'Please enter the minimum quantity applicable to the discount',
+            'MinimumAmount.numeric' => 'The minimum quantity to which the discount applies must be the number',
+            'MaximumAmount.required' => 'Please enter the maximum quantity applicable to the discount',
+            'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
+            'StartDate.required' => 'Please enter the date your discount will start',
+            'StartDate.date' => 'The discount start date must be a valid date',
+            'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
+            'EndDate.required' => 'Please enter the end date of the discount application',
+            'EndDate.date' => 'The end date of the dicount must be a valid date',
+            'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
+        ]);
+        
         $discount = array();
         $discount['DiscountID'] = $request->DiscountID;
         $discount['DiscountValue'] = $request->DiscountValue;
         $discount['DiscountName'] = $request->DiscountName;
         $discount['MinimumAmount'] = $request->MinimumAmount;
         $discount['MaximumAmount'] = $request->MaximumAmount;
-        $discount['StartDate'] = $request->StartDate;
-        $discount['EndDate'] = $request->EndDate;
+        $discount['StartDate'] = $request->StartDate . ' 00:00:00';
+        $discount['EndDate'] = $request->EndDate . ' 23:59:59';
 
         $get_image = $request->file('DiscountIMG');
         $get_image_name = $get_image->getClientOriginalName();
@@ -589,31 +592,32 @@ class AdminController extends Controller
             'StartDate' => 'required|date|after_or_equal:today',
             'EndDate' => 'required|date|after_or_equal:StartDate'
         ], [
-                'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
-                'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
-                'DiscountID.required' => 'Please enter the discount code',
-                'DiscountID.max' => 'Discount codes cant exceed 20 characters',
-                'DiscountValue.required' => 'Please enter the discount value',
-                'DiscountName.required' => 'Please enter the discount name',
-                'MinimumAmount.required' => 'Please enter the minimum quantity applicable to the discount',
-                'MinimumAmount.numeric' => 'The minimum quantity to which the discount applies must be the number',
-                'MaximumAmount.required' => 'Please enter the maximum quantity applicable to the discount',
-                'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
-                'StartDate.required' => 'Please enter the date your discount will start',
-                'StartDate.date' => 'The discount start date must be a valid date',
-                'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
-                'EndDate.required' => 'Please enter the end date of the discount application',
-                'EndDate.date' => 'The end date of the discount must be a valid date',
-                'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
-            ]);
+            'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
+            'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
+            'DiscountID.required' => 'Please enter the discount code',
+            'DiscountID.max' => 'Discount codes cant exceed 20 characters',
+            'DiscountValue.required' => 'Please enter the discount value',
+            'DiscountName.required' => 'Please enter the discount name',
+            'MinimumAmount.required' => 'Please enter the minimum quantity applicable to the discount',
+            'MinimumAmount.numeric' => 'The minimum quantity to which the discount applies must be the number',
+            'MaximumAmount.required' => 'Please enter the maximum quantity applicable to the discount',
+            'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
+            'StartDate.required' => 'Please enter the date your discount will start',
+            'StartDate.date' => 'The discount start date must be a valid date',
+            'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
+            'EndDate.required' => 'Please enter the end date of the discount application',
+            'EndDate.date' => 'The end date of the discount must be a valid date',
+            'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
+        ]);
+        
         $discount = array();
         $discount['DiscountID'] = $request->DiscountID;
         $discount['DiscountValue'] = $request->DiscountValue;
         $discount['DiscountName'] = $request->DiscountName;
         $discount['MinimumAmount'] = $request->MinimumAmount;
         $discount['MaximumAmount'] = $request->MaximumAmount;
-        $discount['StartDate'] = $request->StartDate;
-        $discount['EndDate'] = $request->EndDate;
+        $discount['StartDate'] = $request->StartDate . ' 00:00:00';
+        $discount['EndDate'] = $request->EndDate . ' 23:59:59';
 
         $get_image = $request->file('DiscountIMG');
         if ($get_image) {
@@ -629,5 +633,44 @@ class AdminController extends Controller
     public function remove_promotions($DiscountID) {
         DB::table('discount')->where('DiscountID',$DiscountID)->delete();
         return redirect('all_promotions')->with('success','Remove Promotion Successfully.');
+    }
+
+    public function all_contact_pending() {
+        $contact = DB::table('ContactUs')->where('ContactStatus','pending')->paginate(8);
+        return view('admin_pages.all_contact_pending')->with(['contact' => $contact]);
+    }
+
+    public function all_contact_processed() {
+        $contact = DB::table('ContactUs')->where('ContactStatus', 'processed')->paginate(8);
+        return view('admin_pages.all_contact_processed')->with(['contact' => $contact]);
+    }
+
+    public function form_contact($contact_id) {
+        $reply = DB::table('ContactUs')->where('ContactID', $contact_id)->first();
+        return view('admin_pages.form_contact')->with(['reply' => $reply]);
+    }
+
+    public function reply_contact(Request $rqst, $contact_id) {
+        
+        $reply = array();
+        $reply['AdminReply'] = $rqst->admin_reply;
+        $reply['ContactEmail'] = $rqst->contact_email;
+        $reply['ContactStatus'] = 'processed';
+
+        DB::table('ContactUs')->where('ContactID', $contact_id)->update($reply);
+
+        $reply_success = DB::table('ContactUs')->where('ContactID', $contact_id)->first();
+        Session::put('reply_success', $reply_success->AdminReply);
+        
+        //argument 2 là 1 array, có thể dùng $reply hoặc khai báo mảng khác vd:array('message' => $reply['AdminReply'])
+        //ở đây dùng session put để put lên trang reply contact nên không cần dùng mảng ở đây
+        Mail::send('admin_pages.reply_contact',[], function($message) use ($rqst) {
+            $message->from('support@testo.vn');
+            $message->to($rqst->contact_email);
+            $message->subject('Support From Testo Pizza');
+        });
+
+        Session::put('msg', 'Reply to Customer successfully!');
+        return redirect::to('all-contact-processed');
     }
 }

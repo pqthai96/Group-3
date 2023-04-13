@@ -55,7 +55,8 @@ class HomeController extends Controller
             ->join('User', 'Rating.UserID', '=', 'User.UserID')
             ->where('ProductID', $id)
             ->select('User.Username', 'Rating.*')
-            ->get();
+            ->orderByDesc('RatingDate')
+            ->paginate(5);
 
         $count = DB::table('Rating')
             ->where('ProductID', '=', $id)
@@ -186,7 +187,7 @@ class HomeController extends Controller
                 session()->put('cart', $cart);
                 
                 $cart_count = count((array) session('cart'));
-                return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
             }
 
             // if cart not empty then check if this product exist then increment quantity
@@ -196,7 +197,7 @@ class HomeController extends Controller
                     session()->put('cart', $cart);
                     
                     $cart_count = count((array) session('cart'));
-                    return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                    return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
             } else {
                 $cart[$id . '_' . $size] = [
                     "ProductName" => $pizza->ProductName,
@@ -208,7 +209,7 @@ class HomeController extends Controller
                 session()->put('cart', $cart);
                 
                 $cart_count = count((array) session('cart'));
-                return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
 
             }
         } else {
@@ -344,8 +345,13 @@ class HomeController extends Controller
                                 $totalPayment = round($total - $discountAmount, 2);
                             }
                         } else {
-                            $discountAmount = $discountValue;
-                            $totalPayment = round($total - $discountAmount, 2);
+                            if($discountValue > $total) {
+                                $discountAmount = $total;
+                                $totalPayment = round($total - $discountAmount, 2);
+                            } else {
+                                $discountAmount = $discountValue;
+                                $totalPayment = round($total - $discountAmount, 2);
+                            }
                         }
                         return response()->json(['msg' => 'Apply Voucher Succesfully!', 'totalPayment' => $totalPayment, 'discountAmount' => $discountAmount]);
                     } else {
@@ -462,7 +468,7 @@ class HomeController extends Controller
     }
 
     public function promotion(){
-        $promotion = DB::table('Discount')->select(DB::raw("DiscountID, DiscountName, DiscountIMG,DATE_FORMAT(StartDate, '%d-%m-%Y') AS StartDate, DATE_FORMAT(EndDate, '%d-%m-%Y') AS EndDate"))->get();
+        $promotion = DB::table('Discount')->select(DB::raw("DiscountID, DiscountName, DiscountIMG,DATE_FORMAT(StartDate, '%H:%i %d/%m/%Y') AS StartDate, DATE_FORMAT(EndDate, '%H:%i %d/%m/%Y') AS EndDate"))->get();
         return view('pages.promotion')->with(['promotion' => $promotion]);
     }
     public function about(){

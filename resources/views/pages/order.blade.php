@@ -51,13 +51,14 @@
         Session::put('msg',null);
         }
         ?>
+        
         <?php
             $userID =  Session::get('userID');
         ?>
         @foreach($userOrder as $uo)
         <!-- Account details card-->
         <div class="card mb-4">
-            <div class="card-header"><h5 class="h5-xs">{{ $uo->OrderID }} | {{ $uo->OrderDate }}</h5></div>
+            <div class="card-header"><h5 class="h5-xs">{{ $uo->OrderID }} <span class="font-italic">({{ $uo->OrderDate }})</span></h5></div>
             <div class="card-body">
                 <div style="float:right">
                     <button class="btn" style="background-color: #f5b200">Print Receipt</button>

@@ -1,7 +1,5 @@
 @extends('admin_layout')
-@section('title', 'Testo - Pizza and Fast Food')
 @section('content')
-
 
     <div class="content-wrapper">
         <div class="row">
@@ -9,7 +7,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Edit Promotions</h4>
-                        <form class="forms-sample" method="post" action="{{ url('update_promotions/' . $discount->DiscountID) }}" enctype="multipart/form-data">
+                        <form class="forms-sample" method="post" action="{{ url('update-promotions/' . $discount->DiscountID) }}" enctype="multipart/form-data">
                             @csrf
                                 <div class="form-group">
                                     <label for="DiscountIMG">Image</label>

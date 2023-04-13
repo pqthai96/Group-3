@@ -1,5 +1,5 @@
 @extends('layout')
-@section('title', 'Testo - Post')
+@section('title', 'Testo - Blog Single')
 @section('content')
     <!-- PAGE HERO
                                                            ============================================= -->

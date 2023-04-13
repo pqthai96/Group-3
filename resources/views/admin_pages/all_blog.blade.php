@@ -1,5 +1,4 @@
 @extends('admin_layout')
-@section('title', 'Testo - Pizza and Fast Food')
 @section('content')
     <div class="content-wrapper">
         <div class="row">
@@ -49,8 +48,8 @@
                                                 <input type="checkbox" class="expand-btn">
                                             </td>
                                             <td class="text-center">
-                                                <a class="btn btn-rounded btn-success" href="{{ url('/edit_blog/' . $bg->BlogID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                                                <a class="btn btn-rounded btn-danger" href="{{ url('/remove_blog/' . $bg->BlogID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                                                <a class="btn btn-rounded btn-success" href="{{ url('/edit-blog/' . $bg->BlogID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                                                <a class="btn btn-rounded btn-danger" href="{{ url('/remove-blog/' . $bg->BlogID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach

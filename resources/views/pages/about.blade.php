@@ -1,4 +1,5 @@
 @extends('layout')
+@section('title', 'Testo - About Us')
 @section('content')
     <div id="page" class="page">
         <!-- PAGE HERO

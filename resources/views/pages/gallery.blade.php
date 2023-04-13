@@ -1,5 +1,7 @@
 @extends('layout')
+@section('title', 'Testo - Gallery')
 @section('content')
+
 <div id="gallery-page" class="page-hero-section division">
     <div class="container">
         <div class="row">

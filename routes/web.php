@@ -85,16 +85,22 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/order-processing', 'order_processing')->name('order_processing');
     Route::get('/order-delivered', 'order_delivered')->name('order_delivered');
 
-    Route::get('/all_blog', 'all_blog')->name('all_blog');
-    Route::get('/add_blog', 'add_blog')->name('add_blog');
-    Route::post('/save_blog', 'save_blog')->name('save_blog');
-    Route::get('/edit_blog/{BlogID}', 'edit_blog');
-    Route::post('/update_blog/{BlogID}', 'update_blog')->name('update_blog');
-    Route::get('/remove_blog/{BlogID}', 'remove_blog')->name('remove_blog');
-    Route::get('/all_promotions', 'all_promotions')->name('all_promotions');
-    Route::get('/add_promotions', 'add_promotions')->name('add_promotions');
-    Route::post('/save_promotions', 'save_promotions')->name('save_promotions');
-    Route::get('/edit_promotions/{DiscountID}', 'edit_promotions');
-    Route::post('/update_promotions/{DiscountID}', 'update_promotions')->name('update_promotion');
-    Route::get('/remove_promotions/{DiscountID}', 'remove_promotions')->name('remove_promotion');
+    Route::get('/all-blog', 'all_blog')->name('all_blog');
+    Route::get('/add-blog', 'add_blog')->name('add_blog');
+    Route::post('/save-blog', 'save_blog')->name('save_blog');
+    Route::get('/edit-blog/{BlogID}', 'edit_blog');
+    Route::post('/update-blog/{BlogID}', 'update_blog')->name('update_blog');
+    Route::get('/remove-blog/{BlogID}', 'remove_blog')->name('remove_blog');
+    
+    Route::get('/all-promotions', 'all_promotions')->name('all_promotions');
+    Route::get('/add-promotions', 'add_promotions')->name('add_promotions');
+    Route::post('/save-promotions', 'save_promotions')->name('save_promotions');
+    Route::get('/edit-promotions/{DiscountID}', 'edit_promotions');
+    Route::post('/update-promotions/{DiscountID}', 'update_promotions')->name('update_promotion');
+    Route::get('/remove-promotions/{DiscountID}', 'remove_promotions')->name('remove_promotion');
+
+    Route::get('/all-contact-pending', 'all_contact_pending')->name('all_contact_pending');
+    Route::get('/all-contact-processed', 'all_contact_processed')->name('all_contact_processed');
+    Route::get('/form-contact/{contact_id}', 'form_contact')->name('form_contact');
+    Route::post('/reply-contact/{contact_id}', 'reply_contact')->name('reply_contact');
 });

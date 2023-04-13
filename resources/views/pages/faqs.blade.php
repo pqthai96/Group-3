@@ -44,7 +44,7 @@
                                 <h5 class="h5-xs">What payment methods do you accept?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">He also has a lot of fun getting into hate. Complete homework without fear. The soft bow of life flatters the ultrice ligula esgetat a magna suscit lectus magna suscit moltus litt molestie purus.
+                                <p class="grey-color">We accept a variety of payment methods, including credit cards (Visa, MasterCard), Momo, and cash on delivery. Please note that payment options may vary depending on your location and the specific pizza restaurant you are ordering from. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -57,7 +57,7 @@
                                 <h5 class="h5-xs">Is my payment information secure?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">He caressed the little girl and timed it until she got pregnant. Well, the author of the life should ask for homework and wise members.
+                                <p class="grey-color">Yes, we take the security of your payment information very seriously. We use industry-standard encryption technology to protect your sensitive data and ensure that your payment details are kept safe and secure. In addition, we do not store your payment information on our servers, so you can be confident that your personal and financial information is always protected. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -70,7 +70,7 @@
                                 <h5 class="h5-xs">Is there a discount code?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">It's always a lake, but the gate runs, Feugiat first mourns in ligula eros and ligula massa and faucibus orci a luctus aliquet and molestie purus venenatis aliquam eget lacinia.
+                                <p class="grey-color">Yes, we often offer discount codes and promotions to our customers. Please check our website or social media pages for the latest deals and discount codes. You can also sign up for our newsletter to receive exclusive offers and updates on our promotions. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -83,7 +83,7 @@
                                 <h5 class="h5-xs">What if I have lost my gift certificate?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">Some flatter the mulla and set the time until he is pregnant. Velna is the author of the sad homework.
+                                <p class="grey-color">If you have lost your gift certificate, please contact our customer service team as soon as possible. We will do our best to assist you in retrieving the gift certificate or issuing a new one. However, please note that we may not be able to replace lost or stolen gift certificates, and any replacement or retrieval is subject to our terms and conditions. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -105,7 +105,7 @@
                                 <h5 class="h5-xs">How can I change something in my order?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">It's always a lake, but the gate runs, Feugiat first mourns in ligula eros and ligula massa and faucibus orci a luctus aliquet and molestie purus venenatis aliquam eget lacinia.
+                                <p class="grey-color">If you need to make a change to your order, please contact our customer service team as soon as possible. You can reach us by phone or email, and we will do our best to accommodate your request. Please note that some changes may not be possible depending on the stage of the order and the specific pizza restaurant you are ordering from. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -118,7 +118,7 @@
                                 <h5 class="h5-xs">How much is shipping?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">It's always a lake, but the gate runs, Feugiat first mourns in ligula eros and ligula massa and faucibus orci a luctus aliquet and molestie purus venenatis aliquam eget lacinia
+                                <p class="grey-color">We are pleased to offer free shipping on all orders, so there is no need to worry about any additional shipping costs. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -131,7 +131,7 @@
                                 <h5 class="h5-xs">How long will my order take to be delivered?</h5>
 
                                 <!-- Answer -->
-                                <p class="grey-color">It's always a lake, but the gate runs, Feugiat's first grief in ligula ligula massa in the throat of the orci a luctus ultrices ipsum first in the throat hate feugiat's first grief in ligula eros ligula.
+                                <p class="grey-color">We aim to deliver your order as quickly as possible. Depending on your location and the specific pizza restaurant you are ordering from, delivery times may vary. However, we strive to deliver all orders within 30 minutes of placing the order. Thank you for choosing our pizza!
                                 </p>
 
                             </div>
@@ -142,7 +142,7 @@
                                 <!-- Question -->
                                 <h5 class="h5-xs">How do I track my order?</h5>
                                 <!-- Answer -->
-                                <p class="grey-color">It's always a lake, but the gate runs, Feugiat first mourns in ligula eros and ligula massa and faucibus orci a luctus aliquet and molestie purus venenatis aliquam eget lacinia.
+                                <p class="grey-color">You can track your order by logging into your account and going to the 'My Purchases' section. From there, you will be able to see the status of your order and track its progress in real-time. Thank you for choosing our pizza!
                                 </p>
                             </div>
 

@@ -1,5 +1,4 @@
 @extends('admin_layout')
-@section('title', 'Testo - Pizza and Fast Food')
 @section('content')
 
     <!-- partial -->
@@ -39,7 +38,7 @@
                             <div class="form-group">
                                 <label for="exampleInputConfirmPassword1">Content</label>
                                 <textarea class="form-control" id="BlogContent" name="BlogContent"
-                                    placeholder="Enter Content of Blog" style="height: 100px"></textarea>
+                                    placeholder="Enter Content of Blog" style="height: 10rem"></textarea>
                                 @error('BlogContent')
                                     <span class="alert text-danger">
                                         <strong>{{ $message }}</strong>

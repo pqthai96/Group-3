@@ -266,6 +266,7 @@
 
 							</div> <!--END  TESTIMONIAL #1 -->
                             @endforeach
+							<span style="float:right;margin-bottom:1rem">{{ $rating->links() }}</span>
                             @endif
 						</div>
 					</div>

@@ -40878,7 +40878,7 @@ div.tagsinput span.tag a {
     color:blue;
 }
 .expand-btn::before{
-    content: "see more";
+    content: "more";
 }
 .expand-btn:checked::before{
     content: "less";

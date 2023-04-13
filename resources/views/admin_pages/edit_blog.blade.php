@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Edit Blog</h4>
-                    <form class="forms-sample" method="POST" action="{{ url('update_blog/' . $blog->BlogID) }}"
+                    <form class="forms-sample" method="POST" action="{{ url('update-blog/' . $blog->BlogID) }}"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
@@ -28,7 +28,7 @@
                         </div>
                         <div class="form-group">
                             <label for="BlogContent">Content</label>
-                            <textarea class="form-control" id="BlogContent" name="BlogContent" placeholder="Enter Content of Blog" style="height:auto">{{ $blog -> BlogContent }}</textarea>
+                            <textarea class="form-control" id="BlogContent" name="BlogContent" placeholder="Enter Content of Blog" style="height:10rem">{{ $blog -> BlogContent }}</textarea>
                             @error('BlogContent')
                                 <span class="alert text-danger">
                                     <strong>{{ $message }}</strong>

@@ -10,48 +10,61 @@
                     <input type="search" class="form-control" placeholder="Search Here" title="Search here">
                     </form>
                   </div>
-                  <h4 class="card-title">Administrator Management</h4>
+                  <h4 class="card-title">Contact Pending</h4>
+                  <?php
+                  $msg = Session::get('msg');
+                  if($msg) {
+                  ?>
+                  <div class="alert alert-success">
+                      <strong>{{ $msg }}</strong>
+                  </div>
+                  <?php
+                  Session::put('msg',null);
+                  }
+                  ?>
                   <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>AdminName</th>
-                                <th class="text-center">Password</th>
-                                <th class="text-center">Permission</th>
+                                <th>Contact Name</th>
+                                <th>Contact Email</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
-                        @foreach($admin as $ad)
+                        @foreach($contact as $ct)
                         <tbody>
                             <tr>
-                                <td>{{ $ad->AdminName }}</td>
-                                <td class="text-center">{{ $ad->AdminPassword }}</td>
+                                <td>{{ $ct->ContactName }}</td>
+                                <td>{{ $ct->ContactEmail }}</td>
+                                <td>{{ $ct->ContactSubject }}</td>
+                                <td>{{ $ct->Message }}</td>
                                 <?php
-                                if($ad->Role == 0) {
+                                if($ct->ContactStatus == "processed") {
                                 ?>
-                                <td class="text-center"><label class="badge badge-success">Administrator</label></td>
+                                <td class="text-center"><label class="badge badge-success">Processed</label></td>
                                 <?php
                                 } else {
                                 ?>
-                                <td class="text-center"><label class="badge badge-warning">Webmaster</label></td>
+                                <td class="text-center"><label class="badge badge-warning">Pending</label></td>
                                 <?php
                                 }
                                 ?>
                                 <td class="text-center">
-                                    <a class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></a>
-                                    <a class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></a>
+                                    <a class="btn btn-rounded btn-dark" href="{{ url('form-contact/'.$ct->ContactID) }}"><i class="menu-icon mdi mdi-reply"></i></a>
                                 </td>
                             </tr>
                         </tbody>
                         @endforeach
                     </table>
                     <br>
-                    <span style="float:right">{{ $admin->links() }}</span>
+                    <span style="float:right">{{ $contact->links() }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
 @endsection
