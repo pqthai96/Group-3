@@ -8,7 +8,7 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Edit Supplement</h4>
-                  <form class="forms-sample" method="POST" action="{{ url('update-supplement/'.$supplement->ProductID) }}" enctype="multipart/form-data">
+                  <form class="forms-sample" id="update-form" method="POST" action="{{ url('update-supplement/'.$supplement->ProductID) }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                       <label for="category">Choose Category</label>
@@ -61,17 +61,6 @@
                     
                     <button type="submit" class="btn btn-primary me-2">Update</button>
                     <button class="btn btn-light" type="reset">Clear</button>
-                    <?php
-                    $msg = Session::get('msg');
-                    if($msg) {
-                    ?>
-                    <span class="alert text-danger">
-                        <strong>{{ $msg }}</strong>
-                    </span>
-                    <?php
-                    Session::put('msg',null);
-                    }
-                    ?>
                   </form>
                 </div>
               </div>
@@ -81,3 +70,22 @@
         <!-- content-wrapper ends -->
         <!-- partial -->
 @endsection
+
+@section('scripts')
+<script>
+    $('#update-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to update this supplement?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

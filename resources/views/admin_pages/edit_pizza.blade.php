@@ -8,7 +8,7 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Edit Pizza</h4>
-                  <form class="forms-sample" method="POST" action="{{ url('update-pizza/'.$pizza->ProductID) }}" enctype="multipart/form-data">
+                  <form class="forms-sample" id="update-form" method="POST" action="{{ url('update-pizza/'.$pizza->ProductID) }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                       <label for="pizza_name">Pizza Name</label>
@@ -109,3 +109,22 @@
         <!-- content-wrapper ends -->
         <!-- partial -->
 @endsection
+
+@section('scripts')
+<script>
+    $('#update-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to update this pizza?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

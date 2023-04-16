@@ -11,6 +11,17 @@
                     </form>
                   </div>
                   <h4 class="card-title">User Account Management</h4>
+                  <?php
+                  $msg = Session::get('msg');
+                  if($msg) {
+                  ?>
+                  <div class="alert alert-success">
+                      <strong>{{ $msg }}</strong>
+                  </div>
+                  <?php
+                  Session::put('msg',null);
+                  }
+                  ?>
                   <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -46,8 +57,7 @@
                                 }
                                 ?>
                                 <td class="text-center">
-                                    <a class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></a>
-                                    <a class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></a>
+                                    <a class="btn btn-rounded btn-success" href="{{ url('edit-user/'.$us->UserID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
                                 </td>
                             </tr>
                         </tbody>

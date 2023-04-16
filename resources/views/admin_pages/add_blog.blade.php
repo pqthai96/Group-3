@@ -13,7 +13,7 @@
                                 {{ session('success') }}
                             </div>
                         @endif
-                        <form class="forms-sample" method="post" action="{{ route('save_blog') }}"
+                        <form class="forms-sample" id="add-form" method="post" action="{{ route('save_blog') }}"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
@@ -56,3 +56,22 @@
     <!-- content-wrapper ends -->
     <!-- partial -->
 @endsection
+
+@section('scripts')
+<script>
+    $('#add-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to add this blog?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Add',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

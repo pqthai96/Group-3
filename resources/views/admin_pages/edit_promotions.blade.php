@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Edit Promotions</h4>
-                        <form class="forms-sample" method="post" action="{{ url('update-promotions/' . $discount->DiscountID) }}" enctype="multipart/form-data">
+                        <form class="forms-sample" id="update-form" method="post" action="{{ url('update-promotions/' . $discount->DiscountID) }}" enctype="multipart/form-data">
                             @csrf
                                 <div class="form-group">
                                     <label for="DiscountIMG">Image</label>
@@ -42,7 +42,7 @@
                                 <div class="form-group">
                                     <label for="DiscountName">Discount Name</label>
                                     <input type="text" class="form-control" id="DiscountName" name="DiscountName"
-                                        value="{{ $discount->DiscountName }}" placeholder="discount Name">
+                                        value="{{ $discount->DiscountName }}" placeholder="Discount Name">
                                     @error('DiscountName')
                                         <span class="alert text-danger">
                                             <strong>{{ $message }}</strong>
@@ -90,9 +90,8 @@
                                     @enderror
                                 </div>
                             </div>
-                                <button type="submit" class="btn btn-primary me-2">Update</button>
-                                <button class="btn btn-light" type="reset">Clear</button>
-                            
+                            <button type="submit" class="btn btn-primary me-2">Update</button>
+                            <button class="btn btn-light" type="reset">Clear</button>
                         </form>
                     </div>
                 </div>
@@ -100,3 +99,22 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+<script>
+    $('#update-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to update this promotion?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

@@ -134,7 +134,7 @@
                                 <?php
                                 } else {
                                 ?>
-                                    <form method="POST" action="{{ url('review/' . $pd->ProductID) }}">
+                                    <form method="POST" id="update-rating" action="{{ url('review/' . $pd->ProductID) }}">
                                         @csrf
                                         <button class="btn" type="submit" style="float:right;background-color:#f5b200">Submit</button>
                                         <textarea class="form-control" style="width:70%;height:10%" name="review" id="review" placeholder="Your Review"></textarea>
@@ -224,8 +224,8 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function() {
-
+//RATING STAR
+$(document).ready(function() {
     $('.stars-js i').click(function() {
         var star = $(this).attr('data-star');
         var rating = $(this).closest('.item-rating');
@@ -234,6 +234,22 @@
         $(this).removeClass('far').addClass('fas');
         $(this).nextAll().removeClass('fas').addClass('far');
         rating.find('#rating-value').val(star);
+    });
+});
+
+//ALERT RATING
+$('#update-rating').submit(function(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Are you sure to rating this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $(this).unbind('submit').submit();
+        }
     });
 });
 </script>

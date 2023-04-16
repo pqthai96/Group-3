@@ -8,7 +8,7 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Create a new Supplement</h4>
-                  <form class="forms-sample" method="POST" action="{{ route('save_supplement') }}" enctype="multipart/form-data">
+                  <form class="forms-sample" id="add-form" method="POST" action="{{ route('save_supplement') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                       <label for="category">Choose Category</label>
@@ -81,3 +81,22 @@
         <!-- content-wrapper ends -->
         <!-- partial -->
 @endsection
+
+@section('scripts')
+<script>
+    $('#add-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to add this supplement?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Add',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

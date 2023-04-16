@@ -14,8 +14,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller
 {
-    public function home()
-    {
+    public function home() {
 
         $pizza = DB::table('Product')->where('CategoryID', '1')
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -24,8 +23,7 @@ class HomeController extends Controller
         return view('pages.home')->with(['pizza' => $pizza]);
     }
 
-    public function menu()
-    {
+    public function menu() {
 
         $pizza = DB::table('Product')->where('CategoryID', '1')
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -45,8 +43,7 @@ class HomeController extends Controller
         return view('pages.menu')->with(['pizza' => $pizza, 'side' => $side, 'salad' => $salad, 'dessert' => $dessert, 'drink' => $drink]);
     }
 
-    public function product($id)
-    {
+    public function product($id) {
         $pizza = DB::table('Product')->where('Product.ProductID', $id)
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
             ->select('Product.*', 'ProductDetails.*')->get();
@@ -66,8 +63,7 @@ class HomeController extends Controller
     }
 
 
-    public function login(Request $rqst)
-    {
+    public function login(Request $rqst) {
         $rqst->validate([
             'email' => 'required',
             'password' => 'required'
@@ -81,7 +77,9 @@ class HomeController extends Controller
 
         $user = User::where('Email', $email)->first();
         
-        if ($user && $password === $user->Password) {
+        if ($user && $user->UserStatus == 'banned') {
+            return response()->json(['errors' => ['loginbanned' => 'This account has been locked!']], 422);
+        } else if ($user && $password === $user->Password) {
             $userID = $user->UserID;
             Session::put('userID', $userID);
             Session::put('userName', $user->Username);
@@ -90,14 +88,13 @@ class HomeController extends Controller
             Session::put('Phone', $user->Phone);
             Session::put('Gender', $user->Gender);
             Session::put('Address', $user->Address);
-            return response()->json(['msg' => 'Product removed successfully']);
+            return response()->json(['msg' => 'Login successfully']);
         } else {
-            return response()->json(['errors' => 'Product removed successfully']);
+            return response()->json(['errors' => ['loginfailed' => 'Wrong Email or Password!']], 422);
         }
     }
     
-    public function register(Request $rqst)
-    {
+    public function register(Request $rqst) {
         $rqst->validate([
             'newUsername' => 'required',
             'newPassword' => 'required',
@@ -119,29 +116,34 @@ class HomeController extends Controller
             'newAddress.required' => 'Address is required.',
             'term.required' => 'You need to review and agree to the terms and privacy policy of Testo Pizza.',
         ]);
-        
-        $data = array();
-        $data['Username'] = $rqst->newUsername;
-        $data['Password'] = $rqst->newPassword;
-        $data['Email'] = $rqst->newEmail;
-        $data['Phone'] = $rqst->newPhone;
-        $data['Name'] = $rqst->newFullname;
-        $data['Gender'] = $rqst->gender;
-        $data['Address'] = $rqst->newAddress;
 
-        $userID = DB::table('User')->insertGetId($data);
+        if(DB::table('User')->where('Username', $rqst->newUsername)->exists()) {
+            return response()->json(['errors' => ['existusername' => 'Username is already registered!']], 422);
+        } else if (DB::table('User')->where('Email', $rqst->newEmail)->exists()) {
+            return response()->json(['errors' => ['existemail' => 'Email is already registered!']], 422);
+        } else {
+            $data = array();
+            $data['Username'] = $rqst->newUsername;
+            $data['Password'] = $rqst->newPassword;
+            $data['Email'] = $rqst->newEmail;
+            $data['Phone'] = $rqst->newPhone;
+            $data['Name'] = $rqst->newFullname;
+            $data['Gender'] = $rqst->gender;
+            $data['Address'] = $rqst->newAddress;
 
-        Session::put('userID', $userID);
-        Session::put('userName', $rqst->newUsername); //luu bien ten user truy xuat = {{ session::get('userName') }}
-        Session::put('Email', $rqst->newEmail);
-        Session::put('Name', $rqst->newFullname);
-        Session::put('Phone', $rqst->newPhone);
-        Session::put('Gender', $rqst->gender);
-        Session::put('Address', $rqst->newAddress);
-        
+            $userID = DB::table('User')->insertGetId($data);
+
+            Session::put('userID', $userID);
+            Session::put('userName', $rqst->newUsername); //luu bien ten user truy xuat = {{ session::get('userName') }}
+            Session::put('Email', $rqst->newEmail);
+            Session::put('Name', $rqst->newFullname);
+            Session::put('Phone', $rqst->newPhone);
+            Session::put('Gender', $rqst->gender);
+            Session::put('Address', $rqst->newAddress);
+        }
     }
-    public function logout()
-    {
+    
+    public function logout() {
         Session::forget('cart');
         Session::forget('userID');
         Session::forget('userName');
@@ -152,12 +154,10 @@ class HomeController extends Controller
         return redirect::to('home');
     }
 
-    public function cart()
-    {
+    public function cart() {
         return view('pages.cart');
     }
-    public function addToCart(Request $rqst, $id)
-    {
+    public function addToCart(Request $rqst, $id) {
         $pizza = DB::table('Product')->where('Product.ProductID', $id)
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
             ->select('Product.*', 'ProductDetails.*')->first();
@@ -267,8 +267,7 @@ class HomeController extends Controller
             return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
         }
     }
-    public function updateCart(Request $rqst)
-    {
+    public function updateCart(Request $rqst) {
         if($rqst->id && $rqst->quantity) {
             $carts = session()->get('cart');
             $carts[$rqst->id]['Quantity'] = $rqst->quantity;
@@ -293,8 +292,7 @@ class HomeController extends Controller
         }
     }
 
-    private function getCartTotal()
-    {
+    private function getCartTotal() {
         $total = 0;
 
         $cart = session()->get('cart');
@@ -431,6 +429,51 @@ class HomeController extends Controller
         return view('pages.account');
     }
 
+    public function updateAccount(Request $request) {
+        $request->validate([
+            'inputFirstName' => 'required|max:255',
+            'inputPhone' => 'required|min:10|max:15',
+            'gender' => 'required',
+            'inputLocation' => 'required|max:255',
+        ]);
+
+        $account = array();
+        $account['Name'] = $request->inputFirstName;
+        $account['Phone'] = $request->inputPhone;
+        $account['Gender'] = $request->gender;
+        $account['Address'] = $request->inputLocation;
+        $userID = session::get('userID');
+        DB::table('user')->where('UserID', $userID)->update($account);
+        session()->put('Name', $request->inputFirstName);
+        session()->put('Phone', $request->inputPhone);
+        session()->put('Gender', $request->gender);
+        session()->put('Address', $request->inputLocation);
+        return Redirect()->to('account')->with('success', 'Update account successfully.');
+    }
+    public function viewPassword() {
+        return view('pages.changePassword');
+    }
+
+    public function updatePassword(Request $request) {
+        $request->validate([
+            'old_Password' => 'required',
+            'new_Password' => 'required|min:8',
+            'comfirm_Password' => 'required|same:new_Password'
+        ]);
+
+        $old_Password = $request->old_Password;
+        $new_Password = $request->new_Password;
+
+        $userID = session::get('userID');
+        $user = DB::table('user')->where('UserID', $userID)->first();
+        if ($old_Password !== $user->Password) {
+            return Redirect()->back()->with('error', 'Old password incorrect');
+        }
+
+        DB::table('user')->where('UserID', $userID)->update(['Password' => $new_Password]);
+        return Redirect()->to('account')->with('success', 'Password changed successfully.');
+    }
+
     public function order() {
         $user = session::get('userID');
         $userOrder = DB::table('Orders')->where('UserID', $user)->orderByDesc('OrderDate')->paginate(5);
@@ -467,33 +510,59 @@ class HomeController extends Controller
         }
     }
 
-    public function promotion(){
+    public function promotion() {
         $promotion = DB::table('Discount')->select(DB::raw("DiscountID, DiscountName, DiscountIMG,DATE_FORMAT(StartDate, '%H:%i %d/%m/%Y') AS StartDate, DATE_FORMAT(EndDate, '%H:%i %d/%m/%Y') AS EndDate"))->get();
         return view('pages.promotion')->with(['promotion' => $promotion]);
     }
-    public function about(){
+    public function about() {
         return view('pages.about');
     }
-    public function term(){
+    public function term() {
         return view('pages.term');
     }
-    public function faqs(){
+    public function faqs() {
         return view('pages.faqs');
     }
-    public function gallery(){
+    public function gallery() {
         return view('pages.gallery');
     }
-    public function contact(){
+    public function contact() {
         return view('pages.contact');
     }
-    public function location(){
+
+    public function save_contact(Request $request) {
+        
+        $request->validate([
+            'ContactName' => 'required|string|max:255',
+            'ContactEmail' => 'required|email|max:255',
+            'ContactSubject' => 'required|string|max:255',
+            'Message' => 'required|string|max:1000'
+        ], [
+            'ContactName.required' => 'Please enter the Name.',
+            'ContactEmail.required' => 'Please enter the Email.',
+            'ContactSubject.required' => 'Please enter the Subject.',
+            'Message.required' => 'Please enter the Message.',
+            'email' => 'Email address is not valid.'
+        ]);
+
+        $contact = array();
+        $contact['ContactName'] = $request->ContactName;
+        $contact['ContactEmail'] = $request->ContactEmail;
+        $contact['ContactSubject'] = $request->ContactSubject;
+        $contact['Message'] = $request->Message;
+        $contact['ContactDate'] = Carbon::now();
+
+        DB::table('ContactUs')->insert($contact);
+        Session::put('success', 'Contact sent successfully!');   
+    }
+    public function location() {
         return view('pages.location');
     }
-    public function blog(){
+    public function blog() {
         $blog = DB::table('blog')->get();
         return view('pages.blog')->with(['blog'=> $blog]);
     }
-    public function singleBlog($id){
+    public function singleBlog($id) {
         $blog = DB::table('blog')->where('blog.BlogID', $id)->get();
         return view('pages.single-blog')->with(['blog'=> $blog]);
     }

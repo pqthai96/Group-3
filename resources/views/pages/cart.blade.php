@@ -213,35 +213,47 @@
 
 @section('scripts')
     <script>
-		//Cart Update-Remove
-		function cartUpdate(event) {
+		//Cart Update
+		$(".update-cart").click(function(event) {
+
 			event.preventDefault();
 			let urlUpdateCart = $('.update-cart-url').data('url');
 			let id = $(this).data('id');
 			let quantity = $(this).parents('tr').find('input.quantity').val();
 			let product_subtotal = $(this).parents('tr').find('h5.product_subtotal');
 			let cart_total = $('.cart-total');
-			$.ajax({
-				type: "GET",
-				url: urlUpdateCart,
-				data: {_token: '{{ csrf_token() }}', id: id, quantity: quantity},
-				dataType: "json",
-				success: function (response) {
-					product_subtotal.text(response.subTotal);
-					cart_total.text(response.total);
-					$("#alert-message").html(response.msg);
-					$('#alert-message').fadeIn();
-					setTimeout(function() {
-					$('#alert-message').fadeOut();
-					}, 2000);
-					$(".discount-amount").html('$' + 0);
-				},
-				error: function (response) {
+
+			Swal.fire({
+				title: 'Are you sure to update this product?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Update',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						type: "GET",
+						url: urlUpdateCart,
+						data: {_token: '{{ csrf_token() }}', id: id, quantity: quantity},
+						dataType: "json",
+						success: function (response) {
+							product_subtotal.text(response.subTotal);
+							cart_total.text(response.total);
+							$("#alert-message").html(response.msg);
+							$('#alert-message').fadeIn();
+							setTimeout(function() {
+							$('#alert-message').fadeOut();
+							}, 2000);
+							$(".discount-amount").html('$' + 0);
+						}
+					})
 				}
 			})
-		}
+		});
 
-		function cartRemove(event) {
+		//Cart Remove
+		$(".remove-cart").click(function(event) {
+
 			event.preventDefault();
 			let urlRemoveCart = $('.remove-cart-url').data('url');
 			let parent_row = $(this).parents('tr');
@@ -249,31 +261,33 @@
 			let cart_total = $('.cart-total');
 			let cart_count = $('.cart-count');
 
-			$.ajax({
-				type: "GET",
-				url: urlRemoveCart,
-				data: {_token: '{{ csrf_token() }}', id: id},
-				dataType: "json",
-				success: function (response) {
-					parent_row.remove();
-					cart_total.text(response.total);
-					cart_count.text(response.cart_count);
-					$("#alert-message").html(response.msg);
-					$('#alert-message').fadeIn();
-					setTimeout(function() {
-					$('#alert-message').fadeOut();
-					}, 2000);
-					$(".discount-amount").html('$' + 0);
-				},
-				error: function (data) {
-
+			Swal.fire({
+				title: 'Are you sure to delete this product?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Delete',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						type: "GET",
+						url: urlRemoveCart,
+						data: {_token: '{{ csrf_token() }}', id: id},
+						dataType: "json",
+						success: function (response) {
+							parent_row.remove();
+							cart_total.text(response.total);
+							cart_count.text(response.cart_count);
+							$("#alert-message").html(response.msg);
+							$('#alert-message').fadeIn();
+							setTimeout(function() {
+							$('#alert-message').fadeOut();
+							}, 2000);
+							$(".discount-amount").html('$' + 0);
+						}
+					})
 				}
 			})
-		}
-
-		$(function () {
-			$(document).on("click", ".update-cart", cartUpdate);
-			$(document).on("click", ".remove-cart", cartRemove);
 		});
 
 		//getDiscount

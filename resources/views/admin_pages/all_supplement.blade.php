@@ -44,7 +44,7 @@
                           <td class="text-center"><strong class="cutoff-text">{{ $sd->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                            <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-supplement/'.$sd->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -87,7 +87,7 @@
                           <td class="text-center"><strong class="cutoff-text">{{ $sl->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                            <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-supplement/'.$sl->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -130,7 +130,7 @@
                           <td class="text-center"><strong class="cutoff-text">{{ $ds->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                            <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-supplement/'.$ds->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -173,7 +173,7 @@
                           <td class="text-center"><strong class="cutoff-text">{{ $dk->QuantityM }}</strong></td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                            <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-supplement/'.$dk->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -187,5 +187,23 @@
             </div>
           </div>
         </div>
-        
 @endsection
+
+@section('scripts')
+<script>
+  $("a.btn-delete").click(function(event) {
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure to delete this supplement?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = $(this).attr("href");
+      }
+    });
+  });
+</script>
+@stop

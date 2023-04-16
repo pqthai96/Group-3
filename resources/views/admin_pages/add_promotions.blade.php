@@ -13,7 +13,7 @@
                                 {{ session('success') }}
                             </div>
                         @endif
-                        <form class="forms-sample" method="post" action="{{ route('save_promotions') }}"
+                        <form class="forms-sample" id="add-form" method="post" action="{{ route('save_promotions') }}"
                             enctype="multipart/form-data">
                             @csrf
                                 <div class="form-group">
@@ -49,7 +49,7 @@
                                 <div class="form-group">
                                     <label for="DiscountName">Discount Name</label>
                                     <input type="text" class="form-control" id="DiscountName" name="DiscountName"
-                                        placeholder="discount Name">
+                                        placeholder="Discount Name">
                                     @error('DiscountName')
                                         <span class="alert text-danger">
                                             <strong>{{ $message }}</strong>
@@ -107,3 +107,22 @@
     <!-- content-wrapper ends -->
     <!-- partial -->
 @endsection
+
+@section('scripts')
+<script>
+    $('#add-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to add this promotion?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Add',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

@@ -39,18 +39,24 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/orderplace', 'orderPlace')->name('orderPlace');
 
     Route::get('/account', 'account')->name('account');
+    Route::post('/update-account', 'updateAccount')->name('update.account');
+    Route::get('/view-password', 'viewPassword')->name('view.Password');
+    Route::post('/change-password','updatePassword')->name('update.Password');
+
     Route::get('/order', 'order')->name('order');
     Route::post('/review/{product_id}', 'review')->name('review');
 
     Route::get('/blog', 'blog')->name('blog');
     Route::get('/single-blog/{id}', 'singleBlog');
-    Route::get('Term', 'term')->name('term');
-    Route::get('faqs', 'faqs')->name('faqs');
-    Route::get('gallery', 'gallery')->name('gallery');
-    Route::get('contact', 'contact')->name('contact');
-    Route::get('location', 'location')->name('location');
-    Route::get('promotion', 'promotion')->name('promotion');
+    Route::get('/term', 'term')->name('term');
+    Route::get('/faqs', 'faqs')->name('faqs');
+    Route::get('/gallery', 'gallery')->name('gallery');
+    Route::get('/location', 'location')->name('location');
+    Route::get('/promotion', 'promotion')->name('promotion');
     Route::get('/about', 'about')->name('about');
+
+    Route::get('/contact', 'contact')->name('contact');
+    Route::post('/save-contact','save_contact')->name('save_contact');
 });
 
 
@@ -65,8 +71,13 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/all-admin', 'all_admin')->name('all_admin');
     Route::get('/add-admin', 'add_admin')->name('add_admin');
     Route::post('/save-admin', 'save_admin')->name('save_admin');
+    Route::get('/edit-admin/{admin_id}', 'edit_admin')->name('edit_admin');
+    Route::post('/update-admin/{admin_id}', 'update_admin')->name('update_admin');
+    Route::get('/remove-admin/{admin_id}', 'remove_admin')->name('remove_admin');
 
     Route::get('/all-user', 'all_user')->name('all_user');
+    Route::get('/edit-user/{user_id}', 'edit_user')->name('edit_user');
+    Route::post('/update-user/{user_id}', 'update_user')->name('update_user');
 
     Route::get('/all-pizza', 'all_pizza')->name('all_pizza');
     Route::get('/add-pizza', 'add_pizza')->name('add_pizza');
@@ -82,8 +93,10 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('/update-supplement/{supplement_id}', 'update_supplement')->name('update_supplement');
     Route::get('/remove-supplement/{supplement_id}', 'remove_supplement')->name('remove_supplement');
 
-    Route::get('/order-processing', 'order_processing')->name('order_processing');
-    Route::get('/order-delivered', 'order_delivered')->name('order_delivered');
+    Route::get('/all-order', 'all_order')->name('all_order');
+    Route::get('/order-info/{order_id}', 'order_info')->name('order_info');
+    Route::get('/update-order/{order_id}', 'update_order')->name('update_order');
+    Route::get('/order-search', 'order_search')->name('order_search');
 
     Route::get('/all-blog', 'all_blog')->name('all_blog');
     Route::get('/add-blog', 'add_blog')->name('add_blog');

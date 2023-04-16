@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Edit Blog</h4>
-                    <form class="forms-sample" method="POST" action="{{ url('update-blog/' . $blog->BlogID) }}"
+                    <form class="forms-sample" id="update-form" method="POST" action="{{ url('update-blog/' . $blog->BlogID) }}"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
@@ -44,3 +44,22 @@
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+    $('#update-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to update this blog?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

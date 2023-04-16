@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Testo Admin Dashboard</title>
+
   <!-- plugins:css -->
   <link rel="stylesheet" href="{{ asset('backend/vendors/feather/feather.css') }}">
   <link rel="stylesheet" href="{{ asset('backend/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -14,14 +15,21 @@
   <link rel="stylesheet" href="{{ asset('backend/vendors/simple-line-icons/css/simple-line-icons.css') }}">
   <link rel="stylesheet" href="{{ asset('backend/vendors/css/vendor.bundle.base.css') }}">
   <!-- endinject -->
+
   <!-- Plugin css for this page -->
   <link rel="stylesheet" href="{{ asset('backend/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
   <link rel="stylesheet" href="{{ asset('backend/js/select.dataTables.min.css') }}">
   <!-- End plugin css for this page -->
+
   <!-- inject:css -->
   <link rel="stylesheet" href="{{ asset('backend/css/vertical-layout-light/style.css') }}">
+
   <!-- endinject -->
   <link rel="shortcut icon" href="{{ asset('backend/images/favicon.png') }}" />
+
+  {{-- SWEET ALERT --}}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
 </head>
 <body>
   <div class="container-scroller" style="zoom: 110%">
@@ -67,7 +75,7 @@
                 <p class="mb-1 mt-3 font-weight-semibold" style="font-size:1rem">{{ Session::get('admin_name') }}</p>
               </div>
               <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>Change Password</a>
-              <a class="dropdown-item" href="{{ route('logout') }}"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
+              <a class="dropdown-item btn-signout" href="{{ route('logout') }}"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
             </div>
           </li>
         </ul>
@@ -186,8 +194,7 @@
             </a>
             <div class="collapse" id="order">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{{ route('order_processing') }}">Processing</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{ route('order_delivered') }}">Delivered</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_order') }}">All Order</a></li>
               </ul>
             </div>
           </li>
@@ -261,8 +268,27 @@
   <script src="{{ asset('backend/js/dashboard.js') }}"></script>
   <script src="{{ asset('backend/js/Chart.roundedBarCharts.js') }}"></script>
 
-  @yield('scripts')
+  
+  {{-- ALERT LOGOUT --}}
+  <script>
+    $("a.btn-signout").click(function(event) {
 
+			event.preventDefault();
+			Swal.fire({
+				title: 'Are you sure to sign out?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Sign out',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = $(this).attr("href");
+				}
+			});
+		});
+  </script>
+
+  @yield('scripts')
 </body>
 
 </html>

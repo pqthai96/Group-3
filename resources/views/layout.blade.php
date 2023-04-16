@@ -32,6 +32,10 @@
 	<link rel="apple-touch-icon" href="{{ asset('frontend/images/apple-touch-icon.png') }}">
 	<link rel="icon" href="{{ asset('frontend/images/apple-touch-icon.png') }}" type="image/x-icon">
 
+	{{-- SWEET ALERT --}}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
+
 	<!-- GOOGLE FONTS -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&amp;display=swap"
@@ -158,7 +162,7 @@
 							<ul>
 								<li><a href="{{ route('account') }}">Account Information</a></li>
                                 <li><a href="{{ route('order') }}">My Purchases</a></li>
-                                <li><a href="{{ url('logout') }}">Logout</a></li>
+                                <li><a href="{{ url('logout') }}" class="btn-logout">Logout</a></li>
 							</ul>
 						</li>
                         <?php
@@ -212,6 +216,8 @@
 							<input type="password" id="password" name="password" class="form-control">
 							<span class="text-danger font-weight-bold" id="passwordError"></span>
 						</div>
+						<div class="alert alert-danger" id="loginfailedError"></div>
+						<div class="alert alert-danger" id="loginbannedError"></div>
 						<div class="text-center">
 							<input type="button" onclick="login()" value="Login" class="btn btn-primary" style="background-color: #f5b200">
 						</div>
@@ -233,11 +239,13 @@
 								<label for="newUsername"><h6 class="h6-sm">Username</h6></label>
 								<input type="text" id="newUsername" name="newUsername" class="form-control">
 								<span class="text-danger font-weight-bold" id="newUsernameError"></span>
+								<span class="text-danger font-weight-bold" id="existusernameError"></span>
 							</div>
 							<div class="form-group col-md-6">
 								<label for="newEmail"><h6 class="h6-sm">Email</h6></label>
 								<input type="email" id="newEmail" name="newEmail" class="form-control">
 								<span class="text-danger font-weight-bold" id="newEmailError"></span>
+								<span class="text-danger font-weight-bold" id="existemailError"></span>
 							</div>
 							<div class="form-group col-md-6">
 								<label for="newPassword"><h6 class="h6-sm">Password</h6></label>
@@ -275,7 +283,7 @@
 							<span class="text-danger font-weight-bold" id="newAddressError"></span>
 						</div>
 						<div class="pb-10">
-							<label><h6 class="h6-sm"><input type="checkbox" id="term" name="term" style="width:1rem;height:1rem">    I agree to <a href="#" style="color:blue; text-decoration: underline">the terms and privacy policy.</a></h6></label><br>
+							<label><h6 class="h6-sm"><input type="checkbox" id="term" name="term" style="width:1rem;height:1rem">    I agree to <a href="{{ route('term') }}" style="color:blue; text-decoration: underline">the terms and privacy policy.</a></h6></label><br>
 							<span class="text-danger font-weight-bold" id="termError"></span>
 						</div>
 						<div class="text-center">
@@ -535,6 +543,8 @@
 		//LOGIN
 		$('#emailError').addClass('d-none');
 		$('#passwordError').addClass('d-none');
+		$('#loginfailedError').addClass('d-none');
+		$('#loginbannedError').addClass('d-none');
 
 		function login() {
 			var email = $('#email').val();
@@ -569,6 +579,8 @@
 		$('#newPhoneError').addClass('d-none');
 		$('#newAddressError').addClass('d-none');
 		$('#termError').addClass('d-none');
+		$('#existUsernameError').addClass('d-none');
+		$('#existEmailError').addClass('d-none');
 
 		function register() {
 			var newUsername = $('#newUsername').val();
@@ -600,6 +612,22 @@
 				}
 			})
 		}
+
+		//ALERT LOGOUT
+		$("a.btn-logout").click(function(event) {
+			event.preventDefault();
+			Swal.fire({
+				title: 'Are you sure to log out?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Logout',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.href = $(this).attr("href");
+				}
+			});
+		});
 	</script>
 	
 @yield('scripts')

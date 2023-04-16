@@ -90,7 +90,7 @@
                           </td>
                           <td class="text-center">
                             <a class="btn btn-rounded btn-success" href="{{ url('edit-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
-                            <a class="btn btn-rounded btn-danger" href="{{ url('remove-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                            <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -104,5 +104,23 @@
             </div>
           </div>
         </div>
-        
 @endsection
+
+@section('scripts')
+<script>
+  $("a.btn-delete").click(function(event) {
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure to delete this pizza?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = $(this).attr("href");
+      }
+    });
+  });
+</script>
+@stop

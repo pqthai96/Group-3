@@ -30,6 +30,7 @@
                                 <th>Contact Email</th>
                                 <th>Subject</th>
                                 <th>Message</th>
+                                <th>Contact Date</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -40,7 +41,11 @@
                                 <td>{{ $ct->ContactName }}</td>
                                 <td>{{ $ct->ContactEmail }}</td>
                                 <td>{{ $ct->ContactSubject }}</td>
-                                <td>{{ $ct->Message }}</td>
+                                <td style="white-space:normal; width: 50rem; padding: 0.5rem;">
+                                    <p class="cutoff-text">{{ $ct->Message }} </p>
+                                    <input type="checkbox" class="expand-btn">
+                                </td>
+                                <td>{{ $ct->ContactDate }}</td>
                                 <?php
                                 if($ct->ContactStatus == "processed") {
                                 ?>

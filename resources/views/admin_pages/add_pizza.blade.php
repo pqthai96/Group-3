@@ -8,7 +8,7 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Create a new Pizza</h4>
-                  <form class="forms-sample" method="POST" action="{{ route('save_pizza') }}" enctype="multipart/form-data">
+                  <form class="forms-sample" id="add-form" method="POST" action="{{ route('save_pizza') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                       <label for="pizza_name">Pizza Name</label>
@@ -100,17 +100,6 @@
                     
                     <button type="submit" class="btn btn-primary me-2">Add</button>
                     <button class="btn btn-light" type="reset">Clear</button>
-                    <?php
-                    $msg = Session::get('msg');
-                    if($msg) {
-                    ?>
-                    <span class="alert text-danger">
-                        <strong>{{ $msg }}</strong>
-                    </span>
-                    <?php
-                    Session::put('msg',null);
-                    }
-                    ?>
                   </form>
                 </div>
               </div>
@@ -120,3 +109,22 @@
         <!-- content-wrapper ends -->
         <!-- partial -->
 @endsection
+
+@section('scripts')
+<script>
+    $('#add-form').submit(function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure to add this pizza?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Add',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(this).unbind('submit').submit();
+            }
+        });
+    });
+</script>
+@stop

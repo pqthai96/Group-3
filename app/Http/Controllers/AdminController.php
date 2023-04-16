@@ -50,15 +50,14 @@ class AdminController extends Controller
         return redirect::to('index');
     }
 
+    //Admin
     public function all_admin() {
         $admin = DB::table('Admin')->paginate(8);
         return view('admin_pages.all_admin')->with(['admin' => $admin]);
     }
-
     public function add_admin() {
         return view('admin_pages.add_admin');
     }
-
     public function save_admin(Request $rqst) {
         
         //validate
@@ -66,6 +65,11 @@ class AdminController extends Controller
             'admin_name' => 'required',
             'admin_password' => 'required',
             'admin_password_confirm' => 'required|same:admin_password'
+        ],[
+            'admin_name.required' => 'Admin Name is required.',
+            'admin_password.required' => 'Password is required.',
+            'admin_password_confirm.required' => 'Password Confirm is required.',
+            'admin_password_confirm.same' => 'Password does not match.'
         ]);
 
         //admin
@@ -77,9 +81,46 @@ class AdminController extends Controller
         DB::table('Admin')->insert($admin);
         
         Session::put('msg', 'Added Admin Successfully.');
-        return redirect::to('add-admin');
+        return redirect::to('all-admin');
+    }
+    public function edit_admin($admin_id) {
+        $admin = DB::table('Admin')->where('AdminID', $admin_id)->first();
+        return view('admin_pages.edit_admin')->with(['admin' => $admin]);
+    }
+    public function update_admin(Request $rqst, $admin_id) {
+        
+        //validate
+        $rqst->validate([
+            'admin_name' => 'required',
+            'admin_password' => 'required',
+            'admin_password_confirm' => 'required|same:admin_password'
+        ],[
+            'admin_name.required' => 'Admin Name is required.',
+            'admin_password.required' => 'Password is required.',
+            'admin_password_confirm.required' => 'Password Confirm is required.',
+            'admin_password_confirm.same' => 'Password does not match.'
+        ]);
+
+        //admin
+        $admin = array();
+        $admin['AdminName'] = $rqst->admin_name;
+        $admin['AdminPassword'] = $rqst->admin_password;
+        $admin['Role'] = $rqst->admin_role;
+
+        DB::table('Admin')->where('AdminID', $admin_id)->update($admin);
+        
+        Session::put('msg', 'Updated Admin Successfully.');
+        return redirect::to('all-admin');
+    }
+    public function remove_admin($admin_id) {
+    
+    DB::table('Admin')->where('AdminID', $admin_id)->delete();
+    
+    Session::put('msg', 'Removed Admin Account Successfully.');
+    return redirect::to('all-admin');
     }
 
+    //Pizza
     public function all_pizza() {
         $pizza = DB::table('Product')->where('CategoryID', '1')
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -89,7 +130,6 @@ class AdminController extends Controller
     public function add_pizza() {
         return view('admin_pages.add_pizza');
     }
-
     public function save_pizza(Request $rqst) {
 
         //validate
@@ -158,9 +198,8 @@ class AdminController extends Controller
         DB::table('ProductDetails')->insert($productDetails);
         
         Session::put('msg', 'Added Pizza Successfully.');
-        return redirect::to('add-pizza');
+        return redirect::to('all-pizza');
     }
-
     public function edit_pizza($pizza_id) {
         $pizza = DB::table('Product')->where('Product.ProductID', $pizza_id)
         ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -169,7 +208,6 @@ class AdminController extends Controller
 
         return view('admin_pages.edit_pizza')->with(['pizza' => $pizza]);
     }
-
     public function update_pizza(Request $rqst, $pizza_id) {
         
         //validate
@@ -242,7 +280,6 @@ class AdminController extends Controller
         Session::put('msg', 'Updated Pizza Successfully.');
         return redirect::to('all-pizza');
     }
-
     public function remove_pizza($pizza_id) {
         
         DB::table('ProductDetails')->where('ProductID', $pizza_id)->delete();
@@ -252,12 +289,51 @@ class AdminController extends Controller
         return redirect::to('all-pizza');
     }
     
-
+    //User
     public function all_user() {
         $user = DB::table('User')->paginate(8);
         return view('admin_pages.all_user')->with(['user' => $user]);
     }
+    public function edit_user($user_id) {
+        $user = DB::table('User')->where('UserID', $user_id)->first();
 
+        return view('admin_pages.edit_user')->with(['user' => $user]);
+    }
+    public function update_user(Request $rqst, $userID) {
+        
+        //validate
+        $rqst->validate([
+            'user_name' => 'required',
+            'user_phone' => 'required|numeric|min:0',
+            'user_email' => 'required|email',
+            'user_fullname' => 'required',
+            'user_address' => 'required',
+        ],[
+            'user_name.required' => 'Username is required.',
+            'user_phone.required' => 'Phone Number is required.',
+            'user_phone.numeric' => 'Invalid Phone Number.',
+            'user_email.required' => 'Email is required.',
+            'user_email.email' => 'Invalid Email.',
+            'user_fullname.required' => 'Full name is required.',
+            'user_address.required' => 'Address is required.'
+        ]);
+
+        $user = array();
+        $user['Username'] = $rqst->user_name;
+        $user['Email'] = $rqst->user_email;
+        $user['Phone'] = $rqst->user_phone;
+        $user['Name'] = $rqst->user_fullname;
+        $user['Gender'] = $rqst->user_gender;
+        $user['Address'] = $rqst->user_address;
+        $user['UserStatus'] = $rqst->user_status;
+
+        DB::table('User')->where('UserID', $userID)->update($user);
+        Session::put('msg', 'Updated User Successfully.');
+        
+        return redirect::to('all-user');
+    }
+
+    //Supplement
     public function all_supplement() {
         $side = DB::table('Product')->where('CategoryID', '2')
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -273,11 +349,9 @@ class AdminController extends Controller
             ->select('Product.*', 'ProductDetails.*')->paginate(4, ['*'], 'pageDrink');
         return view('admin_pages.all_supplement')->with(['side' => $side, 'salad' => $salad, 'dessert' => $dessert, 'drink' => $drink]);
     }
-
     public function add_supplement() {
         return view('admin_pages.add_supplement');
     }
-
     public function save_supplement(Request $rqst) {
         
         //validate
@@ -339,27 +413,8 @@ class AdminController extends Controller
         DB::table('ProductDetails')->insert($productDetails);
         
         Session::put('msg', 'Added Supplement Successfully.');
-        return redirect::to('add-supplement');
+        return redirect::to('all-supplement');
     }
-
-    public function order_processing() {
-
-        $order = DB::table('Orders')->where('OrderStatus','Processing')->orderByDesc('OrderDate')
-        ->join('User', 'Orders.UserID', '=', 'User.UserID')
-        ->select('Orders.*', 'User.*')->paginate(8);
-        
-        return view('admin_pages.order_processing')->with(['order' => $order]);
-    }
-
-    public function order_delivered() {
-
-        $order = DB::table('Orders')->where('OrderStatus','Delivered')->orderByDesc('OrderDate')
-        ->join('User', 'Orders.UserID', '=', 'User.UserID')
-        ->select('Orders.*', 'User.*')->paginate(8);
-        
-        return view('admin_pages.order_delivered')->with(['order' => $order]);
-    }
-
     public function edit_supplement($supplement_id) {
         $supplement = DB::table('Product')->where('Product.ProductID', $supplement_id)
         ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -368,7 +423,6 @@ class AdminController extends Controller
 
         return view('admin_pages.edit_supplement')->with(['supplement' => $supplement]);
     }
-
     public function update_supplement(Request $rqst, $supplement_id) {
         
         //validate
@@ -435,7 +489,6 @@ class AdminController extends Controller
         Session::put('msg', 'Updated Supplement Successfully.');
         return redirect::to('all-supplement');
     }
-
     public function remove_supplement($supplement_id) {
         
         DB::table('ProductDetails')->where('ProductID', $supplement_id)->delete();
@@ -445,10 +498,52 @@ class AdminController extends Controller
         return redirect::to('all-supplement');
     }
 
+    //Order
+    public function all_order() {
+
+        $order = DB::table('Orders')->orderByDesc('OrderDate')
+        ->join('User', 'Orders.UserID', '=', 'User.UserID')
+        ->select('Orders.*', 'User.*')->paginate(8);
+        
+        return view('admin_pages.all_order')->with(['order' => $order]);
+    }
+    public function order_info($order_id) {
+        
+        $order = DB::table('Orders')->where('OrderID', $order_id)->first();
+
+        $order_detail = DB::table('OrderDetails')
+            ->join('Product','Product.ProductID','=','OrderDetails.ProductID')
+            ->join('ProductDetails','Product.ProductID','=','ProductDetails.ProductID')
+            ->select('OrderDetails.*','Product.*','ProductDetails.*')
+            ->get();
+
+        return view('admin_pages.order_info')->with(['order' => $order, 'order_detail' => $order_detail]);
+    }
+    public function update_order($order_id) {
+        DB::table('Orders')->where('OrderID', $order_id)->update(['OrderStatus' => 'Delivered']);
+        
+        Session::put('msg', 'Updated Order Status Successfully.');
+        return redirect::to('all-order');
+    }
+    public function order_search(Request $rqst) {
+        
+    $keyword = $rqst->input('search');
+
+    $order_search = DB::table('Orders')->where(function($query) use ($keyword) {
+        $query->where('OrderID', 'LIKE', '%'.$keyword.'%')
+              ->orWhere('Username', 'LIKE', '%'.$keyword.'%');
+        })
+        ->orderByDesc('OrderDate')->join('User', 'Orders.UserID', '=', 'User.UserID')
+        ->select('Orders.*', 'User.*')->paginate(8);
+
+    return view('admin_pages.all_order', compact('order_search'));
+    }
+    
+    //Blog
     public function add_blog() {
         return view('admin_pages.add_blog');
     }
-    public  function  save_blog(Request $rqst){
+    public function save_blog(Request $rqst){
         $rqst->validate([
             'BlogTitle' => 'required',
             'BlogContent' => 'required',
@@ -513,6 +608,7 @@ class AdminController extends Controller
         return view('admin_pages.all_blog')->with(['blog' => $blog]);
     }
 
+    //Promotions
     public function all_promotions(){
         $discount = DB::table('discount')->get();
         foreach ($discount as $item) {
@@ -524,8 +620,7 @@ class AdminController extends Controller
     public function add_promotions(){
         return view('admin_pages.add_promotions');
     }
-    public function save_promotions(Request $request)
-    {
+    public function save_promotions(Request $request) {
         
         $request->validate([
             'DiscountIMG' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -537,7 +632,7 @@ class AdminController extends Controller
             'StartDate' => 'required|date|after_or_equal:today',
             'EndDate' => 'required|date|after_or_equal:StartDate'
         ], [
-            'DiscountIMG.required' => 'please choose image',
+            'DiscountIMG.required' => 'Please choose image',
             'DiscountIMG.image' => 'File upload must be image',
             'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
             'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
@@ -576,7 +671,6 @@ class AdminController extends Controller
         DB::table('discount')->insert($discount);
         return redirect::to('add_promotions')->with('success','Added Discount Successfully.');
     }
-
     public function edit_promotions($DiscountID){
         $discount = DB::table('discount')->where('DiscountID',$DiscountID)->first();
         return view('admin_pages.edit_promotions')->with(['discount' => $discount]);
@@ -592,7 +686,7 @@ class AdminController extends Controller
             'StartDate' => 'required|date|after_or_equal:today',
             'EndDate' => 'required|date|after_or_equal:StartDate'
         ], [
-            'DiscountIMG.mimes' => 'format is jpeg, png, jpg.',
+            'DiscountIMG.mimes' => 'Format is jpeg, png, jpg.',
             'DiscountIMG.max' => 'Size must be smaller than or equal 2MB',
             'DiscountID.required' => 'Please enter the discount code',
             'DiscountID.max' => 'Discount codes cant exceed 20 characters',
@@ -635,22 +729,28 @@ class AdminController extends Controller
         return redirect('all_promotions')->with('success','Remove Promotion Successfully.');
     }
 
+    //Contact Us
     public function all_contact_pending() {
         $contact = DB::table('ContactUs')->where('ContactStatus','pending')->paginate(8);
         return view('admin_pages.all_contact_pending')->with(['contact' => $contact]);
     }
-
     public function all_contact_processed() {
         $contact = DB::table('ContactUs')->where('ContactStatus', 'processed')->paginate(8);
         return view('admin_pages.all_contact_processed')->with(['contact' => $contact]);
     }
-
     public function form_contact($contact_id) {
         $reply = DB::table('ContactUs')->where('ContactID', $contact_id)->first();
         return view('admin_pages.form_contact')->with(['reply' => $reply]);
     }
-
     public function reply_contact(Request $rqst, $contact_id) {
+
+        $rqst->validate([
+            'reply_subject' => 'required',
+            'admin_reply' => 'required'
+        ],[
+            'reply_subject.required' => 'Reply Subject is required.',
+            'admin_reply.required' => 'Admin Reply is required.'
+        ]);
         
         $reply = array();
         $reply['AdminReply'] = $rqst->admin_reply;
@@ -667,7 +767,7 @@ class AdminController extends Controller
         Mail::send('admin_pages.reply_contact',[], function($message) use ($rqst) {
             $message->from('support@testo.vn');
             $message->to($rqst->contact_email);
-            $message->subject('Support From Testo Pizza');
+            $message->subject($rqst->reply_subject);
         });
 
         Session::put('msg', 'Reply to Customer successfully!');

@@ -11,6 +11,17 @@
                     </form>
                   </div>
                   <h4 class="card-title">Administrator Management</h4>
+                  <?php
+                  $msg = Session::get('msg');
+                  if($msg) {
+                  ?>
+                  <div class="alert alert-success">
+                      <strong>{{ $msg }}</strong>
+                  </div>
+                  <?php
+                  Session::put('msg',null);
+                  }
+                  ?>
                   <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -38,8 +49,8 @@
                                 }
                                 ?>
                                 <td class="text-center">
-                                    <a class="btn btn-rounded btn-success"><i class="menu-icon mdi mdi-pencil"></i></a>
-                                    <a class="btn btn-rounded btn-danger"><i class="menu-icon mdi mdi-delete"></i></a>
+                                  <a class="btn btn-rounded btn-success" href="{{ url('edit-admin/'.$ad->AdminID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                                  <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-admin/'.$ad->AdminID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
                                 </td>
                             </tr>
                         </tbody>
@@ -55,3 +66,22 @@
         </div>
         
 @endsection
+
+@section('scripts')
+<script>
+  $("a.btn-delete").click(function(event) {
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure to delete this admin account?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = $(this).attr("href");
+      }
+    });
+  });
+</script>
+@stop
