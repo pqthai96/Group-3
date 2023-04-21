@@ -6,8 +6,8 @@
               <div class="card">
                   <div class="card-body">
                     <div class="col-md-3" style="float: right">
-                    <form class="search-form" action="#">
-                    <input type="search" class="form-control" placeholder="Search Here" title="Search here">
+                    <form class="search-form" action="{{ route('user_search') }}">
+                    <input type="search" name="search" class="form-control" placeholder="Search by Username, Email or Phone" title="Search here">
                     </form>
                   </div>
                   <h4 class="card-title">User Account Management</h4>
@@ -36,8 +36,9 @@
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
-                        @foreach($user as $us)
                         <tbody>
+                          @if(isset($user_search))
+                          @foreach($user_search as $us)
                             <tr>
                                 <td>{{ $us->Username }}</td>
                                 <td>{{ $us->Email }}</td>
@@ -60,11 +61,41 @@
                                     <a class="btn btn-rounded btn-success" href="{{ url('edit-user/'.$us->UserID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
                                 </td>
                             </tr>
+                          @endforeach
                         </tbody>
-                        @endforeach
+                    </table>
+                    <br>
+                    <span style="float:right">{{ $user_search->appends(['search' => request()->query('search')])->links() }}</span>
+                    @else
+                    @foreach($user as $us)
+                            <tr>
+                                <td>{{ $us->Username }}</td>
+                                <td>{{ $us->Email }}</td>
+                                <td>{{ $us->Phone }}</td>
+                                <td>{{ $us->Name }}</td>
+                                <td>{{ $us->Gender }}</td>
+                                <td>{{ $us->Address }}</td>
+                                <?php
+                                if($us->UserStatus == "active") {
+                                ?>
+                                <td class="text-center"><label class="badge badge-success">Active</label></td>
+                                <?php
+                                } else {
+                                ?>
+                                <td class="text-center"><label class="badge badge-warning">Banned</label></td>
+                                <?php
+                                }
+                                ?>
+                                <td class="text-center">
+                                    <a class="btn btn-rounded btn-success" href="{{ url('edit-user/'.$us->UserID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                                </td>
+                            </tr>
+                          @endforeach
+                        </tbody>
                     </table>
                     <br>
                     <span style="float:right">{{ $user->links() }}</span>
+                    @endif
                   </div>
                 </div>
               </div>

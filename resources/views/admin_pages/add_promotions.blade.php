@@ -96,8 +96,7 @@
                                 </div>
                             </div>
                                 <button type="submit" class="btn btn-primary me-2">Create</button>
-                                <button class="btn btn-light" type="button"> <a href="{{ url('all_blog') }}"
-                                        style="text-decoration: none"> Cancel</a></button>
+                                <button class="btn btn-light" type="button"> <a href="{{ url('all_blog') }}" style="text-decoration: none"> Cancel</a></button>
                         </form>
                     </div>
                 </div>

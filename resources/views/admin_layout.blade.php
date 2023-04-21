@@ -74,7 +74,7 @@
               <div class="dropdown-header text-center">
                 <p class="mb-1 mt-3 font-weight-semibold" style="font-size:1rem">{{ Session::get('admin_name') }}</p>
               </div>
-              <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>Change Password</a>
+              <a class="dropdown-item" href="{{ route('view.admin') }}"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i>Change Password</a>
               <a class="dropdown-item btn-signout" href="{{ route('logout') }}"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
             </div>
           </li>

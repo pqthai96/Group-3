@@ -21,7 +21,7 @@ class AdminController extends Controller
         return view('admin_pages.dashboard');
     }
 
-    public function dashboard(Request $rqst) {
+    public function admin_login(Request $rqst) {
 
         //validate
         $rqst->validate([
@@ -48,6 +48,34 @@ class AdminController extends Controller
         Session::put('admin_name', null);
         Session::put('admin_id', null);
         return redirect::to('index');
+    }
+
+    public function view_admin(){
+        return view('admin_pages.adminChange');
+    }
+    public function change_adminPassword(Request $request){
+        $request->validate([
+            'old_Password' => 'required',
+            'new_Password' => 'required|min:3',
+            'comfirm_Password' => 'required|same:new_Password'
+        ],[
+            'old_Password.required' => 'Admin Name is required.',
+            'new_Password.required' => 'Password is required.',
+            'comfirm_Password.required' => 'Password Confirm is required.',
+            'comfirm_Password.same' => 'Password does not match.'
+        ]);
+
+        $old_Password = $request->old_Password;
+        $new_Password = $request->new_Password;
+
+        $adminID = session::get('admin_id');
+        $user = DB::table('Admin')->where('AdminID', $adminID)->first();
+        if ($old_Password !== $user -> AdminPassword) {
+            return Redirect()->back()->with('error', 'Old password incorrect');
+        }
+
+        DB::table('Admin')->where('AdminID', $adminID)->update(['AdminPassword' => $new_Password]);
+        return back()->with('success', 'Password changed successfully.');
     }
 
     //Admin
@@ -288,6 +316,16 @@ class AdminController extends Controller
         Session::put('msg', 'Removed Pizza Successfully.');
         return redirect::to('all-pizza');
     }
+    public function pizza_sort(Request $rqst) {
+        
+    $sortBy = $rqst->input('sort-by');
+
+    $pizza_sort = DB::table('Product')->where('CategoryID', '1')->orderBy($sortBy, 'desc')
+            ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+            ->select('Product.*', 'ProductDetails.*')->paginate(8);
+
+    return view('admin_pages.all_pizza', compact('pizza_sort'));
+    }
     
     //User
     public function all_user() {
@@ -331,6 +369,18 @@ class AdminController extends Controller
         Session::put('msg', 'Updated User Successfully.');
         
         return redirect::to('all-user');
+    }
+    public function user_search(Request $rqst) {
+    $keyword = $rqst->input('search');
+
+    $user_search = DB::table('User')
+    ->where(function($query) use ($keyword) {
+    $query->where('Username', 'LIKE', '%'.$keyword.'%')
+            ->orWhere('Email', 'LIKE', '%'.$keyword.'%')
+            ->orWhere('Phone', 'LIKE', '%'.$keyword.'%');
+    })->paginate(8);
+
+    return view('admin_pages.all_user', compact('user_search'));
     }
 
     //Supplement
@@ -525,6 +575,12 @@ class AdminController extends Controller
         Session::put('msg', 'Updated Order Status Successfully.');
         return redirect::to('all-order');
     }
+    public function cancel_order($order_id) {
+        DB::table('Orders')->where('OrderID', $order_id)->update(['OrderStatus' => 'Cancelled']);
+        
+        Session::put('msg', 'Cancel Order Successfully.');
+        return redirect::to('all-order');
+    }
     public function order_search(Request $rqst) {
         
     $keyword = $rqst->input('search');
@@ -672,7 +728,8 @@ class AdminController extends Controller
         return redirect::to('add_promotions')->with('success','Added Discount Successfully.');
     }
     public function edit_promotions($DiscountID){
-        $discount = DB::table('discount')->where('DiscountID',$DiscountID)->first();
+        $discount = DB::table('Discount')->where('DiscountID',$DiscountID)->select(DB::raw("DiscountID, DiscountName, DiscountIMG, DiscountValue, MinimumAmount, MaximumAmount, DATE_FORMAT(StartDate, '%Y-%m-%d') AS StartDate, DATE_FORMAT(EndDate, '%Y-%m-%d') AS EndDate"))->first();
+
         return view('admin_pages.edit_promotions')->with(['discount' => $discount]);
     }
     public function update_promotions(Request $request,$DiscountID){
@@ -683,7 +740,7 @@ class AdminController extends Controller
             'DiscountName' => 'required',
             'MinimumAmount' => 'required|numeric|min:0',
             'MaximumAmount' => 'required|numeric|min:0',
-            'StartDate' => 'required|date|after_or_equal:today',
+            'StartDate' => 'required|date',
             'EndDate' => 'required|date|after_or_equal:StartDate'
         ], [
             'DiscountIMG.mimes' => 'Format is jpeg, png, jpg.',
@@ -698,7 +755,6 @@ class AdminController extends Controller
             'MaximumAmount.numeric' => 'The maximum amount applicable to the discount must be the number',
             'StartDate.required' => 'Please enter the date your discount will start',
             'StartDate.date' => 'The discount start date must be a valid date',
-            'StartDate.after_or_equal' => 'The discount start date must be greater than or equal to the current date',
             'EndDate.required' => 'Please enter the end date of the discount application',
             'EndDate.date' => 'The end date of the discount must be a valid date',
             'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
@@ -722,7 +778,7 @@ class AdminController extends Controller
             $discount['DiscountIMG'] = 'frontend/images/promotion/' . $new_image;
         }
         DB::table('discount')->where('DiscountID',$DiscountID)->update($discount);
-        return redirect('all_promotions')->with('success','Updated Promotion Successfully.');
+        return redirect('all-promotions')->with('success','Updated Promotion Successfully.');
     }
     public function remove_promotions($DiscountID) {
         DB::table('discount')->where('DiscountID',$DiscountID)->delete();
@@ -731,7 +787,7 @@ class AdminController extends Controller
 
     //Contact Us
     public function all_contact_pending() {
-        $contact = DB::table('ContactUs')->where('ContactStatus','pending')->paginate(8);
+        $contact = DB::table('ContactUs')->where('ContactStatus','pending')->orderByDesc('ContactDate')->paginate(8);
         return view('admin_pages.all_contact_pending')->with(['contact' => $contact]);
     }
     public function all_contact_processed() {
@@ -772,5 +828,29 @@ class AdminController extends Controller
 
         Session::put('msg', 'Reply to Customer successfully!');
         return redirect::to('all-contact-processed');
+    }
+    public function contact_pending_search(Request $rqst) {
+    $keyword = $rqst->input('search');
+
+    $contact_search = DB::table('ContactUs')->where('ContactStatus','pending')
+    ->where(function($query) use ($keyword) {
+    $query->where('ContactName', 'LIKE', '%'.$keyword.'%')
+            ->orWhere('ContactEmail', 'LIKE', '%'.$keyword.'%');
+    })
+    ->orderByDesc('ContactDate')->paginate(8);
+
+    return view('admin_pages.all_contact_pending', compact('contact_search'));
+    }
+    public function contact_processed_search(Request $rqst) {
+    $keyword = $rqst->input('search');
+
+    $contact_search = DB::table('ContactUs')->where('ContactStatus','processed')
+    ->where(function($query) use ($keyword) {
+    $query->where('ContactName', 'LIKE', '%'.$keyword.'%')
+            ->orWhere('ContactEmail', 'LIKE', '%'.$keyword.'%');
+    })
+    ->orderByDesc('ContactDate')->paginate(8);
+
+    return view('admin_pages.all_contact_processed', compact('contact_search'));
     }
 }

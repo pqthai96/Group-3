@@ -161,7 +161,9 @@
 						<li><a href="#">{{ session::get('userName') }}</a>
 							<ul>
 								<li><a href="{{ route('account') }}">Account Information</a></li>
+								@if(DB::table('Orders')->where('UserID', $userID)->exists())
                                 <li><a href="{{ route('order') }}">My Purchases</a></li>
+								@endif
                                 <li><a href="{{ url('logout') }}" class="btn-logout">Logout</a></li>
 							</ul>
 						</li>
@@ -198,103 +200,123 @@
 
 		</div> <!-- End container -->
 	</header> <!-- END HEADER-1 -->
-	
+
 	<!-- FORM LOGIN/REGISTER -->
-	<div id="loginModal" class="modal">
+	<div id="loginModal" class="modal" style="background-color: rgba(0, 0, 0, 0.5)" onclick="closeLogin()">
 		<div class="modal-content card">
 			<button class="close" onclick="closeLogin()">&times;</button>
-			<div class="modal-border">
-					<div class="card-header"><h4 class="h4-xs">Login Form</h4></div>
-            		<div class="card-body">
-						<div class="form-group">
-							<label for="username"><h6 class="h6-sm">Email</h6></label>
-							<input type="text" id="email" name="email" class="form-control">
-							<span class="text-danger font-weight-bold" id="emailError"></span>
-						</div>
-						<div class="form-group">
-							<label for="password"><h6 class="h6-sm">Password</h6></label>
-							<input type="password" id="password" name="password" class="form-control">
-							<span class="text-danger font-weight-bold" id="passwordError"></span>
-						</div>
-						<div class="alert alert-danger" id="loginfailedError"></div>
-						<div class="alert alert-danger" id="loginbannedError"></div>
-						<div class="text-center">
-							<input type="button" onclick="login()" value="Login" class="btn btn-primary" style="background-color: #f5b200">
-						</div>
-						<div><a href="#" onclick="showRegister()" style="color:blue; text-decoration: underline"><h6>Do not have an account?</h6></a></div>
+			<div class="modal-border" onclick="event.stopPropagation()">
+				<div class="card-header"><h4 class="h4-xs">Login Form</h4></div>
+				<div class="card-body">
+					<div class="form-group">
+						<label for="username"><h6 class="h6-sm">Email</h6></label>
+						<input type="text" id="email" name="email" class="form-control">
+						<span class="text-danger font-weight-bold" id="emailError"></span>
+					</div>
+					<div class="form-group">
+						<label for="password"><h6 class="h6-sm">Password</h6></label>
+						<input type="password" id="password" name="password" class="form-control">
+						<span class="text-danger font-weight-bold" id="passwordError"></span>
+					</div>
+					<div class="alert alert-danger" id="loginfailedError"></div>
+					<div class="alert alert-danger" id="loginbannedError"></div>
+					<div class="text-center">
+						<input type="button" onclick="login()" value="Login" class="btn btn-primary" style="background-color: #f5b200">
+					</div>
+					<div>
+						<a href="#" onclick="showRegister()"><h6 style="color:blue; display:inline-block; text-decoration: underline">Do not have an account?</h6></a>
+						<a href="#" onclick="showForgotPassword()" style="float: right"><h6 style="color:blue; text-decoration: underline">Forgot Password?</h6></a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div id="registerModal" class="modal">
+	<div id="forgotPasswordModal" class="modal" style="background-color: rgba(0, 0, 0, 0.5)" onclick="closeForgotPassword()">
 		<div class="modal-content card">
+			<button class="close" onclick="closeForgotPassword()">&times;</button>
+			<div class="modal-border" onclick="event.stopPropagation()">
+				<div class="card-header"><h4 class="h4-xs">Forgot Password</h4></div>
+				<div class="card-body">
+					<div class="form-group">
+						<label for="forgotEmail"><h6 class="h6-sm">Email</h6></label>
+						<input type="text" id="forgotEmail" name="forgotEmail" class="form-control">
+						<span class="text-danger font-weight-bold" id="forgotEmailError"></span>
+					</div>
+					<div class="alert alert-danger" id="emailExistError"></div>
+					<div class="text-center">
+						<input type="button" onclick="post_email()" value="Send Email Reset Password" class="btn btn-primary" style="background-color: #f5b200">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="registerModal" class="modal" style="background-color: rgba(0, 0, 0, 0.5)" onclick="closeRegister()">
+		<div class="modal-content card" onclick="event.stopPropagation()">
 			<span class="close" onclick="closeRegister()">&times;</span>
 			<div class="modal-border">				
 				<div class="card-header"><h4 class="h4-xs">Register Form</h4></div>
-            		<div class="card-body">
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label for="newUsername"><h6 class="h6-sm">Username</h6></label>
-								<input type="text" id="newUsername" name="newUsername" class="form-control">
-								<span class="text-danger font-weight-bold" id="newUsernameError"></span>
-								<span class="text-danger font-weight-bold" id="existusernameError"></span>
-							</div>
-							<div class="form-group col-md-6">
-								<label for="newEmail"><h6 class="h6-sm">Email</h6></label>
-								<input type="email" id="newEmail" name="newEmail" class="form-control">
-								<span class="text-danger font-weight-bold" id="newEmailError"></span>
-								<span class="text-danger font-weight-bold" id="existemailError"></span>
-							</div>
-							<div class="form-group col-md-6">
-								<label for="newPassword"><h6 class="h6-sm">Password</h6></label>
-								<input type="password" id="newPassword" name="newPassword" class="form-control">
-								<span class="text-danger font-weight-bold" id="newPasswordError"></span>
-							</div>
-							<div class="form-group col-md-6">
-								<label for="confirmPassword"><h6 class="h6-sm">Confirm Password</h6></label>
-								<input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
-								<span class="text-danger font-weight-bold" id="confirmPasswordError"></span>
-							</div>
+				<div class="card-body">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="newUsername"><h6 class="h6-sm">Username</h6></label>
+							<input type="text" id="newUsername" name="newUsername" class="form-control">
+							<span class="text-danger font-weight-bold" id="newUsernameError"></span>
+							<span class="text-danger font-weight-bold" id="existusernameError"></span>
 						</div>
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label for="newFullname"><h6 class="h6-sm">Full name</h6></label>
-								<input type="text" id="newFullname" name="newFullname" class="form-control">
-								<span class="text-danger font-weight-bold" id="newFullnameError"></span>
-							</div>
-							<div class="form-group col-md-6">
-								<label for="gender"><h6 class="h6-sm">Gender<h6 class="h6-sm"></label>
-								<select id="gender" name="gender" class="form-control" style="width:16rem; margin-top: 1rem; height: 2.4rem;">
-									<option value="Male">Male</option>
-									<option value="Female">Female</option>
-								</select>
-							</div>
+						<div class="form-group col-md-6">
+							<label for="newEmail"><h6 class="h6-sm">Email</h6></label>
+							<input type="email" id="newEmail" name="newEmail" class="form-control">
+							<span class="text-danger font-weight-bold" id="newEmailError"></span>
+							<span class="text-danger font-weight-bold" id="existemailError"></span>
 						</div>
-						<div class="form-group">
-							<label for="newPhone"><h6 class="h6-sm">Phone number</h6></label>
-							<input type="tel" id="newPhone" name="newPhone" class="form-control">
-							<span class="text-danger font-weight-bold" id="newPhoneError"></span>
+						<div class="form-group col-md-6">
+							<label for="newPassword"><h6 class="h6-sm">Password</h6></label>
+							<input type="password" id="newPassword" name="newPassword" class="form-control">
+							<span class="text-danger font-weight-bold" id="newPasswordError"></span>
 						</div>
-						<div class="form-group">
-							<label for="newAddress"><h6 class="h6-sm">Address</h6></label>
-							<textarea id="newAddress" name="newAddress" class="form-control"></textarea>
-							<span class="text-danger font-weight-bold" id="newAddressError"></span>
+						<div class="form-group col-md-6">
+							<label for="confirmPassword"><h6 class="h6-sm">Confirm Password</h6></label>
+							<input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+							<span class="text-danger font-weight-bold" id="confirmPasswordError"></span>
 						</div>
-						<div class="pb-10">
-							<label><h6 class="h6-sm"><input type="checkbox" id="term" name="term" style="width:1rem;height:1rem">    I agree to <a href="{{ route('term') }}" style="color:blue; text-decoration: underline">the terms and privacy policy.</a></h6></label><br>
-							<span class="text-danger font-weight-bold" id="termError"></span>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="newFullname"><h6 class="h6-sm">Full name</h6></label>
+							<input type="text" id="newFullname" name="newFullname" class="form-control">
+							<span class="text-danger font-weight-bold" id="newFullnameError"></span>
 						</div>
-						<div class="text-center">
-							<input type="button" onclick="register()" value="Create Account" class="btn btn-primary" style="background-color: #f5b200">
+						<div class="form-group col-md-6">
+							<label for="gender"><h6 class="h6-sm">Gender<h6 class="h6-sm"></label>
+							<select id="gender" name="gender" class="form-control" style="width:16rem; margin-top: 1rem; height: 2.4rem;">
+								<option value="Male">Male</option>
+								<option value="Female">Female</option>
+							</select>
 						</div>
+					</div>
+					<div class="form-group">
+						<label for="newPhone"><h6 class="h6-sm">Phone number</h6></label>
+						<input type="tel" id="newPhone" name="newPhone" class="form-control">
+						<span class="text-danger font-weight-bold" id="newPhoneError"></span>
+					</div>
+					<div class="form-group">
+						<label for="newAddress"><h6 class="h6-sm">Address</h6></label>
+						<textarea id="newAddress" name="newAddress" class="form-control"></textarea>
+						<span class="text-danger font-weight-bold" id="newAddressError"></span>
+					</div>
+					<div class="pb-10">
+						<label><h6 class="h6-sm"><input type="checkbox" id="term" name="term" style="width:1rem;height:1rem">    I agree to <a href="{{ route('term') }}" style="color:blue; text-decoration: underline">the terms and privacy policy.</a></h6></label><br>
+						<span class="text-danger font-weight-bold" id="termError"></span>
+					</div>
+					<div class="text-center">
+						<input type="button" onclick="register()" value="Create Account" class="btn btn-primary" style="background-color: #f5b200">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 
 	<!-- END FORM LOGIN/REGISTER -->
 
@@ -417,11 +439,11 @@
 					<div class="footer-contacts mb-40">
 
 						<!-- Address -->
-						<p class="p-xl mt-10">Los Angeles,</p>
-						<p class="p-xl">8721 M Central Avenue, CA 90036</p>
+						<p class="p-xl mt-10">Ho Chi Minh City,</p>
+						<p class="p-xl">275 Nguyen Van Dau, Binh Thanh District</p>
 
 						<!-- Contacts -->
-						<p class="p-lg foo-email">Email: <a href="mailto:yourdomain@mail.com">hello@yourdomain.com</a>
+						<p class="p-lg foo-email">Email: <a href="mailto:support@testo.vn">support@testo.vn</a>
 						</p>
 						<p class="p-lg">Call Now: <span class="yellow-color"><a
 									href="tel:123456789">789-654-3210</a></span></p>
@@ -533,12 +555,10 @@
 					$('#alert-message').fadeIn();
 					setTimeout(function() {
 					$('#alert-message').fadeOut();
-					}, 2000);
+					}, 1000);
                 }
             });
 		});
-	</script>
-	<script>
 
 		//LOGIN
 		$('#emailError').addClass('d-none');
@@ -555,7 +575,52 @@
 				url: "{{ route('login') }}",
 				data: {_token: '{{ csrf_token() }}', email:email, password:password},
 				success: function(data) {
-					location.reload();
+					closeLogin();
+					Swal.fire({
+                        title: data.msg,
+                        icon: 'success',
+                        timer: 3000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        willClose: () => {
+                        location.reload();
+                        }
+                    });
+				},
+				error: function(data){
+					var errors = data.responseJSON;
+					if($.isEmptyObject(errors) == false) {
+						$.each(errors.errors, function(key,value) {
+							var ErrorID = '#' + key + 'Error';
+							$(ErrorID).removeClass("d-none");
+							$(ErrorID).text(value)
+						})
+					}
+				}
+			})
+		}
+
+		//FORGOT PASSWORD
+		$('#forgotEmailError').addClass('d-none');
+		$('#emailExistError').addClass('d-none');
+
+		function post_email() {
+			var forgotEmail = $('#forgotEmail').val();
+
+			$.ajax({
+				type: 'POST',
+				url: "{{ route('post_email') }}",
+				data: {_token: '{{ csrf_token() }}', forgotEmail:forgotEmail},
+				success: function(data) {
+					closeLogin();
+					closeForgotPassword();
+					Swal.fire({
+                        title: data.msg,
+                        icon: 'success',
+                        timer: 3000,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    });
 				},
 				error: function(data){
 					var errors = data.responseJSON;
@@ -598,7 +663,18 @@
 				url: "{{ route('register') }}",
 				data: {_token: '{{ csrf_token() }}', newUsername:newUsername, newEmail:newEmail, newPassword:newPassword, confirmPassword:confirmPassword, newFullname:newFullname, newPhone:newPhone, newAddress:newAddress, term:term, gender:gender},
 				success: function(data) {
-					location.reload();
+					closeLogin();
+					closeRegister();
+					Swal.fire({
+                        title: data.msg,
+                        icon: 'success',
+                        timer: 3000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        willClose: () => {
+                        location.reload();
+                        }
+                    });
 				},
 				error: function(data){
 					var errors = data.responseJSON;

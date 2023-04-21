@@ -29,6 +29,10 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/register', 'register')->name('register');
     Route::get('/logout', 'logout')->name('logout');
 
+    Route::post('/post-email', 'post_email')->name('post_email');
+    Route::get('reset-password/{token}', 'get_password')->name('get_password');
+    Route::post('reset-password', 'update_password')->name('update_password');
+
     Route::get('/cart', 'cart')->name('cart');
     Route::any('/add-to-cart/{id}', 'addToCart')->name('addToCart');
     Route::get('/update-cart', 'updateCart')->name('updateCart');
@@ -44,6 +48,7 @@ Route::controller(HomeController::class)->group(function () {
     Route::post('/change-password','updatePassword')->name('update.Password');
 
     Route::get('/order', 'order')->name('order');
+    Route::get('/order-cancel/{order_id}', 'cancelOrder')->name('cancelOrder');
     Route::post('/review/{product_id}', 'review')->name('review');
 
     Route::get('/blog', 'blog')->name('blog');
@@ -65,8 +70,10 @@ Route::controller(HomeController::class)->group(function () {
 Route::controller(AdminController::class)->group(function () {
     Route::get('/index', 'index')->name('index');
     Route::get('/dashboard', 'show_dashboard')->name('show_dashboard');
-    Route::post('/admin-dashboard', 'dashboard')->name('dashboard');
+    Route::post('/admin-login', 'admin_login')->name('admin_login');
     Route::get('/log-out', 'logout')->name('logout');
+    Route::get('/change-admin-password', 'view_admin')->name('view.admin');
+    Route::post('/change-admin-password', 'change_adminPassword')->name('change.admin');
 
     Route::get('/all-admin', 'all_admin')->name('all_admin');
     Route::get('/add-admin', 'add_admin')->name('add_admin');
@@ -78,6 +85,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/all-user', 'all_user')->name('all_user');
     Route::get('/edit-user/{user_id}', 'edit_user')->name('edit_user');
     Route::post('/update-user/{user_id}', 'update_user')->name('update_user');
+    Route::get('/user-search', 'user_search')->name('user_search');
 
     Route::get('/all-pizza', 'all_pizza')->name('all_pizza');
     Route::get('/add-pizza', 'add_pizza')->name('add_pizza');
@@ -85,6 +93,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/edit-pizza/{pizza_id}', 'edit_pizza')->name('edit_pizza');
     Route::post('/update-pizza/{pizza_id}', 'update_pizza')->name('update_pizza');
     Route::get('/remove-pizza/{pizza_id}', 'remove_pizza')->name('remove_pizza');
+    Route::get('/pizza-sort', 'pizza_sort')->name('pizza_sort');
 
     Route::get('/all-supplement', 'all_supplement')->name('all_supplement');
     Route::get('/add-supplement', 'add_supplement')->name('add_supplement');
@@ -96,6 +105,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/all-order', 'all_order')->name('all_order');
     Route::get('/order-info/{order_id}', 'order_info')->name('order_info');
     Route::get('/update-order/{order_id}', 'update_order')->name('update_order');
+    Route::get('/cancel-order/{order_id}', 'cancel_order')->name('cancel_order');
     Route::get('/order-search', 'order_search')->name('order_search');
 
     Route::get('/all-blog', 'all_blog')->name('all_blog');
@@ -115,5 +125,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/all-contact-pending', 'all_contact_pending')->name('all_contact_pending');
     Route::get('/all-contact-processed', 'all_contact_processed')->name('all_contact_processed');
     Route::get('/form-contact/{contact_id}', 'form_contact')->name('form_contact');
-    Route::post('/reply-contact/{contact_id}', 'reply_contact')->name('reply_contact');
+    Route::post('/reply-contact/{contact_id}', 'reply_contact')->name('reply_contact');    
+    Route::get('/contact-pending-search', 'contact_pending_search')->name('contact_pending_search');
+    Route::get('/contact-processed-search', 'contact_processed_search')->name('contact_processed_search');
 });

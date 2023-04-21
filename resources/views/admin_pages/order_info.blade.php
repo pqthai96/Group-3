@@ -7,14 +7,20 @@
                   <div class="card-body">
                     <h4 class="card-title text-center" style="font-size:1.5rem">Order ID: <span style="text-decoration: underline; font-size:1.5rem; font-weight:bolder">{{ $order->OrderID }}</span></h4>
                     @if($order->OrderStatus == 'Processing')
-                    <div style="float: right">
-                      <a class="btn btn-rounded btn-primary btn-update" href="{{ url('update-order/'.$order->OrderID) }}">Confirm Order Delivered</a>
+                    <div style="float: right;">
+                      <a class="btn btn-rounded btn-warning btn-update" style="width:15rem" href="{{ url('update-order/'.$order->OrderID) }}">Confirm Order Delivered</a>
+                    </div>
+                    <div style="float: right; clear: both; margin-top: 0.5rem">
+                      <a class="btn btn-rounded btn-danger btn-cancel" style="width:15rem" href="{{ url('cancel-order/'.$order->OrderID) }}">Cancel Order</a>
                     </div>
                     @endif
                     <h6 class="h6-sm"><strong>Order Time:</strong> {{ $order->OrderDate }}</h6>
                     <h6 class="h6-sm"><strong>Customer:</strong> {{ $order->CustomerName }} | {{ $order->CustomerPhone }}</h6>
                     <h6 class="h6-sm"><strong>Delivery Address:</strong> {{ $order->CustomerAddress }}</h6>
                     <h6 class="h6-sm"><strong>Order Status:</strong> {{ $order->OrderStatus }}</h6>
+                    @if(isset($order->Note))
+                    <h6 class="h6-sm"><strong>Order Note:</strong> {{ $order->Note }}</h6>
+                    @endif
                     <h4 class="h4-lg text-center" style="font-size:1.5rem; font-weight:bolder">Order Details</h4>
                     <hr>
                   <div class="table-responsive">
@@ -164,6 +170,21 @@
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Update',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = $(this).attr("href");
+      }
+    });
+  });
+
+  $("a.btn-cancel").click(function(event) {
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure to cancel this order?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
       cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {

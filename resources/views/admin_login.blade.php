@@ -34,7 +34,7 @@
               </div>
               <h4>Hello! let's get started</h4>
               <h6 class="fw-light">Sign in to continue.</h6>
-              <form class="pt-3" action="{{ route('dashboard') }}" method="POST">
+              <form class="pt-3" action="{{ route('admin_login') }}" method="POST">
                 @csrf
                 <div class="form-group">
                   <input type="text" class="form-control form-control-lg" id="exampleInputEmail1" name="admin_name" placeholder="Username">
@@ -62,14 +62,6 @@
                   Session::put('msg', null);
                 }
                 ?>
-                <div class="my-2 d-flex justify-content-between align-items-center">
-                  <div class="form-check">
-                    <label class="form-check-label text-muted">
-                      <input type="checkbox" class="form-check-input">
-                      Keep me signed in
-                    </label>
-                  </div>
-                </div>
               </form>
             </div>
           </div>

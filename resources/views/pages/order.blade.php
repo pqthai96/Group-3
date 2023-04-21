@@ -38,20 +38,41 @@
 				</div>	   <!-- End container --> 
 			</div>	<!-- END PAGE HERO -->	
 
+        <div class="print-icon" onclick="window.print()" onmouseover="changeColor(this, '#ccc')" onmouseout="changeColor(this, '#fff')">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+            <i class="fas fa-print"></i>
+            <span style="font-size: 12px; display: block;">Print Order</span>
+            </div>
+        </div>
         <div class="container-xl px-4 mt-4">
+        {{-- failed --}}
         <?php
-        $msg = Session::get('msg');
-        if($msg) {
+        $failed = Session::get('failed');
+        if($failed) {
         ?>
         <br>
         <div class="alert alert-danger">
-            <strong>{{ $msg }}</strong>
+            <strong>{{ $failed }}</strong>
         </div>
         <?php
-        Session::put('msg',null);
+        Session::put('failed',null);
+        }
+        ?>
+        {{-- success --}}
+        <?php
+        $success = Session::get('success');
+        if($success) {
+        ?>
+        <br>
+        <div class="alert alert-success">
+            <strong>{{ $success }}</strong>
+        </div>
+        <?php
+        Session::put('success',null);
         }
         ?>
         
+        {{-- get userID --}}
         <?php
             $userID =  Session::get('userID');
         ?>
@@ -60,9 +81,11 @@
         <div class="card mb-4">
             <div class="card-header"><h5 class="h5-xs">{{ $uo->OrderID }} <span class="font-italic">({{ $uo->OrderDate }})</span></h5></div>
             <div class="card-body">
-                <div style="float:right">
-                    <button class="btn" style="background-color: #f5b200">Print Receipt</button>
+                @if($uo->OrderStatus == 'Processing')
+                <div class="no-print" style="float:right;">
+                    <a class="btn btn-primary btn-cancel" href="{{ url('order-cancel/'.$uo->OrderID) }}" style="float:right;background-color: #e3000e; width:15rem">Cancel Order</a>
                 </div>
+                @endif
                 <h6 class="h6-sm">Customer: {{ $uo->CustomerName }} | {{ $uo->CustomerPhone }}</h6>
                 <h6 class="h6-sm">Delivery Address: {{ $uo->CustomerAddress }}</h6>
                 <h6 class="h6-sm">Order Status: {{ $uo->OrderStatus }}</h6>
@@ -132,11 +155,11 @@
                                 ?>
                                 </div>
                                 <?php
-                                } else {
+                                } else if($uo->OrderStatus == 'Delivered') {
                                 ?>
                                     <form method="POST" id="update-rating" action="{{ url('review/' . $pd->ProductID) }}">
                                         @csrf
-                                        <button class="btn" type="submit" style="float:right;background-color:#f5b200">Submit</button>
+                                        <button class="btn btn-primary" type="submit" style="float:right;background-color:#f5b200">Submit</button>
                                         <textarea class="form-control" style="width:70%;height:10%" name="review" id="review" placeholder="Your Review"></textarea>
                                         <div class="item-rating" id="item-rating-{{ $pd->OrderDetailsID }}">
                                             <div class="stars-rating stars-js stars-lg">
@@ -151,7 +174,7 @@
                                         </div>
                                     </form>
                                 <?php
-                                }
+                                } else {}
                                 ?>
                                 </td>
                                 <?php
@@ -214,7 +237,7 @@
                                 <td class="text-center"><h6 class="h6-sm">${{ $totalPayment }}</h6></td>
                             </tr>
                         </tbody>
-                    </table>        
+                    </table>
             </div>
         </div>
         @endforeach
@@ -252,5 +275,24 @@ $('#update-rating').submit(function(event) {
         }
     });
 });
+
+    $("a.btn-cancel").click(function(event) {
+			event.preventDefault();
+			Swal.fire({
+				title: 'Are you sure to cancel this order?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'Cancel'
+			}).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = $(this).attr("href");
+            }
+			});
+		});
+
+function changeColor(element, color) {
+  element.style.backgroundColor = color;
+}
 </script>
 @stop

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
@@ -88,7 +89,7 @@ class HomeController extends Controller
             Session::put('Phone', $user->Phone);
             Session::put('Gender', $user->Gender);
             Session::put('Address', $user->Address);
-            return response()->json(['msg' => 'Login successfully']);
+            return response()->json(['msg' => 'Login successfully!']);
         } else {
             return response()->json(['errors' => ['loginfailed' => 'Wrong Email or Password!']], 422);
         }
@@ -97,7 +98,7 @@ class HomeController extends Controller
     public function register(Request $rqst) {
         $rqst->validate([
             'newUsername' => 'required',
-            'newPassword' => 'required',
+            'newPassword' => 'required|min:8',
             'confirmPassword' => 'required|same:newPassword',
             'newEmail' => 'required|email',
             'newPhone' => 'required',
@@ -130,6 +131,7 @@ class HomeController extends Controller
             $data['Name'] = $rqst->newFullname;
             $data['Gender'] = $rqst->gender;
             $data['Address'] = $rqst->newAddress;
+            $data['UserStatus'] = 'active';
 
             $userID = DB::table('User')->insertGetId($data);
 
@@ -140,6 +142,8 @@ class HomeController extends Controller
             Session::put('Phone', $rqst->newPhone);
             Session::put('Gender', $rqst->gender);
             Session::put('Address', $rqst->newAddress);
+
+            return response()->json(['msg' => 'Register successfully!']);
         }
     }
     
@@ -154,9 +158,57 @@ class HomeController extends Controller
         return redirect::to('home');
     }
 
+    public function post_email(Request $rqst) {
+
+        $rqst->validate([
+            'forgotEmail' => 'required|email',
+        ]);
+
+        if (DB::table('User')->where('Email', $rqst->forgotEmail)->exists()) {
+            // $token = Str::random(60);
+            DB::table('PasswordReset')->insert(
+                ['Email' => $rqst->forgotEmail, 'Token' => $rqst->_token, 'CreateAt' => Carbon::now()]
+            );  
+            Mail::send('pages.password.verify', ['token' => $rqst->_token], function ($message) use ($rqst) {
+                $message->from('support@testo.vn');
+                $message->to($rqst->forgotEmail);
+                $message->subject('Reset Password Notification');
+            });
+            return response()->json(['msg' => 'We have e-mailed your password reset link! Please check your inbox email.']);
+        } else {
+            return response()->json(['errors' => ['emailExist' => 'Email does not exist!']], 422);
+        }
+    }
+
+    public function get_password($token) {
+        return view('pages.password.reset', ['token' => $token]);
+    }
+
+    public function update_password(Request $rqst) {
+        
+        $rqst->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8',
+            'password_confirmation' => 'required|same:password',
+        ]);
+        
+        $updatePassword = DB::table('PasswordReset')
+                            ->where(['Email' => $rqst->email, 'Token' => $rqst->token])
+                            ->first();
+        if (!$updatePassword) {
+            return back()->withInput()->with('error', 'Invalid token!');
+        } else {
+            DB::table('User')->where('Email', $rqst->email)->update(['password' => $rqst->password]);
+            DB::table('PasswordReset')->where(['email'=> $rqst->email])->delete();
+            
+            return back()->with('success', 'Your password has been changed!');
+        }
+    }
+
     public function cart() {
         return view('pages.cart');
     }
+
     public function addToCart(Request $rqst, $id) {
         $pizza = DB::table('Product')->where('Product.ProductID', $id)
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
@@ -173,44 +225,59 @@ class HomeController extends Controller
             $price = $size == "S" ? 'PriceS' : ($size == "M" ? 'PriceM' : 'PriceL');
             $quantity = $rqst->quantity;
             
+            //stock
+            $stock = $size == "S" ? 'QuantityS' : ($size == "M" ? 'QuantityM' : 'QuantityL');
+            $quantity_stock = $pizza->$stock;
+            
             $cart = session()->get('cart');
 
             // if cart is empty then this the first product
             if (!$cart) {
-                $cart[$id . '_' . $size] = [
+                if($quantity_stock < $quantity) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    $cart[$id . '_' . $size] = [
+                            "ProductName" => $pizza->ProductName,
+                            "Quantity" => $quantity,
+                            "ImageURL" => $pizza->ImageURL,
+                            "Size" => $size,
+                            "Price" => $pizza->$price
+                        ];
+                    session()->put('cart', $cart);
+                    
+                    $cart_count = count((array) session('cart'));
+                    return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
+                }
+            }
+
+            // if cart not empty then check if this product exist then increment quantity
+            if (isset($cart[$id . '_' . $size])) {
+                if (($quantity + $cart[$id . '_' . $size]['Quantity']) > $quantity_stock) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    // check if size match
+                    $cart[$id . '_' . $size]['Quantity'] = $cart[$id . '_' . $size]['Quantity'] + $quantity;
+                    session()->put('cart', $cart);
+
+                    $cart_count = count((array) session('cart'));
+                    return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
+                }
+            } else {
+                if($quantity_stock < $quantity) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    $cart[$id . '_' . $size] = [
                         "ProductName" => $pizza->ProductName,
                         "Quantity" => $quantity,
                         "ImageURL" => $pizza->ImageURL,
                         "Size" => $size,
                         "Price" => $pizza->$price
                     ];
-                session()->put('cart', $cart);
-                
-                $cart_count = count((array) session('cart'));
-                return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
-            }
-
-            // if cart not empty then check if this product exist then increment quantity
-            if (isset($cart[$id . '_' . $size])) {
-                // check if size match
-                    $cart[$id . '_' . $size]['Quantity'] = $cart[$id . '_' . $size]['Quantity'] + $quantity;
                     session()->put('cart', $cart);
-                    
+
                     $cart_count = count((array) session('cart'));
                     return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
-            } else {
-                $cart[$id . '_' . $size] = [
-                    "ProductName" => $pizza->ProductName,
-                    "Quantity" => $quantity,
-                    "ImageURL" => $pizza->ImageURL,
-                    "Size" => $size,
-                    "Price" => $pizza->$price
-                ];
-                session()->put('cart', $cart);
-                
-                $cart_count = count((array) session('cart'));
-                return response()->json(['msg' => 'Product added to cart successfully! Please check your cart.', 'cart_count' => $cart_count]);
-
+                }
             }
         } else {
             if(!$pizza) {
@@ -218,13 +285,17 @@ class HomeController extends Controller
                 abort(404);
 
             }
-
+            
+            $quantity_stock = $pizza->QuantityM;
+            
             $cart = session()->get('cart');
 
             // if cart is empty then this the first product
             if(!$cart) {
-
-                $cart = [
+                if($quantity_stock < 1) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    $cart = [
                         $id => [
                             "ProductName" => $pizza->ProductName,
                             "Quantity" => 1,
@@ -232,53 +303,99 @@ class HomeController extends Controller
                             "Size" => null,
                             "Price" => $pizza->PriceM,
                         ]
-                ];
+                    ];
 
-                session()->put('cart', $cart);
+                    session()->put('cart', $cart);
 
-                $cart_count = count((array) session('cart'));
-                return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                    $cart_count = count((array) session('cart'));
+                    return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                }
             }
 
             // if cart not empty then check if this product exist then increment quantity
             if(isset($cart[$id])) {
+                if ((1 + $cart[$id]['Quantity']) > $quantity_stock) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
 
-                $cart[$id]['Quantity']++;
+                    $cart[$id]['Quantity']++;
 
-                session()->put('cart', $cart);
+                    session()->put('cart', $cart);
 
-                $cart_count = count((array) session('cart'));
-                return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                    $cart_count = count((array) session('cart'));
+                    return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                }
+            } else {
+            if($quantity_stock < 1) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    // if item not exist in cart then add to cart with quantity = 1
+                    $cart[$id] = [
+                        "ProductName" => $pizza->ProductName,
+                        "Quantity" => 1,
+                        "ImageURL" => $pizza->ImageURL,
+                        "Size" => null,
+                        "Price" => $pizza->PriceM
+                    ];
 
+                    session()->put('cart', $cart);
+
+                    $cart_count = count((array) session('cart'));
+                    return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
+                }
             }
-
-            // if item not exist in cart then add to cart with quantity = 1
-            $cart[$id] = [
-                "ProductName" => $pizza->ProductName,
-                "Quantity" => 1,
-                "ImageURL" => $pizza->ImageURL,
-                "Size" => null,
-                "Price" => $pizza->PriceM
-            ];
-
-            session()->put('cart', $cart);
-
-            $cart_count = count((array) session('cart'));
-            return response()->json(['msg' => 'Product added to cart successfully!', 'cart_count' => $cart_count]);
         }
     }
+    
     public function updateCart(Request $rqst) {
-        if($rqst->id && $rqst->quantity) {
-            $carts = session()->get('cart');
-            $carts[$rqst->id]['Quantity'] = $rqst->quantity;
-            session()->put('cart', $carts);
+        if ($rqst->id && $rqst->quantity) {
+            if (substr($rqst->id, -2) == '_M' || substr($rqst->id, -2) == '_S' || substr($rqst->id, -2) == '_L') {
+                $id = substr($rqst->id, 0, -2);
+                $size = substr($rqst->id, -1);
+                
+                $product = DB::table('Product')->where('Product.ProductID', $id)
+                    ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+                    ->select('Product.*', 'ProductDetails.*')->first();
+                $stock = $size == "S" ? 'QuantityS' : ($size == "M" ? 'QuantityM' : 'QuantityL');
+                $quantity_stock = $product->$stock;
 
-            $subTotal = '$' . $carts[$rqst->id]['Quantity'] * $carts[$rqst->id]['Price'];
-            $total = '$' . $this->getCartTotal();
+                $carts = session()->get('cart');
 
-            return response()->json(['msg' => 'Cart updated successfully! Please re-apply your voucher code if you have!', 'total' => $total, 'subTotal' => $subTotal]);
+                if ($quantity_stock < $rqst->quantity) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    $carts[$id . '_' . $size]['Quantity'] = $rqst->quantity;
+                    session()->put('cart', $carts);
+
+                    $subTotal = '$' . $carts[$id . '_' . $size]['Quantity'] * $carts[$id . '_' . $size]['Price'];
+                    $total = '$' . $this->getCartTotal();
+
+                    return response()->json(['msg' => 'Cart updated successfully! Please re-apply your voucher code if you have!', 'total' => $total, 'subTotal' => $subTotal]);
+                }
+            } else {
+                $id = $rqst->id;
+                
+                $product = DB::table('Product')->where('Product.ProductID', $id)
+                    ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+                    ->select('Product.*', 'ProductDetails.*')->first();
+                $quantity_stock = $product->QuantityM;
+                
+                $carts = session()->get('cart');
+                if ($quantity_stock < $rqst->quantity) {
+                    return response()->json(['msg' => 'Out of stock! Add to cart failed! We only have ' . $quantity_stock . ' units left.']);
+                } else {
+                    $carts[$id]['Quantity'] = $rqst->quantity;
+                    session()->put('cart', $carts);
+
+                    $subTotal = '$' . $carts[$id]['Quantity'] * $carts[$id]['Price'];
+                    $total = '$' . $this->getCartTotal();
+
+                    return response()->json(['msg' => 'Cart updated successfully! Please re-apply your voucher code if you have!', 'total' => $total, 'subTotal' => $subTotal]);
+                }
+            }
         }
     }
+    
     public function removeCart(Request $rqst) {
         if($rqst->id) {
             $carts = session()->get('cart');
@@ -488,10 +605,17 @@ class HomeController extends Controller
         return view('pages.order')->with(['userOrder' => $userOrder, 'userOrderDetails' => $userOrderDetails]);
     }
 
+    public function cancelOrder($order_id) {
+        DB::table('Orders')->where('OrderID', $order_id)->update(['OrderStatus' => 'Cancelled']);
+        
+        Session::put('success', 'Cancel Order Successfully.');
+        return redirect::to('order');
+    }
+
     public function review(Request $rqst, $product_id) {
 
         if ($rqst->rating == null) {
-            Session::put('msg', 'Please choose star you want to rating!');
+            Session::put('failed', 'Please choose star you want to rating!');
             return redirect::to('order');
         } else {
 
@@ -506,6 +630,7 @@ class HomeController extends Controller
             $rating['RatingDate'] = $date;
 
             DB::table('Rating')->insert($rating);
+            Session::put('success', 'Rating Product Successfully!');
             return redirect::to('order');
         }
     }
@@ -566,5 +691,4 @@ class HomeController extends Controller
         $blog = DB::table('blog')->where('blog.BlogID', $id)->get();
         return view('pages.single-blog')->with(['blog'=> $blog]);
     }
-
 }

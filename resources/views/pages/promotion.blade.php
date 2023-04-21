@@ -61,6 +61,7 @@
                 @endforeach
             </div>
         </div> <!-- END GIFT CARDS -->
+    </div>
     @endsection
 
     @section('scripts')

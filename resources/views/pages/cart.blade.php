@@ -112,7 +112,7 @@
                                             ?>
 									      	<td style="text-align:center" data-label="Price" class="product-price"><h5 class="h5-md">${{ $details['Price'] }}</h5></td>
 									      	<td style="text-align:center" data-label="Quantity" class="product-qty">
-									      		<input class="qty quantity" type="number" min="1" max="20" value="{{ $details['Quantity'] }}" style="margin-bottom:13%">
+									      		<input class="qty quantity" type="number" min="1" max="20" value="{{ $details['Quantity'] }}" style="margin-bottom:13%" oninput="if(parseInt(this.value) < parseInt(this.min)) { this.value = this.min; } else if(parseInt(this.value) > parseInt(this.max)) { this.value = this.max; }">
 									      	</td>
 									      	<td style="text-align:center" data-label="Total" class="product-price-total"><h5 class="h5-md product_subtotal">${{ $details['Price'] * $details['Quantity'] }}</h5></td>
                                             <td style="text-align:center" data-label="Update" class="td-trash update-cart-url" data-url="{{ route('updateCart') }}">
@@ -243,7 +243,7 @@
 							$('#alert-message').fadeIn();
 							setTimeout(function() {
 							$('#alert-message').fadeOut();
-							}, 2000);
+							}, 1000);
 							$(".discount-amount").html('$' + 0);
 						}
 					})
@@ -282,7 +282,7 @@
 							$('#alert-message').fadeIn();
 							setTimeout(function() {
 							$('#alert-message').fadeOut();
-							}, 2000);
+							}, 1000);
 							$(".discount-amount").html('$' + 0);
 						}
 					})
@@ -309,7 +309,7 @@
 					$('#alert-message').fadeIn();
 					setTimeout(function() {
 					$('#alert-message').fadeOut();
-					}, 2000);
+					}, 1000);
 					//luubien
 					$(".discount-amount").html('$' + response.discountAmount);
 					$(".total-payment").html('$' + response.totalPayment);
@@ -349,7 +349,7 @@
 							$('#alert-message').fadeIn();
 							setTimeout(function() {
 							$('#alert-message').fadeOut();
-						}, 2000);
+						}, 1000);
 						}
 					} else {
 						document.getElementById("loginModal").style.display = "block";
@@ -357,7 +357,7 @@
 						$('#alert-message').fadeIn();
 						setTimeout(function() {
 						$('#alert-message').fadeOut();
-						}, 2000);
+						}, 1000);
 					}
 				}
 			});

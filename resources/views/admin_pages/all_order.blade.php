@@ -5,7 +5,7 @@
             <div class="col-lg-12 grid-margin stretch-car">
               <div class="card">
                   <div class="card-body">
-                    <div class="col-md-3" style="float: right">
+                    <div class="col-md-3" style="float:right">
                       <form class="search-form" method="GET" action="{{ route('order_search') }}">
                       <input type="search" name="search" class="form-control" placeholder="Search by OrderID or Username" title="Search here">
                       </form>
@@ -49,13 +49,17 @@
                                 <td class="text-center">{{ $or->CustomerAddress }}</td>
                                 <td class="text-center">{{ $or->PaymentMethod }}</td>
                                 <?php
-                                if($or->OrderStatus == 'Processing') {
+                                if($or->OrderStatus == "Processing") {
                                 ?>
                                 <td class="text-center"><label class="badge badge-warning">Processing</label></td>
                                 <?php
-                                } else {
+                                } else if ($or->OrderStatus =="Delivered") {
                                 ?>
                                 <td class="text-center"><label class="badge badge-success">Delivered</label></td>
+                                <?php 
+                                } else {
+                                ?>
+                                <td class="text-center"><label class="badge badge-dark">Cancelled</label></td>
                                 <?php
                                 }
                                 ?>
@@ -79,13 +83,17 @@
                                 <td class="text-center">{{ $or->CustomerAddress }}</td>
                                 <td class="text-center">{{ $or->PaymentMethod }}</td>
                                 <?php
-                                if($or->OrderStatus == 'Processing') {
+                                if($or->OrderStatus == "Processing") {
                                 ?>
                                 <td class="text-center"><label class="badge badge-warning">Processing</label></td>
                                 <?php
-                                } else {
+                                } else if ($or->OrderStatus =="Delivered") {
                                 ?>
                                 <td class="text-center"><label class="badge badge-success">Delivered</label></td>
+                                <?php 
+                                } else {
+                                ?>
+                                <td class="text-center"><label class="badge badge-dark">Cancelled</label></td>
                                 <?php
                                 }
                                 ?>

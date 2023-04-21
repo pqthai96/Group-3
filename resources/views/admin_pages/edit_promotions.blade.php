@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="DiscountDate">Start Date</label>
-                                    <input type="text" class="form-control" id="StartDate" name="StartDate"
+                                    <input type="date" class="form-control" id="StartDate" name="StartDate"
                                         value="{{ $discount->StartDate }}" placeholder="Start Date">
                                     @error('StartDate')
                                         <span class="alert text-danger">
@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="DiscountDate">End Date</label>
-                                    <input type="text" class="form-control" id="EndDate" name="EndDate"
+                                    <input type="date" class="form-control" id="EndDate" name="EndDate"
                                         value="{{ $discount->EndDate }}" placeholder="End Date">
                                     @error('EndDate')
                                         <span class="alert text-danger">

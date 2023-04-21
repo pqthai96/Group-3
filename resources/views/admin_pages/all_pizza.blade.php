@@ -5,9 +5,13 @@
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                   <div class="card-body">
-                    <div class="col-md-3" style="float: right">
-                    <form class="search-form" action="#">
-                    <input type="search" class="form-control" placeholder="Search Here" title="Search here">
+                  <div class="col-md-3" style="float:right">
+                    <form action="{{ route('pizza_sort') }}" method="GET" id="sort-form">
+                      <select name="sort-by" id="sort-by" class="form-control">
+                          <option value="" disabled selected>Sort By (Descending Sort)</option>
+                          <option value="ProductSoldCount">Sold Count</option>
+                          <option value="ProductTotalRating">Total Rating</option>
+                      </select>
                     </form>
                   </div>
                   <h4 class="card-title">Pizza Listing</h4>
@@ -56,7 +60,51 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach($pizza as $pz)
+                        @if(isset($pizza_sort))
+                        @foreach($pizza_sort as $pz)
+                        <tr>
+                          <td class="py-1">
+                            <img src="{{ $pz->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
+                          </td>
+                          <td>
+                            <strong class="cutoff-text">{{ $pz->ProductName }}</strong>
+                          </td>
+                          <td style="white-space:normal; padding:0%">
+                            {{ $pz->Description }}
+                          </td>
+                          <td>
+                            Small: <br>
+                            Medium: <br>
+                            Large:
+                          </td>
+                          <td>
+                            <strong class="cutoff-text">${{ $pz->PriceS }}</strong> <br> 
+                            <strong class="cutoff-text">${{ $pz->PriceM }}</strong> <br> 
+                            <strong class="cutoff-text">${{ $pz->PriceL}}</strong>
+                          </td>
+                          <td class="text-center">
+                            <strong class="cutoff-text">{{ $pz->QuantityS }}</strong> <br> 
+                            <strong class="cutoff-text">{{ $pz->QuantityM }}</strong> <br> 
+                            <strong class="cutoff-text">{{ $pz->QuantityL }}</strong>
+                          </td>
+                          <td class="text-center">
+                            <strong class="cutoff-text">{{ $pz->ProductSoldCount }}</strong>
+                          </td>
+                          <td class="text-center">
+                            <strong class="cutoff-text">{{ $pz->ProductTotalRating }}</strong>
+                          </td>
+                          <td class="text-center">
+                            <a class="btn btn-rounded btn-success" href="{{ url('edit-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-pencil"></i></a>
+                            <a class="btn btn-rounded btn-danger btn-delete" href="{{ url('remove-pizza/'.$pz->ProductID) }}"><i class="menu-icon mdi mdi-delete"></i></a>
+                          </td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                    <br>
+                    <span style="float:right">{{ $pizza_sort->appends(['sort-by' => request()->query('sort-by')])->links() }}</span>
+                    @else
+                    @foreach($pizza as $pz)
                         <tr>
                           <td class="py-1">
                             <img src="{{ $pz->ImageURL }}" alt="image" style="width: 100px; height: 67px; border-radius:0%;"/>
@@ -98,6 +146,7 @@
                     </table>
                     <br>
                     <span style="float:right">{{ $pizza->links() }}</span>
+                    @endif
                   </div>
                 </div>
               </div>
@@ -121,6 +170,13 @@
         window.location.href = $(this).attr("href");
       }
     });
+  });
+
+//select sort
+  const selectSortBy = document.getElementById('sort-by');
+  selectSortBy.addEventListener('change', function() {
+      const form = document.getElementById('sort-form');
+      form.submit();
   });
 </script>
 @stop

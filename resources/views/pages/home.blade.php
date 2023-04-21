@@ -215,9 +215,6 @@
 			</div> <!-- End container -->
 		</section> <!-- END ABOUT-3 -->
 
-
-
-
 		<!-- PROMO-2
 			============================================= -->
 		<section id="promo-2" class="promo-section division">
@@ -252,7 +249,7 @@
 				</div> <!-- End row -->
 			</div> <!-- End container -->
 		</section> <!-- END PROMO-2 -->
-
+		
 		<!-- MENU-8
 			============================================= -->
 		<section id="menu-8" class="wide-70 pb-15 menu-section division">

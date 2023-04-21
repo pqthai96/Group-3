@@ -46,6 +46,7 @@ $(document).ready(function () {
         var target = this.hash,
             $target = jQuery(target);
 
+
         $("html, body")
             .stop()
             .animate(
@@ -543,6 +544,14 @@ function showLogin() {
 
 function closeLogin() {
     document.getElementById("loginModal").style.display = "none";
+}
+
+function showForgotPassword() {
+    document.getElementById("forgotPasswordModal").style.display = "block";
+}
+
+function closeForgotPassword() {
+    document.getElementById("forgotPasswordModal").style.display = "none";
 }
 
 function showRegister() {

@@ -92,8 +92,8 @@
                                     <!-- Title -->
                                     <p class="p-md">P: +84 90 380 8005</p>
                                     <p class="p-md">F: +84 90 380 8005</p>
-                                    <p class="p-md">E: <a href="mailto:yourdomain@mail.com"
-                                            class="yellow-color">hello@gmail.com</a></p>
+                                    <p class="p-md">E: <a href="mailto:support@testo.vn"
+                                            class="yellow-color">support@testo.vn</a></p>
 
                                 </div>
                             </div>

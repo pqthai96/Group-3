@@ -133,9 +133,7 @@
                         @enderror
                     </div>
                     <!-- Save changes button-->
-                    <button class="btn btn-primary" type="submit" style="float: right; background-color: #f5b200">
-                        update
-                    </button>
+                    <button class="btn btn-primary" type="submit" style="float: right; background-color: #f5b200">Update</button>
                 </form>
                 <a href="{{ route('view.Password') }}" class="btn btn-primary" style="float: left; background-color: #f5b200">Change Password</a>
             </div>

@@ -88,7 +88,7 @@
                                 <h6 class="h6-xs">Confirm password</h6>
                             </label>
                             <input class="form-control" id="comfirm_Password" name="comfirm_Password" type="password"
-                                placeholder="Enter Confirm Password">
+                                placeholder="Confirm your new password">
                             @error('comfirm_Password')
                                 <span class="alert text-danger">
                                     <strong>{{ $message }}</strong>

@@ -166,7 +166,7 @@
                                         </li>
                                     </ul>
 
-								<input class="qty" id="quantity" name="quantity" type="number" min="1" max="20" value="1">
+								<input class="qty" id="quantity" name="quantity" type="number" min="1" max="20" value="1" oninput="if(parseInt(this.value) < parseInt(this.min)) { this.value = this.min; } else if(parseInt(this.value) > parseInt(this.max)) { this.value = this.max; }">
 
 								<!-- Add To Cart -->
 								<div class="add-to-cart-btn bg-yellow ico-20 text-center">
