@@ -15,9 +15,9 @@
                     </div>
                     @endif
                     <h6 class="h6-sm"><strong>Order Time:</strong> {{ $order->OrderDate }}</h6>
-                    <h6 class="h6-sm"><strong>Customer:</strong> {{ $order->CustomerName }} | {{ $order->CustomerPhone }}</h6>
+                    <h6 class="h6-sm"><strong>Customer:</strong> {{ $order->CustomerName }} - {{ $order->CustomerPhone }}</h6>
                     <h6 class="h6-sm"><strong>Delivery Address:</strong> {{ $order->CustomerAddress }}</h6>
-                    <h6 class="h6-sm"><strong>Order Status:</strong> {{ $order->OrderStatus }}</h6>
+                    <h6 class="h6-sm"><strong>Order Status:</strong> {{ $order->OrderStatus }}</h6><br>
                     @if(isset($order->Note))
                     <h6 class="h6-sm"><strong>Order Note:</strong> {{ $order->Note }}</h6>
                     @endif

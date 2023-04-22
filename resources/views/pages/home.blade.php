@@ -321,7 +321,7 @@
 
 											<!-- Add To Cart -->
 											<div class="add-to-cart bg-yellow ico-10">
-												<a href="{{ url('pizza/'.$pz->ProductID) }}"><span class="flaticon-shopping-bag"></span> Add to Cart</a>
+												<a href="{{ url('pizza/'.$pz->ProductID) }}"><span class="flaticon-shopping-bag"></span> More Details</a>
 											</div>
 
 										</div>

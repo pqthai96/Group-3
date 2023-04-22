@@ -6,9 +6,9 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="col-md-3" style="float: right">
-                            <form class="search-form" action="#">
+                            {{-- <form class="search-form" action="#">
                                 <input type="search" class="form-control" placeholder="Search Here" title="Search here">
-                            </form>
+                            </form> --}}
                         </div>
                         <h4 class="card-title">Promotion Management</h4>
                         @if (session('success'))

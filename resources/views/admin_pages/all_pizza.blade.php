@@ -8,9 +8,11 @@
                   <div class="col-md-3" style="float:right">
                     <form action="{{ route('pizza_sort') }}" method="GET" id="sort-form">
                       <select name="sort-by" id="sort-by" class="form-control">
-                          <option value="" disabled selected>Sort By (Descending Sort)</option>
-                          <option value="ProductSoldCount">Sold Count</option>
-                          <option value="ProductTotalRating">Total Rating</option>
+                          <option value="" disabled selected>Sort By (Sold | Rating)</option>
+                          <option value="low_soldcount">Sold Count (low to high)</option>
+                          <option value="high_soldcount">Sold Count (high to low)</option>
+                          <option value="low_totalrating">Total Rating (low to high)</option>
+                          <option value="high_totalrating">Total Rating (high to low)</option>
                       </select>
                     </form>
                   </div>

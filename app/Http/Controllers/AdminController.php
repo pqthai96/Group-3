@@ -147,6 +147,16 @@ class AdminController extends Controller
     Session::put('msg', 'Removed Admin Account Successfully.');
     return redirect::to('all-admin');
     }
+    public function admin_search(Request $rqst) {
+    $keyword = $rqst->input('search');
+
+    $admin_search = DB::table('Admin')
+    ->where(function($query) use ($keyword) {
+    $query->where('AdminName', 'LIKE', '%'.$keyword.'%');
+    })->paginate(8);
+
+    return view('admin_pages.all_admin', compact('admin_search'));
+    }
 
     //Pizza
     public function all_pizza() {
@@ -320,10 +330,24 @@ class AdminController extends Controller
         
     $sortBy = $rqst->input('sort-by');
 
-    $pizza_sort = DB::table('Product')->where('CategoryID', '1')->orderBy($sortBy, 'desc')
+    if($sortBy == 'low_soldcount') {
+        $pizza_sort = DB::table('Product')->where('CategoryID', '1')->orderBy('ProductSoldCount', 'asc')
             ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
             ->select('Product.*', 'ProductDetails.*')->paginate(8);
-
+    } else if($sortBy == 'high_soldcount') {
+        $pizza_sort = DB::table('Product')->where('CategoryID', '1')->orderBy('ProductSoldCount', 'desc')
+            ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+            ->select('Product.*', 'ProductDetails.*')->paginate(8);
+    } else if($sortBy == 'low_totalrating') {
+        $pizza_sort = DB::table('Product')->where('CategoryID', '1')->orderBy('ProductTotalRating', 'asc')
+            ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+            ->select('Product.*', 'ProductDetails.*')->paginate(8);
+    } else {
+        $pizza_sort = DB::table('Product')->where('CategoryID', '1')->orderBy('ProductTotalRating', 'desc')
+            ->join('ProductDetails', 'Product.ProductID', '=', 'ProductDetails.ProductID')
+            ->select('Product.*', 'ProductDetails.*')->paginate(8);
+    }
+    
     return view('admin_pages.all_pizza', compact('pizza_sort'));
     }
     
@@ -707,6 +731,12 @@ class AdminController extends Controller
             'EndDate.date' => 'The end date of the dicount must be a valid date',
             'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
         ]);
+        // if(strpos($request->DiscountValue, '%') !== false) {
+            
+        //     if ($discountValueNum > 100) {
+        //         $validator->errors()->add('DiscountValue', 'Giá trị giảm giá phải từ 0 đến 100%');
+        //     }
+        // }
         
         $discount = array();
         $discount['DiscountID'] = $request->DiscountID;

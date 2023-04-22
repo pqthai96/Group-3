@@ -279,7 +279,7 @@ $('#update-rating').submit(function(event) {
     $("a.btn-cancel").click(function(event) {
 			event.preventDefault();
 			Swal.fire({
-				title: 'Are you sure to cancel this order?',
+				title: 'Your order is on its way to you. Are you sure to cancel this order?',
 				icon: 'warning',
 				showCancelButton: true,
 				confirmButtonText: 'Yes',

@@ -279,8 +279,8 @@
 								</table>
 
 								<!-- Button -->
-								<a href="{{ route('orderPlace') }}" class="btn btn-md btn-salmon tra-salmon-hover" onclick="event.preventDefault(); document.getElementById('order-form').submit();">
-                                Place Order</a>
+                                <button id="btn-order" class="btn btn-md btn-salmon tra-salmon-hover btn-order">Place Order</button>
+
 							</div>
 						</div>	<!-- END CHECKOUT -->
 					</div>	  <!-- END CART CHECKOUT -->
@@ -300,5 +300,26 @@
 		$(".total-payment").html('$' + totalPayment);
         $('#discountAmount').val(discountAmount);
         $('#totalPayment').val(totalPayment);
+
+        //Button Order Place
+        $("#btn-order").click(function(event) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Are you sure you want to order?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Order Place',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            const myForm = document.getElementById('order-form');
+            myForm.submit();
+            }
+        });
+        });
+
     </script>
 @stop

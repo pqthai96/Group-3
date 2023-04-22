@@ -66,17 +66,17 @@ class HomeController extends Controller
 
     public function login(Request $rqst) {
         $rqst->validate([
-            'email' => 'required',
+            'username' => 'required',
             'password' => 'required'
         ],[
-            'email.required' => 'Email is required.',
+            'username.required' => 'Username is required.',
             'password.required' => 'Password is required.'
         ]);
         
-        $email = $rqst->email;
+        $username = $rqst->username;
         $password = $rqst->password;
 
-        $user = User::where('Email', $email)->first();
+        $user = User::where('Username', $username)->first();
         
         if ($user && $user->UserStatus == 'banned') {
             return response()->json(['errors' => ['loginbanned' => 'This account has been locked!']], 422);
@@ -678,7 +678,8 @@ class HomeController extends Controller
         $contact['ContactDate'] = Carbon::now();
 
         DB::table('ContactUs')->insert($contact);
-        Session::put('success', 'Contact sent successfully!');   
+        // Session::put('success', 'Contact sent successfully!');
+        return response()->json(['msg' => 'Your message sent successfully!']);
     }
     public function location() {
         return view('pages.location');

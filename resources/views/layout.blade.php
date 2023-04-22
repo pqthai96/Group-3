@@ -209,9 +209,9 @@
 				<div class="card-header"><h4 class="h4-xs">Login Form</h4></div>
 				<div class="card-body">
 					<div class="form-group">
-						<label for="username"><h6 class="h6-sm">Email</h6></label>
-						<input type="text" id="email" name="email" class="form-control">
-						<span class="text-danger font-weight-bold" id="emailError"></span>
+						<label for="username"><h6 class="h6-sm">Username</h6></label>
+						<input type="text" id="username" name="username" class="form-control">
+						<span class="text-danger font-weight-bold" id="usernameError"></span>
 					</div>
 					<div class="form-group">
 						<label for="password"><h6 class="h6-sm">Password</h6></label>
@@ -260,7 +260,7 @@
 				<div class="card-body">
 					<div class="form-row">
 						<div class="form-group col-md-6">
-							<label for="newUsername"><h6 class="h6-sm">Username</h6></label>
+							<label for="newUsername"	><h6 class="h6-sm">Username</h6></label>
 							<input type="text" id="newUsername" name="newUsername" class="form-control">
 							<span class="text-danger font-weight-bold" id="newUsernameError"></span>
 							<span class="text-danger font-weight-bold" id="existusernameError"></span>
@@ -274,6 +274,7 @@
 						<div class="form-group col-md-6">
 							<label for="newPassword"><h6 class="h6-sm">Password</h6></label>
 							<input type="password" id="newPassword" name="newPassword" class="form-control">
+							<p class="pass_validate" style="font-size:0.8rem">(Password must be at least 8 characters)</p>
 							<span class="text-danger font-weight-bold" id="newPasswordError"></span>
 						</div>
 						<div class="form-group col-md-6">
@@ -298,7 +299,7 @@
 					</div>
 					<div class="form-group">
 						<label for="newPhone"><h6 class="h6-sm">Phone number</h6></label>
-						<input type="tel" id="newPhone" name="newPhone" class="form-control">
+						<input type="number" id="newPhone" name="newPhone" class="form-control">
 						<span class="text-danger font-weight-bold" id="newPhoneError"></span>
 					</div>
 					<div class="form-group">
@@ -555,31 +556,36 @@
 					$('#alert-message').fadeIn();
 					setTimeout(function() {
 					$('#alert-message').fadeOut();
-					}, 1000);
+					}, 1500);
                 }
             });
 		});
 
 		//LOGIN
-		$('#emailError').addClass('d-none');
+		$('#usernameError').addClass('d-none');
 		$('#passwordError').addClass('d-none');
 		$('#loginfailedError').addClass('d-none');
 		$('#loginbannedError').addClass('d-none');
 
 		function login() {
-			var email = $('#email').val();
+			var username = $('#username').val();
 			var password = $('#password').val();
+
+			$('#usernameError').addClass('d-none');
+			$('#passwordError').addClass('d-none');
+			$('#loginfailedError').addClass('d-none');
+			$('#loginbannedError').addClass('d-none');
 
 			$.ajax({
 				type: 'POST',
 				url: "{{ route('login') }}",
-				data: {_token: '{{ csrf_token() }}', email:email, password:password},
+				data: {_token: '{{ csrf_token() }}', username:username, password:password},
 				success: function(data) {
 					closeLogin();
 					Swal.fire({
                         title: data.msg,
                         icon: 'success',
-                        timer: 3000,
+                        timer: 2000,
                         showCancelButton: false,
                         showConfirmButton: false,
                         willClose: () => {
@@ -606,6 +612,9 @@
 
 		function post_email() {
 			var forgotEmail = $('#forgotEmail').val();
+
+			$('#forgotEmailError').addClass('d-none');
+			$('#emailExistError').addClass('d-none');
 
 			$.ajax({
 				type: 'POST',
@@ -658,6 +667,17 @@
 			var term = $('#term:checked').val();
 			var gender =$('#gender').val();
 
+			$('#newUsernameError').addClass('d-none');
+			$('#newEmailError').addClass('d-none');
+			$('#newPasswordError').addClass('d-none');
+			$('#confirmPasswordError').addClass('d-none');
+			$('#newFullnameError').addClass('d-none');
+			$('#newPhoneError').addClass('d-none');
+			$('#newAddressError').addClass('d-none');
+			$('#termError').addClass('d-none');
+			$('#existUsernameError').addClass('d-none');
+			$('#existEmailError').addClass('d-none');
+
 			$.ajax({
 				type: 'POST',
 				url: "{{ route('register') }}",
@@ -668,7 +688,7 @@
 					Swal.fire({
                         title: data.msg,
                         icon: 'success',
-                        timer: 3000,
+                        timer: 2000,
                         showCancelButton: false,
                         showConfirmButton: false,
                         willClose: () => {
@@ -678,6 +698,7 @@
 				},
 				error: function(data){
 					var errors = data.responseJSON;
+					$("p.pass_validate").addClass('d-none');
 					if($.isEmptyObject(errors) == false) {
 						$.each(errors.errors, function(key,value) {
 							var ErrorID = '#' + key + 'Error';

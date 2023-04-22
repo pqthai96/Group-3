@@ -157,41 +157,33 @@
                 <div class="row">
                     <div class="col-lg-10 offset-lg-1">
                         <div class="form-holder">
-                            <form class="row contact-form">
+                            <form class="form-row">
                                 <!-- Form Input -->
-                                <div class="col-md-12 col-lg-6">
+                                <div class="form-group col-md-12 col-lg-6">
                                     <input type="text" name="ContactName" class="form-control name" id="ContactName"
-                                        placeholder="Your Name*">
+                                        placeholder="Your Name*" style="height:3rem">
                                     <span class="text-danger font-weight-bold" id="ContactNameError"></span>
                                 </div>
 
                                 <!-- Form Input -->
-                                <div class="col-md-12 col-lg-6">
+                                <div class="form-group col-md-12 col-lg-6">
                                     <input type="email" name="ContactEmail" class="form-control email" id="ContactEmail"
-                                        placeholder="Email Address*">
+                                        placeholder="Email Address*" style="height:3rem">
                                     <span class="text-danger font-weight-bold" id="ContactEmailError"></span>
                                 </div>
 
                                 <!-- Form Input -->
-                                <div class="col-md-12">
+                                <div class=" form-group col-md-12">
                                     <input type="text" name="ContactSubject" class="form-control subject"
-                                        id="ContactSubject" placeholder="What's this about?">
+                                        id="ContactSubject" placeholder="What's this about?" style="height:3rem">
                                     <span class="text-danger font-weight-bold" id="ContactSubjectError"></span>
                                 </div>
 
                                 <!-- Form Textarea -->
-                                <div class="col-md-12">
+                                <div class=" form-group col-md-12">
                                     <textarea name="Message" id="Message" class="form-control message" rows="6" placeholder="Your Message ..."></textarea>
                                     <span class="text-danger font-weight-bold" id="MessageError"></span>
                                 </div>
-                                @if (session('success'))
-                                    <div class="alert alert-success col-md-12">
-                                        <strong>{{ session('success') }}</strong>
-                                    </div>
-                                @endif
-                                <?php
-                                Session::put('success',null);
-                                ?>
                                 
                                 <!-- Form Button -->
                                 <div class="col-md-12 mt-5 text-right">
@@ -221,6 +213,11 @@
             var ContactSubject = $('#ContactSubject').val();
             var Message = $('#Message').val();
 
+            $('#ContactNameError').addClass('d-none');
+            $('#ContactEmailError').addClass('d-none');
+            $('#ContactSubjectError').addClass('d-none');
+            $('#MessageError').addClass('d-none');
+
             $.ajax({
                 type: 'POST',
                 url: "{{ route('save_contact') }}",
@@ -232,7 +229,16 @@
                     Message: Message
                 },
                 success: function(data) {
-                    location.reload();
+                    Swal.fire({
+                        title: data.msg,
+                        icon: 'success',
+                        timer: 2000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        willClose: () => {
+                        window.location.href = "{{ route('home') }}";
+                        }
+                    });
                 },
                 error: function(data) {
                     var errors = data.responseJSON;

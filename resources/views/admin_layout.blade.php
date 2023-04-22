@@ -98,15 +98,18 @@
             </a>
           </li>
           <li class="nav-item nav-category">Contact Us</li>
+          <?php
+          $count_contact = DB::table('ContactUs')->where('ContactStatus', 'pending')->count();
+          ?>
           <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#contact" aria-expanded="false" aria-controls="contact">
               <i class="menu-icon mdi mdi-account-card-details"></i>
-              <span class="menu-title">Contact</span>
+              <span class="menu-title">Contact <span class="badge badge-pill badge-danger">{{ $count_contact }}</span></span>
               <i class="menu-arrow"></i> 
             </a>
             <div class="collapse" id="contact">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{{ route('all_contact_pending') }}">Pending</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ route('all_contact_pending') }}">Pending<span class="badge badge-pill badge-danger" style="margin-left:2px">{{ $count_contact }}</span></a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{ route('all_contact_processed') }}">Processed</a></li>
               </ul>
             </div>
