@@ -8,11 +8,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Create a new Promotions</h4>
-                        @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                        <?php
+                        $msg = Session::get('failed');
+                        if($msg) {
+                        ?>
+                        <div class="alert alert-danger">
+                            <strong>{{ $msg }}</strong>
+                        </div>
+                        <?php
+                        Session::put('failed',null);
+                        }
+                        ?>
                         <form class="forms-sample" id="add-form" method="post" action="{{ route('save_promotions') }}"
                             enctype="multipart/form-data">
                             @csrf

@@ -97,18 +97,33 @@
                                 
                                                                                         
                                     <!-- Form Input -->
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 pb-10">
                                         <input type="text" name="name" class="form-control name" placeholder="Please input your name"> 
+                                        @error('name')
+                                            <span class="alert text-danger">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                         
                                     <!-- Form Input -->        
-                                    <div class="col-md-12">
-                                        <input type="tel" name="phone" class="form-control phone" placeholder="Please enter your phone number"> 
+                                    <div class="col-md-12 pb-10">
+                                        <input type="tel" name="phone" class="form-control phone" placeholder="Please enter your phone number">
+                                        @error('phone')
+                                            <span class="alert text-danger">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
 
                                     <!-- Form Textarea -->	        
                                     <div class="col-md-12">
                                         <input name="address" class="form-control message" placeholder="Please enter your address delivery">
+                                        @error('address')
+                                            <span class="alert text-danger">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                             </div>	
                         </div>	

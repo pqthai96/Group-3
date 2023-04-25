@@ -115,6 +115,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/edit-blog/{BlogID}', 'edit_blog');
     Route::post('/update-blog/{BlogID}', 'update_blog')->name('update_blog');
     Route::get('/remove-blog/{BlogID}', 'remove_blog')->name('remove_blog');
+    Route::get('/blog-search', 'blog_search')->name('blog_search');
     
     Route::get('/all-promotions', 'all_promotions')->name('all_promotions');
     Route::get('/add-promotions', 'add_promotions')->name('add_promotions');
@@ -122,6 +123,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/edit-promotions/{DiscountID}', 'edit_promotions');
     Route::post('/update-promotions/{DiscountID}', 'update_promotions')->name('update_promotion');
     Route::get('/remove-promotions/{DiscountID}', 'remove_promotions')->name('remove_promotion');
+    Route::get('/promotion-search', 'promotion_search')->name('promotion_search');
 
     Route::get('/all-contact-pending', 'all_contact_pending')->name('all_contact_pending');
     Route::get('/all-contact-processed', 'all_contact_processed')->name('all_contact_processed');

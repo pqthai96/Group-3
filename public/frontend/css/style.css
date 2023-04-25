@@ -5469,7 +5469,7 @@ img.appstore-original {
     line-height: 1;
     font-weight: 300;
     padding: 0 15px;
-    margin-bottom: 22px;
+    /* margin-bottom: 22px; */
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
@@ -7101,45 +7101,45 @@ label {
 
 /* print order */
 .print-icon {
-  width: 100px;
-  height: 100px;
-  background-color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-  float:right;
-  margin-top:2rem;
-  margin-right:10rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    float: right;
+    margin-top: 2rem;
+    margin-right: 10rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .print-icon i {
-  font-size: 40px;
-  color: #333;
+    font-size: 40px;
+    color: #333;
 }
 
 .print-icon:hover {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
-@media print {  
-  .print-icon {
-    width: 0;
-    display: none;
-  }
-  .no-print {
-    width: 0;
-    display: none;
-  }
-  .footer {
-    width: 0;
-    display: none;
-  }
-  .banner-section {
-    width: 0;
-    display: none;
-  }
+@media print {
+    .print-icon {
+        width: 0;
+        display: none;
+    }
+    .no-print {
+        width: 0;
+        display: none;
+    }
+    .footer {
+        width: 0;
+        display: none;
+    }
+    .banner-section {
+        width: 0;
+        display: none;
+    }
 }

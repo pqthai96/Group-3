@@ -217,6 +217,7 @@
 						<label for="password"><h6 class="h6-sm">Password</h6></label>
 						<input type="password" id="password" name="password" class="form-control">
 						<span class="text-danger font-weight-bold" id="passwordError"></span>
+						<p class="mt-0 mb-0 login_field" style="font-size:0.9rem; font-style:italic; color:red">(All field are required)</p>
 					</div>
 					<div class="alert alert-danger" id="loginfailedError"></div>
 					<div class="alert alert-danger" id="loginbannedError"></div>
@@ -260,7 +261,7 @@
 				<div class="card-body">
 					<div class="form-row">
 						<div class="form-group col-md-6">
-							<label for="newUsername"	><h6 class="h6-sm">Username</h6></label>
+							<label for="newUsername"><h6 class="h6-sm">Username</h6></label>
 							<input type="text" id="newUsername" name="newUsername" class="form-control">
 							<span class="text-danger font-weight-bold" id="newUsernameError"></span>
 							<span class="text-danger font-weight-bold" id="existusernameError"></span>
@@ -299,7 +300,7 @@
 					</div>
 					<div class="form-group">
 						<label for="newPhone"><h6 class="h6-sm">Phone number</h6></label>
-						<input type="number" id="newPhone" name="newPhone" class="form-control">
+						<input type="tel" id="newPhone" name="newPhone" class="form-control">
 						<span class="text-danger font-weight-bold" id="newPhoneError"></span>
 					</div>
 					<div class="form-group">
@@ -308,8 +309,9 @@
 						<span class="text-danger font-weight-bold" id="newAddressError"></span>
 					</div>
 					<div class="pb-10">
-						<label><h6 class="h6-sm"><input type="checkbox" id="term" name="term" style="width:1rem;height:1rem">    I agree to <a href="{{ route('term') }}" style="color:blue; text-decoration: underline">the terms and privacy policy.</a></h6></label><br>
+						<label class="mb-0"><h6 class="h6-sm"><input type="checkbox" id="term" name="term" style="width:1rem;height:1rem">    I agree to <a href="{{ route('term') }}" style="color:blue; text-decoration: underline">the terms and privacy policy.</a></h6></label><br>
 						<span class="text-danger font-weight-bold" id="termError"></span>
+						<p class="mt-0 mb-0 register_field" style="font-size:0.9rem; font-style:italic; color:red">(All field are required)</p>
 					</div>
 					<div class="text-center">
 						<input type="button" onclick="register()" value="Create Account" class="btn btn-primary" style="background-color: #f5b200">
@@ -595,6 +597,7 @@
 				},
 				error: function(data){
 					var errors = data.responseJSON;
+					$("p.login_field").addClass('d-none');
 					if($.isEmptyObject(errors) == false) {
 						$.each(errors.errors, function(key,value) {
 							var ErrorID = '#' + key + 'Error';
@@ -699,6 +702,7 @@
 				error: function(data){
 					var errors = data.responseJSON;
 					$("p.pass_validate").addClass('d-none');
+					$("p.register_field").addClass('d-none');
 					if($.isEmptyObject(errors) == false) {
 						$.each(errors.errors, function(key,value) {
 							var ErrorID = '#' + key + 'Error';

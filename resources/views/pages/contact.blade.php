@@ -90,9 +90,9 @@
                                     <h5 class="h5-lg"><i class="fas fa-phone"></i> {{ __(' Phone Number') }}</h5>
 
                                     <!-- Title -->
-                                    <p class="p-md">P: +84 90 380 8005</p>
-                                    <p class="p-md">F: +84 90 380 8005</p>
-                                    <p class="p-md">E: <a href="mailto:support@testo.vn"
+                                    <p class="p-md">Phone: +84 90 380 8005</p>
+                                    <p class="p-md">Fax: +84 90 380 8005</p>
+                                    <p class="p-md">Email: <a href="mailto:support@testo.vn"
                                             class="yellow-color">support@testo.vn</a></p>
 
                                 </div>

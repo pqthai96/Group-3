@@ -91,7 +91,7 @@ class AdminController extends Controller
         //validate
         $rqst->validate([
             'admin_name' => 'required',
-            'admin_password' => 'required',
+            'admin_password' => 'required|min:3',
             'admin_password_confirm' => 'required|same:admin_password'
         ],[
             'admin_name.required' => 'Admin Name is required.',
@@ -100,16 +100,21 @@ class AdminController extends Controller
             'admin_password_confirm.same' => 'Password does not match.'
         ]);
 
-        //admin
-        $admin = array();
-        $admin['AdminName'] = $rqst->admin_name;
-        $admin['AdminPassword'] = $rqst->admin_password;
-        $admin['Role'] = $rqst->admin_role;
-        
-        DB::table('Admin')->insert($admin);
-        
-        Session::put('msg', 'Added Admin Successfully.');
-        return redirect::to('all-admin');
+        if(DB::table('Admin')->where('AdminName', $rqst->admin_name)->exists()){
+            Session::put('failed', 'Add Admin Failed! This Admin Name already have registered.');
+            return back();
+        } else {
+            //admin
+            $admin = array();
+            $admin['AdminName'] = $rqst->admin_name;
+            $admin['AdminPassword'] = $rqst->admin_password;
+            $admin['Role'] = $rqst->admin_role;
+            
+            DB::table('Admin')->insert($admin);
+            
+            Session::put('msg', 'Added Admin Successfully.');
+            return redirect::to('all-admin');
+        }
     }
     public function edit_admin($admin_id) {
         $admin = DB::table('Admin')->where('AdminID', $admin_id)->first();
@@ -120,7 +125,7 @@ class AdminController extends Controller
         //validate
         $rqst->validate([
             'admin_name' => 'required',
-            'admin_password' => 'required',
+            'admin_password' => 'required|min:3',
             'admin_password_confirm' => 'required|same:admin_password'
         ],[
             'admin_name.required' => 'Admin Name is required.',
@@ -128,17 +133,22 @@ class AdminController extends Controller
             'admin_password_confirm.required' => 'Password Confirm is required.',
             'admin_password_confirm.same' => 'Password does not match.'
         ]);
-
-        //admin
-        $admin = array();
-        $admin['AdminName'] = $rqst->admin_name;
-        $admin['AdminPassword'] = $rqst->admin_password;
-        $admin['Role'] = $rqst->admin_role;
-
-        DB::table('Admin')->where('AdminID', $admin_id)->update($admin);
         
-        Session::put('msg', 'Updated Admin Successfully.');
-        return redirect::to('all-admin');
+        if(DB::table('Admin')->where('AdminName', $rqst->admin_name)->where('AdminID', '<>', $admin_id)->exists()){
+            Session::put('failed', 'Edit Admin Failed! This Admin Name already have registered.');
+            return back();
+        } else {
+            //admin
+            $admin = array();
+            $admin['AdminName'] = $rqst->admin_name;
+            $admin['AdminPassword'] = $rqst->admin_password;
+            $admin['Role'] = $rqst->admin_role;
+
+            DB::table('Admin')->where('AdminID', $admin_id)->update($admin);
+
+            Session::put('msg', 'Updated Admin Successfully.');
+            return redirect::to('all-admin');
+        }
     }
     public function remove_admin($admin_id) {
     
@@ -175,12 +185,12 @@ class AdminController extends Controller
             'pizza_name' => 'required',
             'description' => 'required',
             'imageURL' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'price_s' => 'required|numeric|min:0',
-            'price_m' => 'required|numeric|min:0',
-            'price_l' => 'required|numeric|min:0',
-            'quantity_s' => 'required|numeric|min:0',
-            'quantity_m' => 'required|numeric|min:0',
-            'quantity_l' => 'required|numeric|min:0'
+            'price_s' => 'required|numeric|min:0|max:100',
+            'price_m' => 'required|numeric|min:0|max:100',
+            'price_l' => 'required|numeric|min:0|max:100',
+            'quantity_s' => 'required|numeric|min:0|max:1000',
+            'quantity_m' => 'required|numeric|min:0|max:1000',
+            'quantity_l' => 'required|numeric|min:0|max:1000'
         ],[
             'pizza_name.required' => 'Pizza Name is required.',
             'description.required' => 'Description is required.',
@@ -207,36 +217,44 @@ class AdminController extends Controller
             'quantity_l.min' => 'Quantity size L must be at least 0.'
         ]);
 
-        //product
-        $product = array();
-        $product['ProductName'] = $rqst->pizza_name;
-        $product['Description'] = $rqst->description;
-        $product['CategoryID'] = 1;
-        
-        //image
-        $get_image = $rqst->file('imageURL');
-        $get_image_name = $get_image->getClientOriginalName();
-        $name_image = current(explode('.',$get_image_name));
-        $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
-        $get_image->move('frontend/images/pizza', $new_image);
+        $trimmedProductName = trim($rqst->pizza_name);
+        $processedProductName = str_replace(' ', '', $trimmedProductName);
 
-        $product['ImageURL'] = 'frontend/images/pizza/' . $new_image;
-        $productID = DB::table('Product')->insertGetId($product);
-        
-        //productdetails
-        $productDetails = array();
-        $productDetails['ProductID'] = $productID;
-        $productDetails['PriceS'] = $rqst->price_s;
-        $productDetails['PriceM'] = $rqst->price_m;
-        $productDetails['PriceL'] = $rqst->price_l;
-        $productDetails['QuantityS'] = $rqst->quantity_s;
-        $productDetails['QuantityM'] = $rqst->quantity_m;
-        $productDetails['QuantityL'] = $rqst->quantity_l;
+        if(DB::table('Product')->whereRaw("REPLACE(LOWER(ProductName),' ','') = ?", strtolower($processedProductName))->exists()){
+            Session::put('failed', 'Add Pizza Failed! This Pizza Name already exists.');
+            return back();
+        } else {
+            //product
+            $product = array();
+            $product['ProductName'] = $rqst->pizza_name;
+            $product['Description'] = $rqst->description;
+            $product['CategoryID'] = 1;
 
-        DB::table('ProductDetails')->insert($productDetails);
-        
-        Session::put('msg', 'Added Pizza Successfully.');
-        return redirect::to('all-pizza');
+            //image
+            $get_image = $rqst->file('imageURL');
+            $get_image_name = $get_image->getClientOriginalName();
+            $name_image = current(explode('.', $get_image_name));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            $get_image->move('frontend/images/pizza', $new_image);
+
+            $product['ImageURL'] = 'frontend/images/pizza/' . $new_image;
+            $productID = DB::table('Product')->insertGetId($product);
+
+            //productdetails
+            $productDetails = array();
+            $productDetails['ProductID'] = $productID;
+            $productDetails['PriceS'] = $rqst->price_s;
+            $productDetails['PriceM'] = $rqst->price_m;
+            $productDetails['PriceL'] = $rqst->price_l;
+            $productDetails['QuantityS'] = $rqst->quantity_s;
+            $productDetails['QuantityM'] = $rqst->quantity_m;
+            $productDetails['QuantityL'] = $rqst->quantity_l;
+
+            DB::table('ProductDetails')->insert($productDetails);
+
+            Session::put('msg', 'Added Pizza Successfully.');
+            return redirect::to('all-pizza');
+        }
     }
     public function edit_pizza($pizza_id) {
         $pizza = DB::table('Product')->where('Product.ProductID', $pizza_id)
@@ -253,12 +271,12 @@ class AdminController extends Controller
             'pizza_name' => 'required',
             'description' => 'required',
             'imageURL' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'price_s' => 'required|numeric|min:0',
-            'price_m' => 'required|numeric|min:0',
-            'price_l' => 'required|numeric|min:0',
-            'quantity_s' => 'required|numeric|min:0',
-            'quantity_m' => 'required|numeric|min:0',
-            'quantity_l' => 'required|numeric|min:0'
+            'price_s' => 'required|numeric|min:0|max:100',
+            'price_m' => 'required|numeric|min:0|max:100',
+            'price_l' => 'required|numeric|min:0|max:100',
+            'quantity_s' => 'required|numeric|min:0|max:1000',
+            'quantity_m' => 'required|numeric|min:0|max:1000',
+            'quantity_l' => 'required|numeric|min:0|max:1000'
         ],[
             'pizza_name.required' => 'Pizza Name is required.',
             'description.required' => 'Description is required.',
@@ -284,39 +302,47 @@ class AdminController extends Controller
             'quantity_l.min' => 'Quantity size L must be at least 0.'
         ]);
 
-        //product
-        $product = array();
-        $product['ProductName'] = $rqst->pizza_name;
-        $product['Description'] = $rqst->description;
-        $product['CategoryID'] = 1;
-        
-        //image
-        $get_image = $rqst->file('imageURL');
-        if ($get_image) {
-            $get_image_name = $get_image->getClientOriginalName();
-            $name_image = current(explode('.', $get_image_name));
-            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
-            $get_image->move('frontend/images/pizza', $new_image);
+        $trimmedProductName = trim($rqst->pizza_name);
+        $processedProductName = str_replace(' ', '', $trimmedProductName);
 
-            $product['ImageURL'] = 'frontend/images/pizza/' . $new_image;
+        if(DB::table('Product')->whereRaw("REPLACE(LOWER(ProductName),' ','') = ?", strtolower($processedProductName))->where('ProductID', '<>', $pizza_id)->exists()){
+            Session::put('failed', 'Edit Pizza Failed! This Pizza Name already exists.');
+            return back();
+        } else {
+            //product
+            $product = array();
+            $product['ProductName'] = $rqst->pizza_name;
+            $product['Description'] = $rqst->description;
+            $product['CategoryID'] = 1;
+
+            //image
+            $get_image = $rqst->file('imageURL');
+            if ($get_image) {
+                $get_image_name = $get_image->getClientOriginalName();
+                $name_image = current(explode('.', $get_image_name));
+                $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+                $get_image->move('frontend/images/pizza', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/pizza/' . $new_image;
+                DB::table('Product')->where('ProductID', $pizza_id)->update($product);
+            }
             DB::table('Product')->where('ProductID', $pizza_id)->update($product);
-        }
-        DB::table('Product')->where('ProductID', $pizza_id)->update($product);
-        
-        //productdetails
-        $productDetails = array();
-        $productDetails['ProductID'] = $pizza_id;
-        $productDetails['PriceS'] = $rqst->price_s;
-        $productDetails['PriceM'] = $rqst->price_m;
-        $productDetails['PriceL'] = $rqst->price_l;
-        $productDetails['QuantityS'] = $rqst->quantity_s;
-        $productDetails['QuantityM'] = $rqst->quantity_m;
-        $productDetails['QuantityL'] = $rqst->quantity_l;
 
-        DB::table('ProductDetails')->where('ProductID', $pizza_id)->update($productDetails);
-        
-        Session::put('msg', 'Updated Pizza Successfully.');
-        return redirect::to('all-pizza');
+            //productdetails
+            $productDetails = array();
+            $productDetails['ProductID'] = $pizza_id;
+            $productDetails['PriceS'] = $rqst->price_s;
+            $productDetails['PriceM'] = $rqst->price_m;
+            $productDetails['PriceL'] = $rqst->price_l;
+            $productDetails['QuantityS'] = $rqst->quantity_s;
+            $productDetails['QuantityM'] = $rqst->quantity_m;
+            $productDetails['QuantityL'] = $rqst->quantity_l;
+
+            DB::table('ProductDetails')->where('ProductID', $pizza_id)->update($productDetails);
+
+            Session::put('msg', 'Updated Pizza Successfully.');
+            return redirect::to('all-pizza');
+        }
     }
     public function remove_pizza($pizza_id) {
         
@@ -366,7 +392,7 @@ class AdminController extends Controller
         //validate
         $rqst->validate([
             'user_name' => 'required',
-            'user_phone' => 'required|numeric|min:0',
+            'user_phone' => ['required','regex:/^(0|\+84)(3[2-9]|5[689]|7[06-9]|8[1-9]|9[0-46-9])[0-9]{7}$/'],
             'user_email' => 'required|email',
             'user_fullname' => 'required',
             'user_address' => 'required',
@@ -379,20 +405,25 @@ class AdminController extends Controller
             'user_fullname.required' => 'Full name is required.',
             'user_address.required' => 'Address is required.'
         ]);
-
-        $user = array();
-        $user['Username'] = $rqst->user_name;
-        $user['Email'] = $rqst->user_email;
-        $user['Phone'] = $rqst->user_phone;
-        $user['Name'] = $rqst->user_fullname;
-        $user['Gender'] = $rqst->user_gender;
-        $user['Address'] = $rqst->user_address;
-        $user['UserStatus'] = $rqst->user_status;
-
-        DB::table('User')->where('UserID', $userID)->update($user);
-        Session::put('msg', 'Updated User Successfully.');
         
-        return redirect::to('all-user');
+        if(DB::table('User')->where('Username', $rqst->user_name)->where('UserID', '<>', $userID)->exists()){
+            Session::put('failed', 'Edit User Failed! This Username already have registered.');
+            return back();
+        } else {
+            $user = array();
+            $user['Username'] = $rqst->user_name;
+            $user['Email'] = $rqst->user_email;
+            $user['Phone'] = $rqst->user_phone;
+            $user['Name'] = $rqst->user_fullname;
+            $user['Gender'] = $rqst->user_gender;
+            $user['Address'] = $rqst->user_address;
+            $user['UserStatus'] = $rqst->user_status;
+
+            DB::table('User')->where('UserID', $userID)->update($user);
+            Session::put('msg', 'Updated User Successfully.');
+
+            return redirect::to('all-user');
+        }
     }
     public function user_search(Request $rqst) {
     $keyword = $rqst->input('search');
@@ -431,9 +462,9 @@ class AdminController extends Controller
         //validate
         $rqst->validate([
             'product_name' => 'required',
-            'product_price' => 'required|numeric|min:0',
+            'product_price' => 'required|numeric|min:0|max:100',
             'imageURL' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'product_quantity' => 'required|numeric|min:0',
+            'product_quantity' => 'required|numeric|min:0|max:1000',
         ],[
             'imageURL.required' => 'Image URL is required.',
             'imageURL.image' => 'File upload must be image',
@@ -447,47 +478,55 @@ class AdminController extends Controller
             'product_quantity.min' => 'Supplement Quantity must be at least 0.'
         ]);
 
-        //product
-        $product = array();
-        $product['ProductName'] = $rqst->product_name;
-        $product['CategoryID'] = $rqst->category;
-        
-        //image
-        $get_image = $rqst->file('imageURL');
-        $get_image_name = $get_image->getClientOriginalName();
-        $name_image = current(explode('.',$get_image_name));
-        $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
-        if ($rqst->category == '2') {
-            $get_image->move('frontend/images/side', $new_image);
+        $trimmedProductName = trim($rqst->product_name);
+        $processedProductName = str_replace(' ', '', $trimmedProductName);
 
-            $product['ImageURL'] = 'frontend/images/side/' . $new_image;
-            $productID = DB::table('Product')->insertGetId($product);
-        } else if ($rqst->category == '3') {
-            $get_image->move('frontend/images/salad', $new_image);
-
-            $product['ImageURL'] = 'frontend/images/salad/' . $new_image;
-            $productID = DB::table('Product')->insertGetId($product);
-        }else if ($rqst->category == '4') {
-            $get_image->move('frontend/images/dessert', $new_image);
-
-            $product['ImageURL'] = 'frontend/images/dessert/' . $new_image;
-            $productID = DB::table('Product')->insertGetId($product);
+        if(DB::table('Product')->whereRaw("REPLACE(LOWER(ProductName),' ','') = ?", strtolower($processedProductName))->exists()){
+            Session::put('failed', 'Add Product Failed! This Product Name already exists.');
+            return back();
         } else {
-            $get_image->move('frontend/images/drink', $new_image);
+        //product
+            $product = array();
+            $product['ProductName'] = $rqst->product_name;
+            $product['CategoryID'] = $rqst->category;
+            
+            //image
+            $get_image = $rqst->file('imageURL');
+            $get_image_name = $get_image->getClientOriginalName();
+            $name_image = current(explode('.',$get_image_name));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            if ($rqst->category == '2') {
+                $get_image->move('frontend/images/side', $new_image);
 
-            $product['ImageURL'] = 'frontend/images/drink/' . $new_image;
-            $productID = DB::table('Product')->insertGetId($product);
+                $product['ImageURL'] = 'frontend/images/side/' . $new_image;
+                $productID = DB::table('Product')->insertGetId($product);
+            } else if ($rqst->category == '3') {
+                $get_image->move('frontend/images/salad', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/salad/' . $new_image;
+                $productID = DB::table('Product')->insertGetId($product);
+            }else if ($rqst->category == '4') {
+                $get_image->move('frontend/images/dessert', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/dessert/' . $new_image;
+                $productID = DB::table('Product')->insertGetId($product);
+            } else {
+                $get_image->move('frontend/images/drink', $new_image);
+
+                $product['ImageURL'] = 'frontend/images/drink/' . $new_image;
+                $productID = DB::table('Product')->insertGetId($product);
+            }
+            
+            //productdetails
+            $productDetails = array();
+            $productDetails['ProductID'] = $productID;
+            $productDetails['PriceM'] = $rqst->product_price;
+            $productDetails['QuantityM'] = $rqst->product_quantity;
+            DB::table('ProductDetails')->insert($productDetails);
+            
+            Session::put('msg', 'Added Supplement Successfully.');
+            return redirect::to('all-supplement');
         }
-        
-        //productdetails
-        $productDetails = array();
-        $productDetails['ProductID'] = $productID;
-        $productDetails['PriceM'] = $rqst->product_price;
-        $productDetails['QuantityM'] = $rqst->product_quantity;
-        DB::table('ProductDetails')->insert($productDetails);
-        
-        Session::put('msg', 'Added Supplement Successfully.');
-        return redirect::to('all-supplement');
     }
     public function edit_supplement($supplement_id) {
         $supplement = DB::table('Product')->where('Product.ProductID', $supplement_id)
@@ -502,8 +541,8 @@ class AdminController extends Controller
         //validate
         $rqst->validate([
             'product_name' => 'required',
-            'product_price' => 'required|numeric|min:0',
-            'product_quantity' => 'required|numeric|min:0',
+            'product_price' => 'required|numeric|min:0|max:100',
+            'product_quantity' => 'required|numeric|min:0|max:1000',
             'imageURL' => 'image|mimes:jpeg,png,jpg|max:2048'
         ],[
             'imageURL.image' => 'File upload must be image',
@@ -517,51 +556,59 @@ class AdminController extends Controller
             'product_quantity.min' => 'Supplement Quantity must be at least 0.'
         ]);
 
-        //product
-        $product = array();
-        $product['ProductName'] = $rqst->product_name;
-        $product['CategoryID'] = $rqst->category;
-        
-        //image
-        $get_image = $rqst->file('imageURL');
-        if ($get_image) {
-            $get_image_name = $get_image->getClientOriginalName();
-            $name_image = current(explode('.', $get_image_name));
-            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
-            
-            if ($rqst->category == '2') {
-                $get_image->move('frontend/images/side', $new_image);
+        $trimmedProductName = trim($rqst->product_name);
+        $processedProductName = str_replace(' ', '', $trimmedProductName);
 
-                $product['ImageURL'] = 'frontend/images/side/' . $new_image;
-                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
-            } else if ($rqst->category == '3') {
-                $get_image->move('frontend/images/salad', $new_image);
+        if(DB::table('Product')->whereRaw("REPLACE(LOWER(ProductName),' ','') = ?", strtolower($processedProductName))->where('ProductID', '<>', $supplement_id)->exists()){
+            Session::put('failed', 'Edit Product Failed! This Product Name already exists.');
+            return back();
+        } else {
+            //product
+            $product = array();
+            $product['ProductName'] = $rqst->product_name;
+            $product['CategoryID'] = $rqst->category;
 
-                $product['ImageURL'] = 'frontend/images/salad/' . $new_image;
-                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
-            }else if ($rqst->category == '4') {
-                $get_image->move('frontend/images/dessert', $new_image);
+            //image
+            $get_image = $rqst->file('imageURL');
+            if ($get_image) {
+                $get_image_name = $get_image->getClientOriginalName();
+                $name_image = current(explode('.', $get_image_name));
+                $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
 
-                $product['ImageURL'] = 'frontend/images/dessert/' . $new_image;
-                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
-            } else {
-                $get_image->move('frontend/images/drink', $new_image);
+                if ($rqst->category == '2') {
+                    $get_image->move('frontend/images/side', $new_image);
 
-                $product['ImageURL'] = 'frontend/images/drink/' . $new_image;
-                DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+                    $product['ImageURL'] = 'frontend/images/side/' . $new_image;
+                    DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+                } else if ($rqst->category == '3') {
+                    $get_image->move('frontend/images/salad', $new_image);
+
+                    $product['ImageURL'] = 'frontend/images/salad/' . $new_image;
+                    DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+                } else if ($rqst->category == '4') {
+                    $get_image->move('frontend/images/dessert', $new_image);
+
+                    $product['ImageURL'] = 'frontend/images/dessert/' . $new_image;
+                    DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+                } else {
+                    $get_image->move('frontend/images/drink', $new_image);
+
+                    $product['ImageURL'] = 'frontend/images/drink/' . $new_image;
+                    DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+                }
             }
+            DB::table('Product')->where('ProductID', $supplement_id)->update($product);
+
+            //productdetails
+            $productDetails = array();
+            $productDetails['ProductID'] = $supplement_id;
+            $productDetails['PriceM'] = $rqst->product_price;
+            $productDetails['QuantityM'] = $rqst->product_quantity;
+            DB::table('ProductDetails')->where('ProductID', $supplement_id)->update($productDetails);
+
+            Session::put('msg', 'Updated Supplement Successfully.');
+            return redirect::to('all-supplement');
         }
-        DB::table('Product')->where('ProductID', $supplement_id)->update($product);
-        
-        //productdetails
-        $productDetails = array();
-        $productDetails['ProductID'] = $supplement_id;
-        $productDetails['PriceM'] = $rqst->product_price;
-        $productDetails['QuantityM'] = $rqst->product_quantity;
-        DB::table('ProductDetails')->where('ProductID', $supplement_id)->update($productDetails);
-        
-        Session::put('msg', 'Updated Supplement Successfully.');
-        return redirect::to('all-supplement');
     }
     public function remove_supplement($supplement_id) {
         
@@ -684,13 +731,22 @@ class AdminController extends Controller
         return redirect::to('all_blog')->with('success','Removed Blog Successfully.');
     }
     public function all_blog() {
-        $blog = DB::table('blog')->get();
+        $blog = DB::table('blog')->paginate(8);
         return view('admin_pages.all_blog')->with(['blog' => $blog]);
+    }
+    public function blog_search(Request $rqst) {
+        $keyword = $rqst->input('search-blog');
+
+        $blog_search = DB::table('Blog')
+            ->where(function ($query) use ($keyword) {
+                $query->where('BlogTitle', 'LIKE', '%' . $keyword . '%');
+            })->paginate(8);
+        return view('admin_pages.all_blog', compact('blog_search'));
     }
 
     //Promotions
     public function all_promotions(){
-        $discount = DB::table('discount')->get();
+        $discount = DB::table('discount')->paginate(8);
         foreach ($discount as $item) {
             $item->MinimumAmount = number_format($item->MinimumAmount, 0);
             $item->MaximumAmount = number_format($item->MaximumAmount, 0);
@@ -731,31 +787,30 @@ class AdminController extends Controller
             'EndDate.date' => 'The end date of the dicount must be a valid date',
             'EndDate.after_or_equal' => 'The end date of application of the discount must be greater than or to the current date'
         ]);
-        // if(strpos($request->DiscountValue, '%') !== false) {
-            
-        //     if ($discountValueNum > 100) {
-        //         $validator->errors()->add('DiscountValue', 'Giá trị giảm giá phải từ 0 đến 100%');
-        //     }
-        // }
         
-        $discount = array();
-        $discount['DiscountID'] = $request->DiscountID;
-        $discount['DiscountValue'] = $request->DiscountValue;
-        $discount['DiscountName'] = $request->DiscountName;
-        $discount['MinimumAmount'] = $request->MinimumAmount;
-        $discount['MaximumAmount'] = $request->MaximumAmount;
-        $discount['StartDate'] = $request->StartDate . ' 00:00:00';
-        $discount['EndDate'] = $request->EndDate . ' 23:59:59';
+        if(DB::table('Discount')->where('DiscountID', $request->DiscountID)->exists()){
+            Session::put('failed', 'Add Promotion Failed! This DiscountID already exists.');
+            return back();
+        } else {
+            $discount = array();
+            $discount['DiscountID'] = $request->DiscountID;
+            $discount['DiscountValue'] = $request->DiscountValue;
+            $discount['DiscountName'] = $request->DiscountName;
+            $discount['MinimumAmount'] = $request->MinimumAmount;
+            $discount['MaximumAmount'] = $request->MaximumAmount;
+            $discount['StartDate'] = $request->StartDate . ' 00:00:00';
+            $discount['EndDate'] = $request->EndDate . ' 23:59:59';
 
-        $get_image = $request->file('DiscountIMG');
-        $get_image_name = $get_image->getClientOriginalName();
-        $name_image = current(explode('.',$get_image_name));
-        $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
-        $get_image->move('frontend/images/promotion', $new_image);
-        $discount['DiscountIMG'] = 'frontend/images/promotion/' . $new_image;
+            $get_image = $request->file('DiscountIMG');
+            $get_image_name = $get_image->getClientOriginalName();
+            $name_image = current(explode('.', $get_image_name));
+            $new_image = $name_image . rand(0, 99) . '.' . $get_image->getClientOriginalExtension();
+            $get_image->move('frontend/images/promotion', $new_image);
+            $discount['DiscountIMG'] = 'frontend/images/promotion/' . $new_image;
 
-        DB::table('discount')->insert($discount);
-        return redirect::to('add_promotions')->with('success','Added Discount Successfully.');
+            DB::table('discount')->insert($discount);
+            return redirect::to('all_promotions')->with('success', 'Added Discount Successfully.');
+        }
     }
     public function edit_promotions($DiscountID){
         $discount = DB::table('Discount')->where('DiscountID',$DiscountID)->select(DB::raw("DiscountID, DiscountName, DiscountIMG, DiscountValue, MinimumAmount, MaximumAmount, DATE_FORMAT(StartDate, '%Y-%m-%d') AS StartDate, DATE_FORMAT(EndDate, '%Y-%m-%d') AS EndDate"))->first();
@@ -812,7 +867,17 @@ class AdminController extends Controller
     }
     public function remove_promotions($DiscountID) {
         DB::table('discount')->where('DiscountID',$DiscountID)->delete();
-        return redirect('all_promotions')->with('success','Remove Promotion Successfully.');
+        return redirect('all-promotions')->with('success','Remove Promotion Successfully.');
+    }
+    public function promotion_search(Request $rqst) {
+        $keyword = $rqst->input('search-promotion');
+
+        $promotion_search = DB::table('Discount')
+        ->where(function($query) use ($keyword) {
+        $query->where('DiscountID', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('DiscountName', 'LIKE', '%'.$keyword.'%');
+        })->paginate(8);
+        return view('admin_pages.all_promotions', compact('promotion_search'));
     }
 
     //Contact Us

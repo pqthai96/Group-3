@@ -8,6 +8,17 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Edit Supplement</h4>
+                  <?php
+                  $msg = Session::get('failed');
+                  if($msg) {
+                  ?>
+                  <div class="alert alert-danger">
+                      <strong>{{ $msg }}</strong>
+                  </div>
+                  <?php
+                  Session::put('failed',null);
+                  }
+                  ?>
                   <form class="forms-sample" id="update-form" method="POST" action="{{ url('update-supplement/'.$supplement->ProductID) }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">

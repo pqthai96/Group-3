@@ -101,7 +101,7 @@ class HomeController extends Controller
             'newPassword' => 'required|min:8',
             'confirmPassword' => 'required|same:newPassword',
             'newEmail' => 'required|email',
-            'newPhone' => 'required',
+            'newPhone' => ['required','regex:/^(0|\+84)(3[2-9]|5[689]|7[06-9]|8[1-9]|9[0-46-9])[0-9]{7}$/'],
             'newFullname' => 'required',
             'newAddress' => 'required',
             'term' => 'required'
@@ -113,6 +113,7 @@ class HomeController extends Controller
             'newEmail.required' => 'Email is required.',
             'newEmail.email' => 'Invalid Email.',
             'newPhone.required' => 'Phone Number is required.',
+            'newPhone.regex' => 'Invalid Phone Number.',
             'newFullname.required' => 'Fullname is required.',
             'newAddress.required' => 'Address is required.',
             'term.required' => 'You need to review and agree to the terms and privacy policy of Testo Pizza.',
@@ -511,6 +512,12 @@ class HomeController extends Controller
             $order_data['PaymentMethod'] = $rqst->input('payment');
             $order_data['OrderStatus'] = "Processing";
         } else {
+            $rqst->validate([
+            'name' => 'required',
+            'phone' => 'required',
+            'address' => 'required'
+            ]);
+            
             $order_data['OrderID'] = $order_id;
             $order_data['OrderDate'] = $date;
             $order_data['UserID'] = session::get('userID');

@@ -8,6 +8,17 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Create a new Pizza</h4>
+                  <?php
+                  $msg = Session::get('failed');
+                  if($msg) {
+                  ?>
+                  <div class="alert alert-danger">
+                      <strong>{{ $msg }}</strong>
+                  </div>
+                  <?php
+                  Session::put('failed',null);
+                  }
+                  ?>
                   <form class="forms-sample" id="add-form" method="POST" action="{{ route('save_pizza') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
